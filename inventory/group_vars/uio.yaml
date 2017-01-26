@@ -1,0 +1,13 @@
+---
+location: uio
+domain: uio.no
+accept_hostkey: True
+
+# Repoadmin
+repoadmin_repo: git@git.iaas.uio.no:repo-admin
+repoadmin_ref: master
+repoadmin_path: /etc/kelda/prod
+repoadmin_force_update: yes
+
+# kelda
+kelda_path: /opt/kelda

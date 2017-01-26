@@ -1,0 +1,12 @@
+---
+secret_files:
+  config:
+    path:  '/var/lib/nova/.ssh/config'
+    mode:  '0644'
+    owner: 'nova'
+    group: 'nova'
+  id_rsa:
+    path:  '/var/lib/nova/.ssh/id_rsa'
+    mode:  '0600'
+    owner: 'nova'
+    group: 'nova'

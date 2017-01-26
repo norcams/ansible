@@ -1,0 +1,20 @@
+---
+# Ansible
+ansible_user: iaas
+ansible_become: True
+
+# Himlar
+himlar_path: /opt/himlar
+himlar_repo: https://github.com/norcams/himlar.git
+himlar_ref: master
+himlar_force_update: yes
+himlar_update_secrets: True
+
+# Himlar CLI
+himlarcli_path: /opt/himlarcli
+himlarcli_repo: https://github.com/norcams/himlarcli.git
+himlarcli_ref: master
+himlarcli_force_update: yes
+
+# Secrets to sync
+secret_files: {}
