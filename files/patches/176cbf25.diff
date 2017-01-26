@@ -1,0 +1,71 @@
+From 176cbf2551a4aee2d544190df363fba44502bd0c Mon Sep 17 00:00:00 2001
+From: Roxana Gherle <roxana.gherle@hpe.com>
+Date: Wed, 29 Jun 2016 11:21:13 -0700
+Subject: [PATCH] Fix the username value in federated tokens
+
+Currently, in both unscoped and scoped federated tokens, the
+username value in the token is equal to the userid and not to
+the value of the username in the external identity provider.
+This makes WebSSO login to show the userid of the logged-in
+user in the Horizon dashboard, whereas before it was showing
+the actual user name.
+
+This patch fixes the value of the username in the federated
+tokens, which will fix the WebSSO issue as well, since Horizon
+looks at the username value and displays that as the logged-in user.
+
+Closes-Bug: #1597101
+Closes-Bug: #1482701
+Change-Id: I33a0274641c4e6bc4e127f5206ba9bc7dbd8e5a8
+(cherry picked from commit 2042c955c81929deb47bc8cc77082b085faaa47d)
+---
+
+diff --git a/keystone/token/providers/common.py b/keystone/token/providers/common.py
+index 9472917..6c04d66 100644
+--- a/keystone/token/providers/common.py
++++ b/keystone/token/providers/common.py
+@@ -628,10 +628,14 @@
+         group_ids = auth_context['group_ids']
+         idp = auth_context[federation_constants.IDENTITY_PROVIDER]
+         protocol = auth_context[federation_constants.PROTOCOL]
++
++        user_dict = self.identity_api.get_user(user_id)
++        user_name = user_dict['name']
++
+         token_data = {
+             'user': {
+                 'id': user_id,
+-                'name': parse.unquote(user_id),
++                'name': parse.unquote(user_name),
+                 federation_constants.FEDERATION: {
+                     'groups': [{'id': x} for x in group_ids],
+                     'identity_provider': {'id': idp},
+diff --git a/keystone/token/providers/fernet/core.py b/keystone/token/providers/fernet/core.py
+index ff6fe9c..df75566 100644
+--- a/keystone/token/providers/fernet/core.py
++++ b/keystone/token/providers/fernet/core.py
+@@ -22,7 +22,7 @@
+ CONF = cfg.CONF
+ 
+ 
+-@dependency.requires('trust_api', 'oauth_api')
++@dependency.requires('trust_api', 'oauth_api', 'identity_api')
+ class Provider(common.BaseProvider):
+     def __init__(self, *args, **kwargs):
+         super(Provider, self).__init__(*args, **kwargs)
+@@ -107,11 +107,14 @@
+             'protocol': {'id': protocol_id}
+         }
+ 
++        user_dict = self.identity_api.get_user(user_id)
++        user_name = user_dict['name']
++
+         token_dict = {
+             'user': {
+                 federation_constants.FEDERATION: federated_info,
+                 'id': user_id,
+-                'name': user_id,
++                'name': user_name,
+                 'domain': {'id': CONF.federation.federated_domain_name,
+                            'name': CONF.federation.federated_domain_name, },
+             }

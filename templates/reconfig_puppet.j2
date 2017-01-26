@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Delete old puppet certs
+find /var/lib/puppet/ssl/ -type f | xargs rm
+
+# Run kickstart run to change hostname and puppet config
+FACTER_RUNMODE=kickstart puppet agent -t --certname {{ansible_host}}.mgmt.{{location}}.uhdc.no --server puppet.mgmt.{{location}}.uhdc.no --ca_server puppet.mgmt.{{location}}.uhdc.no
+
+# Run normal puppet run 
+puppet agent -t
