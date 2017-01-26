@@ -1,0 +1,17 @@
+#
+# Deploy himlar puppet code to puppetmaster under himlar_path
+# Verified: This will run under ansible 2.1
+#
+# sudo ansible-playbook -e "hosts=bgo-admin" lib/deploy_himlar.yaml
+#
+- hosts: "{{ hosts }}"
+  tasks:
+    - name: Update norcams/himlar git repo
+      git: repo={{himlar_repo}} version={{himlar_ref}} dest={{himlar_path}} force={{himlar_force_update}}
+    - name: Update /etc/puppet/modules
+      command: "{{himlar_path}}/provision/puppetmodules.sh"
+      environment:
+        HIMLAR_PUPPETFILE: deploy
+    - name: Update hieradata/secrets
+      command: "{{himlar_path}}/provision/puppetsecrets.sh"
+      when: "{{himlar_update_secrets}} == True"

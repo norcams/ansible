@@ -1,0 +1,28 @@
+- name: manage nodes on controller with libvirt
+  hosts: "{{ hosts }}"
+  user: iaas
+  tasks:
+    - name: find nodes on controller
+      virt: command=list_vms
+      register: nodes
+#   - name: nodes
+#     debug: msg="{{ nodes.list_vms }}"
+    - name: get node info
+      virt: command=info
+      register: virt_info
+#   - debug: msg="{{ virt_info }}"
+#   - virt: name="{{ item }}" command=status
+#     when: (virt_info[item]['state'] == 'running') and (action == 'stop')
+#            (action == stop)
+#     with_items: nodes.list_vms
+#   - debug: msg="{{ virt_info[item] }}"
+#     with_items: "{{nodes.list_vms}}"
+    - name: start nodes
+      virt: name="{{item}}" command=start
+      when: (action == 'start') and (virt_info[item]['state'] != 'running')
+      with_items: "{{nodes.list_vms}}"
+    - name: stop nodes
+      virt: name="{{ item }}" command=shutdown
+      when: (action == 'stop') and (virt_info[item]['state'] == 'running')
+      with_items: "{{nodes.list_vms}}"
+

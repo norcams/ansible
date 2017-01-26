@@ -1,0 +1,6 @@
+- hosts: "{{ hosts }}"
+  serial: 10
+  gather_facts: False
+  tasks:
+    - ping:
+

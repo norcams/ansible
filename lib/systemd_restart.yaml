@@ -1,0 +1,12 @@
+#
+## Restart systemd service
+## Verified: This will run under ansible 2.1
+##
+## sudo ansible-playbook -e "hosts=test01-mq-01 name=rabbitmq-server.service" lib/systemd_restart.yaml
+##
+#
+- hosts: "{{ hosts }}"
+  gather_facts: False
+  tasks:
+    - systemd: name={{ name }} state=restarted
+

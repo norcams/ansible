@@ -1,0 +1,20 @@
+#
+# Clean up ssh host keys in known hosts root
+# {{ hosts }} should be a the host to run on (most likely login-01)
+# {{ host }} should be the host to remove from known hosts
+# Verified: This will run under ansible 2.1
+#
+- hosts: "{{ hosts }}"
+  gather_facts: False
+  tasks:
+    - name: find ip
+      shell: getent hosts {{host}} | awk '{ print $1 }'
+      register: host_ip
+      ignore_errors: yes
+    - name: remove host fqdn in /root/.ssh/known_hosts
+      shell: ssh-keygen -R {{host}}.{{domain}}
+    - name: remove host name in /root/.ssh/known_hosts
+      shell: ssh-keygen -R {{host}}
+    - name: Remove host ip in /root/.ssh/known_hosts
+      shell: ssh-keygen -R {{host_ip.stdout}}
+      when: host_ip.rc == 0

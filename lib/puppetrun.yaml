@@ -1,0 +1,5 @@
+- hosts: "{{ hosts }}"
+  serial: 2
+  max_fail_percentage: 100
+  tasks:
+    - puppet: 

@@ -1,0 +1,8 @@
+- hosts: "{{ hosts }}"
+  user: iaas
+  tasks:
+     - name: Reboot host
+       shell: shutdown -h 1 "Ansible updates triggered" 
+       async: 0
+       poll: 0
+       ignore_errors: true

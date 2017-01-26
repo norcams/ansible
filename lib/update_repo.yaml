@@ -1,0 +1,17 @@
+#
+# Pull latest repo configuration and update pointers for test and
+# production repositories accordingly
+#
+# This only makes sense on the uio repo server (and thus the 'uio'
+# environment).
+#
+# sudo ansible-playbook -e "hosts=download" lib/update_repo.yaml
+#
+- hosts: "{{ hosts }}"
+  tasks:
+    - name: Update git.iaas.uio.no:repo-admin git repo
+      git: repo={{repoadmin_repo}} version={{repoadmin_ref}} dest={{repoadmin_path}} force={{repoadmin_force_update}} accept_hostkey=yes clone=no key_file=/home/iaas/.ssh/id_rsa
+    - name: Update test repo pointers
+      command: "{{kelda_path}}/repoadmin.sh -e prod setup_test"
+    - name: Update production repo pointers
+      command: "{{kelda_path}}/repoadmin.sh -e prod setup_prod"
