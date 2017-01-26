@@ -1,0 +1,4 @@
+- hosts: "{{ hosts }}"
+  user: iaas
+  tasks:
+    - yum: name=* state=latest

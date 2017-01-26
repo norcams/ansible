@@ -6,3 +6,14 @@ secret_files:
     mode:  '0640'
     owner: 'root'
     group: 'root'
+  ssh_private_key:
+    path:  '/root/.ssh/git_rsa'
+    mode:  '0600'
+    owner: 'root'
+    group: 'root'
+  ssh_public_key:
+    path:  '/root/.ssh/git_rsa.pub'
+    mode:  '0600'
+    owner: 'root'
+    group: 'root'
+

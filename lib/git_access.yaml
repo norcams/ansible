@@ -1,0 +1,5 @@
+- hosts: "{{ hosts }}"
+  user: iaas
+  tasks:
+    - file: path=/home/root/.ssh owner=root group=root state=directory
+    - template: dest=/root/.ssh/config mode=0644 src=../templates/git/config.j2
