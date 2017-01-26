@@ -1,0 +1,8 @@
+---
+ansible_host: 172.16.32.11
+secret_files:
+  cert:
+    path:  '/etc/rndc-osl.key'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
