@@ -1,0 +1,16 @@
+# This is an example to bootstrap a new location before himlarcli
+# can be used to generate complete inventory
+
+#[<loc>:children]
+#<loc>-admin
+#<loc>-login
+#<loc>-proxy
+
+#[<loc>-admin]
+#l<loc>-admin-01
+
+#[<loc>-login]
+#l<loc>-login-01
+
+#[<loc>-proxy]
+#l<loc>-proxy-01
