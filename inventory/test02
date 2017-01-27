@@ -32,6 +32,7 @@ test02-db
 test02-identity
 test02-image
 test02-logger
+test02-monitor
 test02-mq
 test02-network
 test02-novactrl

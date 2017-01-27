@@ -33,6 +33,7 @@ osl-admin
 osl-identity
 osl-image
 osl-logger
+osl-monitor
 osl-mq
 osl-network
 osl-novactrl
@@ -109,7 +110,7 @@ osl-monitor-01
 osl-mq-01
 
 [osl-network]
-osl-network-01osl-compute-03
+osl-network-01
 
 [osl-novactrl]
 osl-novactrl-01
