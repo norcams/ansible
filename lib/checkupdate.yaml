@@ -1,5 +1,6 @@
 - hosts: "{{ hosts }}"
   user: iaas
+  serial: "100%"
   tasks:
   - name: check update
     shell: /usr/bin/yum check-update &> /dev/null
