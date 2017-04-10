@@ -5,7 +5,12 @@ Based on usage in [himlar](https://github.com/norcams/himlar) and with
 
 ## Inventory
 
-Inventory files can be updated from foreman with `$himlarcli/ansible_hosts.py`
+Inventory files can be updated from foreman with 
+
+`$himlarcli/ansible_hosts.py -c ./config.ini.$loc`
+
+This will generate `./hostfile.$loc`. Copy to this file to
+`$ansible_repo/inventory/$loc`
 
 ## Variables
 Default values are in `group_vars/all.yaml` and can then be overridden in
