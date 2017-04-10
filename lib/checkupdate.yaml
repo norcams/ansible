@@ -4,4 +4,4 @@
   serial: "100%"
   tasks:
   - name: check update
-    shell: /usr/bin/yum check-update &> /dev/null
+    shell: /usr/bin/yum clean all; /usr/bin/yum check-update &> /dev/null
