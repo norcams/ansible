@@ -1,4 +1,5 @@
 - hosts: "{{ hosts }}"
+  gather_facts: False
   user: iaas
   serial: "100%"
   tasks:
