@@ -1,4 +1,9 @@
 - hosts: "{{ hosts }}"
   user: iaas
+  gather_facts: False
   tasks:
     - yum: name=* state=latest update_cache=yes
+    - puppet:
+      when: '"admin" not in inventory_hostname'
+    - command: /opt/himlar/provision/puppetrun.sh
+      when: '"admin" in inventory_hostname'
