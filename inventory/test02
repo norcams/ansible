@@ -2,6 +2,7 @@
 test02-access
 test02-admin
 test02-api
+test02-builder
 test02-cephmon
 test02-compute
 test02-console
@@ -10,8 +11,8 @@ test02-dashboard
 test02-db
 test02-identity
 test02-image
+test02-leaf
 test02-logger
-#test02-login
 test02-monitor
 test02-mq
 test02-network
@@ -25,6 +26,7 @@ test02-volume
 test02-access
 test02-admin
 test02-api
+test02-builder
 test02-cephmon
 test02-console
 test02-dashboard
@@ -48,6 +50,9 @@ test02-admin-01
 
 [test02-api]
 test02-api-01
+
+[test02-builder]
+test02-builder-01
 
 [test02-cephmon]
 test02-cephmon-01
@@ -81,11 +86,11 @@ test02-identity-01
 [test02-image]
 test02-image-01
 
+[test02-leaf]
+test02-leaf-01
+
 [test02-logger]
 test02-logger-01
-
-#[test02-login]
-#test02-login-01
 
 [test02-monitor]
 test02-monitor-01
