@@ -1,2 +1,2 @@
 [uio]
-download
+download ansible_host=download.iaas.uio.no
