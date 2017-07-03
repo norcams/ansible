@@ -1,0 +1,32 @@
+#
+# Turn on or off debug for nova-compute
+#
+# Mandatory input variables:
+# * hosts (str): ansible node(s)
+# * debug (int): 1 or 0 for on or off
+#
+# Example:
+# sudo ansible-playbook -e "hosts=test01-compute-01 debug=1" lib/debug_nova.yaml
+#
+# Last verified: 2017-07-03 (ansible version 2.2.1.0)
+#
+- hosts: "{{ hosts }}"
+  gather_facts: no
+  user: iaas
+  tasks:
+    - name: 'enable debug in nova'
+      lineinfile:
+        dest: /etc/nova/nova.conf
+        regexp: '^debug='
+        line: 'debug=True'
+        backup: True
+      when: "{{ debug }} == 1"
+    - name: 'disable debug in nova'
+      lineinfile:
+        dest: /etc/nova/nova.conf
+        regexp: '^debug='
+        state: absent
+        backup: True
+      when: "{{ debug }} == 0"
+    - name: 'restart openstack-nova-compute'
+      systemd: name=openstack-nova-compute state=restarted
