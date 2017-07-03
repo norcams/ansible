@@ -2,6 +2,7 @@
 osl-access
 osl-admin
 osl-api
+osl-builder
 osl-cephmon
 osl-compute
 osl-console
@@ -15,6 +16,7 @@ osl-logger
 osl-login
 osl-monitor
 osl-mq
+osl-nat
 osl-network
 osl-novactrl
 osl-proxy
@@ -26,6 +28,7 @@ osl-volume
 osl-access
 osl-admin
 osl-api
+osl-builder
 osl-cephmon
 osl-console
 osl-dashboard
@@ -50,6 +53,9 @@ osl-admin-01
 [osl-api]
 osl-api-01
 
+[osl-builder]
+osl-builder-01
+
 [osl-cephmon]
 osl-cephmon-01
 osl-cephmon-02
@@ -70,6 +76,7 @@ osl-console-01
 osl-controller-01
 osl-controller-02
 osl-controller-03
+osl-controller-04
 
 [osl-dashboard]
 osl-dashboard-01
@@ -101,6 +108,9 @@ osl-monitor-01
 
 [osl-mq]
 osl-mq-01
+
+[osl-nat]
+osl-nat-01
 
 [osl-network]
 osl-network-01
