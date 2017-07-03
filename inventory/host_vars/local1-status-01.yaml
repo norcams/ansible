@@ -1,0 +1,12 @@
+secret_files:
+  cert:
+    path:  '/etc/pki/tls/certs/access.iaas.intern.cert.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
+  key:
+    path:  '/etc/pki/tls/private/access.iaas.intern.key.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
+

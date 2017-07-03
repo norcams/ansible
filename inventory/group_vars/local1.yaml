@@ -1,0 +1,13 @@
+---
+location: local1
+domain: mgmt.local1.iaas.intern
+#himlar_repo: https://github.com/raykrist/himlar.git
+himlar_repo: https://github.com/norcams/himlar.git
+himlar_ref: master
+himlar_update_secrets: false
+secret_files:
+  ca-cert:
+    path:  '/etc/pki/tls/certs/cachain.pem'
+    mode:  '0644'
+    owner: 'root'
+    group: 'root'

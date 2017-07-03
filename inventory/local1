@@ -1,6 +1,8 @@
 [local1:children]
 local1-access
 local1-admin
+local1-api
+local1-builder
 local1-compute
 local1-console
 local1-controller
@@ -21,6 +23,8 @@ local1-volume
 [local1-nodes:children]
 local1-access
 local1-admin
+local1-api
+local1-builder
 local1-console
 local1-dashboard
 local1-db
@@ -40,8 +44,15 @@ local1-access-01
 [local1-admin]
 local1-admin-01
 
+[local1-api]
+local1-api-01
+
+[local1-builder]
+local1-builder-01
+
 [local1-compute]
 local1-compute-01
+local1-compute-02
 
 [local1-console]
 local1-console-01
@@ -77,7 +88,6 @@ local1-monitor-01
 
 [local1-mq]
 local1-mq-01
-local1-mq-02
 
 [local1-network]
 local1-network-01
