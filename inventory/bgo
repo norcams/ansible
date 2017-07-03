@@ -2,6 +2,7 @@
 bgo-access
 bgo-admin
 bgo-api
+bgo-builder
 bgo-cephmon
 bgo-compute
 bgo-console
@@ -15,6 +16,7 @@ bgo-logger
 bgo-login
 bgo-monitor
 bgo-mq
+bgo-nat
 bgo-network
 bgo-novactrl
 bgo-proxy
@@ -26,6 +28,7 @@ bgo-volume
 bgo-access
 bgo-admin
 bgo-api
+bgo-builder
 bgo-cephmon
 bgo-console
 bgo-dashboard
@@ -49,6 +52,9 @@ bgo-admin-01
 
 [bgo-api]
 bgo-api-01
+
+[bgo-builder]
+bgo-builder-01
 
 [bgo-cephmon]
 bgo-cephmon-01
@@ -102,6 +108,9 @@ bgo-monitor-01
 
 [bgo-mq]
 bgo-mq-01
+
+[bgo-nat]
+bgo-nat-01
 
 [bgo-network]
 bgo-network-01
