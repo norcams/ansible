@@ -14,4 +14,4 @@
         HIMLAR_PUPPETFILE: deploy
     - name: Update hieradata/secrets
       command: "{{himlar_path}}/provision/puppetsecrets.sh"
-      when: "{{himlar_update_secrets}} == True"
+      when: himlar_update_secrets == True
