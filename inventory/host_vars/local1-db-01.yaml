@@ -1,0 +1,13 @@
+---
+secret_files:
+  cert:
+    path:  '/etc/pki/tls/certs/db01.trp.local.iaas.intern.crt'
+    mode:  '0644'
+    owner: 'root'
+    group: 'root'
+  key:
+    path:  '/etc/pki/tls/private/db01.trp.local.iaas.intern.key'
+    mode:  '0440'
+    owner: 'root'
+    group: 'root'
+
