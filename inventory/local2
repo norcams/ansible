@@ -1,5 +1,6 @@
 [local2:children]
 local2-admin
+local2-api
 local2-compute
 local2-controller
 local2-dashboard
@@ -16,6 +17,7 @@ local2-volume
 
 [local2-nodes:children]
 local2-admin
+local2-api
 local2-dashboard
 local2-db
 local2-identity
@@ -28,6 +30,9 @@ local2-volume
 
 [local2-admin]
 local2-admin-01
+
+[local2-api]
+local2-api-01
 
 [local2-compute]
 local2-compute-01

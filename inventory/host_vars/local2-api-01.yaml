@@ -1,0 +1,17 @@
+---
+secret_files:
+  status:
+    path:  '/etc/pki/tls/certs/status.iaas.intern.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
+  api:
+    path:  '/etc/pki/tls/certs/api.iaas.intern.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
+  star_api:
+    path:  '/etc/pki/tls/certs/star.api.local2.iaas.intern.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'

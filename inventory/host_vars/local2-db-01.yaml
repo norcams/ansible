@@ -9,5 +9,5 @@ secret_files:
     path:  '/etc/pki/tls/private/db01.trp.local.iaas.intern.key'
     mode:  '0440'
     owner: 'root'
-    group: 'root'
+    group: 'mysql'
 
