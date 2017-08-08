@@ -15,9 +15,10 @@
   gather_facts: no
   tasks:
     - name: 'Remove all old yum repos'
+      file: name='/etc/yum.repos.d/*' state=absent
       shell: "rm -rf /etc/yum.repos.d/*"
     - name: 'Puppet kickstart runmode'
-      command: "puppet agent -t"
+      command: "puppet agent --onetime --no-daemonize"
       environment:
         FACTER_RUNMODE: kickstart
       ignore_errors: yes
@@ -30,4 +31,5 @@
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
     - name: 'Puppet run'
-      puppet:
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
