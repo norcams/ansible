@@ -16,7 +16,6 @@
   tasks:
     - name: 'Remove all old yum repos'
       file: name='/etc/yum.repos.d/*' state=absent
-      shell: "rm -rf /etc/yum.repos.d/*"
     - name: 'Puppet kickstart runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
