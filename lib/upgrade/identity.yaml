@@ -14,8 +14,12 @@
 - hosts: "{{ hosts }}"
   gather_facts: no
   tasks:
+    - name: 'Repo files'
+      command: 'ls -1'
+      register: repo_files
     - name: 'Remove all old yum repos'
-      file: name='/etc/yum.repos.d/*' state=absent
+      file: name='/etc/yum.repos.d/{{item}}' state=absent
+      with_items: repo_files.stdout_lines
     - name: 'Puppet kickstart runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
