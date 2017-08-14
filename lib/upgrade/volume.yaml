@@ -32,7 +32,7 @@
     - name: 'Stop cinder volume service'
       systemd: name=openstack-cinder-volume state=stopped
     - name: Purge old package
-      yum: name=openstack-keystone state=absent
+      yum: name=openstack-cinder state=absent
     - name: 'Remove /etc/cinder/'
       file: name=/etc/cinder state=absent
     - name: 'Yum update'
