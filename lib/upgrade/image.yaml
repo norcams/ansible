@@ -1,0 +1,40 @@
+#
+# This can be used to upgrade image to new version of openstack
+#
+# Before you start you need to stop puppet and deploy latest version of himlar.
+#
+# Mandatory input variables:
+# * hosts (str): ansible node(s)
+#
+# Example:
+# sudo ansible-playbook -e "hosts=test02-image-01" lib/upgrade/image.yaml
+#
+# Last verified: 2017-08-14 (ansible version 2.3.1.0)
+#
+- hosts: "{{ hosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+    - name: 'Stop image api'
+      systemd: name=openstack-glance-api state=stopped
+    - name: 'Stop image registry'
+      systemd: name=openstack-glance-registry state=stopped
+    - name: Purge old package
+      yum: name=openstack-glance state=absent
+    - name: 'Remove /etc/glance/'
+      file: name=/etc/glance state=absent
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
