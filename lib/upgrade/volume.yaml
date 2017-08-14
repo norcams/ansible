@@ -1,0 +1,42 @@
+#
+# This can be used to upgrade volume to new version of openstack
+#
+# Before you start you need to stop puppet and deploy latest version of himlar.
+#
+# Mandatory input variables:
+# * hosts (str): ansible node(s)
+#
+# Example:
+# sudo ansible-playbook -e "hosts=test01-volume-01" lib/upgrade/identity.yaml
+#
+# Last verified: 2017-08-14 (ansible version 2.3.1.0)
+#
+- hosts: "{{ hosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+    - name: 'Stop cinder API service'
+      systemd: name=openstack-cinder-api state=stopped
+    - name: 'Stop cinder scheduler service'
+      systemd: name=openstack-cinder-scheduler state=stopped
+    - name: 'Stop cinder volume service'
+      systemd: name=openstack-cinder-volume state=stopped
+    - name: Purge old package
+      yum: name=openstack-keystone state=absent
+    - name: 'Remove /etc/cinder/'
+      file: name=/etc/cinder state=absent
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
