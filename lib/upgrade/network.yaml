@@ -38,3 +38,6 @@
     - name: 'Puppet run'
       command: "puppet agent --onetime --no-daemonize"
       ignore_errors: yes
+    - name: 'Puppet run - again'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
