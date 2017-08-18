@@ -1,0 +1,137 @@
+From 932511031f6246af1b996e26e500fdd5d848462e Mon Sep 17 00:00:00 2001
+From: Ying Zuo <yinzuo@cisco.com>
+Date: Mon, 19 Jun 2017 22:01:12 -0700
+Subject: [PATCH] Only show the image visibility option if it's allowed
+
+The visibility field on create image modal and edit image
+modal should be shown if it's allowed based on the
+glance policy.
+
+Change-Id: I36f1b1c6e93c5ce06873f6a5f6106d8759fac6d0
+Closes-bug: #1698490
+---
+ .../images/steps/create-image/create-image.controller.js   | 14 ++++++++++++--
+ .../steps/create-image/create-image.controller.spec.js     | 13 ++++++++++++-
+ .../app/core/images/steps/create-image/create-image.html   |  2 +-
+ .../core/images/steps/edit-image/edit-image.controller.js  |  1 +
+ .../app/core/images/steps/edit-image/edit-image.html       |  2 +-
+ 5 files changed, 27 insertions(+), 5 deletions(-)
+
+diff --git a/openstack_dashboard/static/app/core/images/steps/create-image/create-image.controller.js b/openstack_dashboard/static/app/core/images/steps/create-image/create-image.controller.js
+index bcf73e52f..cb683ba7f 100644
+--- a/openstack_dashboard/static/app/core/images/steps/create-image/create-image.controller.js
++++ b/openstack_dashboard/static/app/core/images/steps/create-image/create-image.controller.js
+@@ -27,7 +27,8 @@
+     'horizon.app.core.images.events',
+     'horizon.app.core.images.imageFormats',
+     'horizon.app.core.images.validationRules',
+-    'horizon.app.core.openstack-service-api.settings'
++    'horizon.app.core.openstack-service-api.settings',
++    'horizon.app.core.openstack-service-api.policy'
+   ];
+ 
+   /**
+@@ -42,7 +43,8 @@
+     events,
+     imageFormats,
+     validationRules,
+-    settings
++    settings,
++    policyAPI
+   ) {
+     var ctrl = this;
+ 
+@@ -52,6 +54,7 @@
+     ctrl.diskFormats = [];
+     ctrl.prepareUpload = prepareUpload;
+     ctrl.apiVersion = 0;
++    ctrl.allowPublicizeImage = true;
+ 
+     ctrl.image = {
+       source_type: '',
+@@ -149,6 +152,13 @@
+ 
+     function init() {
+       glance.getImages({paginate: false}).success(onGetImages);
++      policyAPI.ifAllowed({rules: [['image', 'publicize_image']]}).then(
++        angular.noop,
++        function () {
++          ctrl.image.visibility = "private";
++          ctrl.allowPublicizeImage = false;
++        }
++      );
+     }
+ 
+     function onGetImages(response) {
+diff --git a/openstack_dashboard/static/app/core/images/steps/create-image/create-image.controller.spec.js b/openstack_dashboard/static/app/core/images/steps/create-image/create-image.controller.spec.js
+index aec0706f8..b45e33056 100644
+--- a/openstack_dashboard/static/app/core/images/steps/create-image/create-image.controller.spec.js
++++ b/openstack_dashboard/static/app/core/images/steps/create-image/create-image.controller.spec.js
+@@ -32,7 +32,15 @@
+       };
+     }
+ 
+-    var controller, glanceAPI, $scope, events, $q, settingsCall, $timeout;
++    function policyIfAllowed() {
++      return {
++        then: function(callback) {
++          callback({allowed: true});
++        }
++      };
++    }
++
++    var controller, glanceAPI, $scope, events, $q, settingsCall, $timeout, policyAPI;
+ 
+     ///////////////////////
+ 
+@@ -50,6 +58,9 @@
+       controller = $injector.get('$controller');
+ 
+       spyOn(glanceAPI, 'getImages').and.callFake(fakeGlance);
++
++      policyAPI = $injector.get('horizon.app.core.openstack-service-api.policy');
++      spyOn(policyAPI, 'ifAllowed').and.callFake(policyIfAllowed);
+     }));
+ 
+     function createController() {
+diff --git a/openstack_dashboard/static/app/core/images/steps/create-image/create-image.html b/openstack_dashboard/static/app/core/images/steps/create-image/create-image.html
+index efe529bb9..9bef3ad89 100644
+--- a/openstack_dashboard/static/app/core/images/steps/create-image/create-image.html
++++ b/openstack_dashboard/static/app/core/images/steps/create-image/create-image.html
+@@ -221,7 +221,7 @@
+ 
+     <div class="selected-source">
+       <div class="row">
+-        <div class="col-xs-6 col-sm-6">
++        <div class="col-xs-6 col-sm-6" ng-show='ctrl.allowPublicizeImage'>
+           <div class="form-group">
+             <label class="control-label required">
+               <translate>Visibility</translate>
+diff --git a/openstack_dashboard/static/app/core/images/steps/edit-image/edit-image.controller.js b/openstack_dashboard/static/app/core/images/steps/edit-image/edit-image.controller.js
+index b2a591a9b..adbecb230 100644
+--- a/openstack_dashboard/static/app/core/images/steps/edit-image/edit-image.controller.js
++++ b/openstack_dashboard/static/app/core/images/steps/edit-image/edit-image.controller.js
+@@ -57,6 +57,7 @@
+     ];
+ 
+     ctrl.setFormats = setFormats;
++    ctrl.allowPublicizeImage = { rules: [['image', 'image:publicize_image']]};
+ 
+     $scope.imagePromise.then(init);
+ 
+diff --git a/openstack_dashboard/static/app/core/images/steps/edit-image/edit-image.html b/openstack_dashboard/static/app/core/images/steps/edit-image/edit-image.html
+index d8414f3c4..f83317998 100644
+--- a/openstack_dashboard/static/app/core/images/steps/edit-image/edit-image.html
++++ b/openstack_dashboard/static/app/core/images/steps/edit-image/edit-image.html
+@@ -113,7 +113,7 @@
+ 
+     <div class="selected-source clearfix">
+       <div class="row">
+-        <div class="col-xs-6 col-sm-6">
++        <div class="col-xs-6 col-sm-6" hz-if-policies="ctrl.allowPublicizeImage">
+           <div class="form-group">
+             <label class="control-label required" translate>Visibility</label>
+             <div class="form-field">
+-- 
+2.11.0
+
