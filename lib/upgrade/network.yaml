@@ -1,0 +1,40 @@
+#
+# This can be used to upgrade network to new version of openstack
+#
+# Before you start you need to stop puppet and deploy latest version of himlar.
+#
+# Mandatory input variables:
+# * hosts (str): ansible node(s)
+#
+# Example:
+# sudo ansible-playbook -e "hosts=test02-network-01" lib/upgrade/network.yaml
+#
+# Last verified: 2017-08-18 (ansible version 2.3.1.0)
+#
+- hosts: "{{ hosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+    - name: 'Stop neutron server'
+      systemd: name=neutron-server state=stopped
+    - name: Purge old packages
+      yum: name=openstack-neutron state=absent
+    - name: Purge old plugins
+      yum: name=openstack-neutron-ml2 state=absent
+    - name: 'Remove /etc/neutron/'
+      file: name=/etc/neutron state=absent
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
