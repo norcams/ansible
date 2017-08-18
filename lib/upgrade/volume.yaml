@@ -7,7 +7,7 @@
 # * hosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "hosts=test01-volume-01" lib/upgrade/identity.yaml
+# sudo ansible-playbook -e "hosts=test01-volume-01" lib/upgrade/volume.yaml
 #
 # Last verified: 2017-08-14 (ansible version 2.3.1.0)
 #
