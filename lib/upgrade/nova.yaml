@@ -1,0 +1,69 @@
+#
+# This can be used to upgrade nova to new version of openstack excluding compute
+# nodes (this is done with a seperate playbook)
+#
+# Before you start you need to stop puppet and deploy latest version of himlar.
+#
+# Mandatory input variables:
+# * hosts (str): ansible node(s)
+#
+# Example:
+# sudo ansible-playbook -e "env=test01" lib/upgrade/nova.yaml
+#
+# Last verified: 2017-08-08 (ansible version 2.3.1.0)
+#
+- hosts: "{{ env }}-identity-01"
+  gather_facts: no
+  tasks:
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+    - name: 'Remove novav3 endpoints'
+      shell: "for id in `openstack endpoint list --service novav3 -f json | jq -r '.[] | .ID'`; do echo openstack endpoint delete $id; done"
+- hosts: "{{ env }}-db-02"
+  gather_facts: no
+  tasks:
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+    - name: 'Puppet run again'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+- hosts: "{{ env }}-novactrl-01"
+  gather_facts: no
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Stop openstack-nova-api'
+      systemd: name=openstack-nova-api state=stopped
+    - name: 'Stop openstack-nova-conductor'
+      systemd: name=openstack-nova-conductor state=stopped
+    - name: 'Stop openstack-nova-consoleauth'
+      systemd: name=openstack-nova-consoleauth state=stopped
+    - name: 'Stop openstack-nova-scheduler'
+      systemd: name=openstack-nova-scheduler state=stopped
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - name: Purge old openstack-nova-common
+      yum: name=openstack-nova-common state=absent
+    - name: Purge old openstack-nova-api
+      yum: name=openstack-nova-api state=absent
+    - name: 'Remove /etc/nova/'
+      file: name=/etc/nova state=absent
+    - name: 'Remove /var/lib/puppet'
+      file: name=/etc/nova state=absent
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+    - name: 'Puppet run again'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
