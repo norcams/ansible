@@ -1,6 +1,5 @@
 #
-# This can be used to upgrade nova to new version of openstack excluding compute
-# nodes (this is done with a seperate playbook)
+# This can be used to upgrade nova to new version of openstack
 #
 # Before you start you need to stop puppet and deploy latest version of himlar.
 #
@@ -8,28 +7,11 @@
 # * hosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "env=test01" lib/upgrade/nova.yaml
+# sudo ansible-playbook -e "hosts=test01-novactrl-01" lib/upgrade/nova.yaml
 #
 # Last verified: 2017-08-08 (ansible version 2.3.1.0)
 #
-- hosts: "{{ env }}-identity-01"
-  gather_facts: no
-  tasks:
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
-    - name: 'Remove novav3 endpoints'
-      shell: "for id in `openstack endpoint list --service novav3 -f json | jq -r '.[] | .ID'`; do echo openstack endpoint delete $id; done"
-- hosts: "{{ env }}-db-02"
-  gather_facts: no
-  tasks:
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
-    - name: 'Puppet run again'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
-- hosts: "{{ env }}-novactrl-01"
+- hosts: "{{ hosts }}"
   gather_facts: no
   tasks:
     - name: 'Repo files'
