@@ -26,6 +26,6 @@ else
   opt="$2"
 fi
 
-sudo ansible-playbook $opt -e "hosts=${host}" lib/upgrade/nova.yaml
+sudo ansible-playbook $opt -e "hosts=${host}" lib/upgrade/compute.yaml
 sudo ansible-playbook $opt -e "hosts=${host} patchfile=${HOME}/ansible/files/patches/python-nova-newton-centos-7.3.0-discard.diff dest=/usr/lib/python2.7/site-packages/nova/virt/libvirt/driver.py" lib/patch.yaml
 sudo ansible-playbook $opt -e "hosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
