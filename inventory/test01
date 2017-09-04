@@ -124,6 +124,8 @@ test01-status-01
 test01-storage-01
 test01-storage-02
 test01-storage-03
+test01-storage-04
+test01-storage-05
 
 [test01-volume]
 test01-volume-01
