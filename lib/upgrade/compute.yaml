@@ -38,6 +38,9 @@
     - name: 'Stop openstack-nova-metadata-api'
       systemd: name=openstack-nova-metadata-api state=stopped
       when: '"compute" in inventory_hostname'
+    - name: 'Stop openstack-nova-spicehtml5proxy'
+      systemd: name=openstack-nova-spicehtml5proxy state=stopped
+      when: '"console" in inventory_hostname'
     - name: 'Puppet kickstart runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
