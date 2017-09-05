@@ -59,3 +59,15 @@
     - name: 'Puppet run again'
       command: "puppet agent --onetime --no-daemonize"
       ignore_errors: yes
+    - name: "db sync"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage db sync"
+    - name: "api_db sync"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage api_db sync"
+    - name: "db cell_v2 simple_cell_setup"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage cell_v2 simple_cell_setup"
+    - name: "db online_data_migrations"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage db online_data_migrations"
