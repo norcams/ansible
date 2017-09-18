@@ -10,4 +10,5 @@
       patch: >
         src="{{patchfile}}"
         basedir="{{basedir}}"
+        strip=1
       when: basedir is defined
