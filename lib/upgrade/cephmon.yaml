@@ -1,0 +1,45 @@
+#
+# This can be used to upgrade cephmon to new version of ceph
+#
+# Before you start you need to stop puppet and deploy latest version of himlar,
+# and update puppet modules.
+#
+# Mandatory input variables:
+# * hosts (str): ansible node(s)
+#
+# ATTENTION: Upgrade on cephmon node at a time, otherwise cluster will stop.
+# After upgrade, the cephmon node will reboot
+#
+# Example:
+# sudo ansible-playbook -e "hosts=test01-cephmon-01" lib/upgrade/cephmon.yaml
+#
+# Last verified: 2017-09-15 (ansible version 2.3.1.0)
+#
+- hosts: "{{ hosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Enable puppet'
+      command: "puppet agent --enable"
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+    - name: 'Upate all packages'
+      yum: name=* state=latest update_cache=yes
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+    - name: 'Reboot host'
+      command: shutdown -r 1 "Ansible updates triggered"
+      async: 0
+      poll: 0
+      ignore_errors: true
+    - name: waiting for server to come back
+      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
