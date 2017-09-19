@@ -1,0 +1,55 @@
+#
+# This can be used to upgrade storage nodes to new version of ceph
+#
+# Before you start you need to stop puppet and
+#
+# *** ALL CEPHMONs MUST BE UPGRADED BEFORE STORAGE ***
+#
+# Mandatory input variables:
+# * hosts (str): ansible node(s)
+#
+# ATTENTION: Upgrade one storage node at a time, otherwise cluster will stop.
+# It's recommended to set
+#
+# ceph osd set noout
+#
+# Before upgrading. After upgrading node, the storage node will reboot. After
+# all storages nodes have been upgraded, unset the noout flag:
+#
+# ceph osd unset noout
+#
+# Example:
+# sudo ansible-playbook -e "hosts=test01-storage-01" lib/upgrade/cephmon.yaml
+#
+# Last verified: 2017-09-19 (ansible version 2.3.1.0)
+#
+- hosts: "{{ hosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Stop crond'
+      systemd: name=crond state=stopped
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Enable puppet'
+      command: "puppet agent --enable"
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+    - name: 'Upate all packages'
+      yum: name=* state=latest update_cache=yes
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+    - name: 'Reboot host'
+      command: shutdown -r 1 "Ansible updates triggered"
+      async: 0
+      poll: 0
+      ignore_errors: true
+    - name: waiting for server to come back
+      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
