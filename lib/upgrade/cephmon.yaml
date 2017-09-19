@@ -18,6 +18,8 @@
 - hosts: "{{ hosts }}"
   gather_facts: no
   tasks:
+    - name: 'Stop crond'
+      systemd: name=crond state=stopped
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
