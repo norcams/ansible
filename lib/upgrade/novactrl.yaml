@@ -1,0 +1,50 @@
+#
+# This can be used to upgrade novactrl to new version of openstack
+#
+# Before you start you need to stop puppet and deploy latest version of himlar.
+#
+# *** Disable puppet on computes ***
+#
+# Mandatory input variables:
+# * hosts (str): ansible node(s)
+#
+# Example:
+# sudo ansible-playbook -e "hosts=test01-novactrl-01" lib/upgrade/novactrl.yaml
+#
+# Last verified: 2017-08-18 (ansible version 2.3.1.0)
+#
+- hosts: "{{ hosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+    - name: 'Stop nova API service'
+      systemd: name=openstack-nova-api state=stopped
+    - name: 'Stop nova scheduler service'
+      systemd: name=openstack-nova-scheduler state=stopped
+    - name: 'Stop nova consoleauth service'
+      systemd: name=openstack-nova-consoleauth state=stopped
+    - name: 'Stop nova conductor service'
+      systemd: name=openstack-nova-conductor state=stopped
+    - name: Purge old package
+      yum: name=openstack-nova-common state=absent
+    - name: 'Remove /etc/nova/'
+      file: name=/etc/nova state=absent
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+    - name: 'Puppet run again'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+

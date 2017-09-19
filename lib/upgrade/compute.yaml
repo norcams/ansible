@@ -45,6 +45,8 @@
       command: "puppet agent --onetime --no-daemonize"
       environment:
         FACTER_RUNMODE: kickstart
+        https_proxy: 172.16.32.12:8888
+        http_proxy: 172.16.32.12:8888
       ignore_errors: yes
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
@@ -58,6 +60,9 @@
       file: name=/etc/nova state=absent
     - name: 'Puppet run'
       command: "puppet agent --onetime --no-daemonize"
+      environment:
+        https_proxy: 172.16.32.12:8888
+        http_proxy: 172.16.32.12:8888
       ignore_errors: yes
     - name: 'Puppet run again'
       command: "puppet agent --onetime --no-daemonize"

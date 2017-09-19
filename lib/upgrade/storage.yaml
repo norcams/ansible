@@ -24,10 +24,14 @@
 # Last verified: 2017-09-19 (ansible version 2.3.1.0)
 #
 - hosts: "{{ hosts }}"
+  serial: 1
   gather_facts: no
   tasks:
     - name: 'Stop crond'
       systemd: name=crond state=stopped
+    - name: 'Set OSD noout'
+      command: "ceph osd set noout"
+      ignore_errors: yes
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -53,3 +57,7 @@
       ignore_errors: true
     - name: waiting for server to come back
       local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
+    - name: 'Set OSD out'
+      command: "ceph osd unset noout"
+      ignore_errors: yes
+

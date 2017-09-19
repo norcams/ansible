@@ -17,6 +17,7 @@
 #
 - hosts: "{{ hosts }}"
   gather_facts: no
+  serial: 1
   tasks:
     - name: 'Stop crond'
       systemd: name=crond state=stopped
