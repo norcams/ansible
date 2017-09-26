@@ -68,6 +68,8 @@ osl-compute-03
 osl-compute-04
 osl-compute-05
 osl-compute-06
+osl-compute-07
+osl-compute-08
 
 [osl-console]
 osl-console-01
@@ -115,6 +117,7 @@ osl-nat-01
 [osl-network]
 osl-network-01
 osl-network-02
+osl-network-03
 
 [osl-novactrl]
 osl-novactrl-01
