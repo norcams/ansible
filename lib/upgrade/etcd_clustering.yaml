@@ -1,0 +1,26 @@
+#
+# This is for removing the single node configuration of etcd and bootstrapping a cluster
+#
+# Before you start you need to stop puppet and deploy latest version of himlar.
+#
+# Mandatory input variables:
+# * hosts (str): ansible node(s)
+#
+# Example:
+# sudo ansible-playbook -e "hosts=test01-novactrl-01" lib/upgrade/etcd_multinetwork.yaml
+#
+# Last verified: 2017-09-25 (ansible version 2.3.1.0)
+#
+- hosts: "{{ hosts }}"
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: 'Stop etcd'
+      systemd: name=etcd state=stopped
+    - name: 'Remove /var/lib/etcd'
+      file: name=/var/lib/etcd state=absent
+    - name: 'Create /var/lib/etcd'
+      file: name=/var/lib/etcd mode=0755 owner=etcd group=etcd
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
