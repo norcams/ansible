@@ -1,0 +1,11 @@
+#
+# This will use himlarcli to prepare a storage host for reinstall
+# {{ hosts }} should be a host with himlarcli installed
+# {{ storage_host }} should be the storage host
+# Verified: This will run under ansible 2.1
+#
+- hosts: "{{ hosts }}"
+  tasks:
+    - name: Set foreman to rebuild
+      command: bin/python rebuild.py {{storage_host}} chdir={{himlarcli_path}}
+      when: location != 'vagrant'

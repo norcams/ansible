@@ -1,0 +1,55 @@
+This patch adds a new button aligned to the right in the top header.
+
+OpenStack Horizon embeds spice-html5 in an iframe, but it doesn't
+include this button, this is because it uses novnc as well which it
+does include an equivalent button as part of its UI. Also when
+loading spice_auto.html directly the lack of a button is a problem.
+
+Fixes-Bug: #89613
+
+Signed-off-by: Felipe Reyes <felipe.reyes@canonical.com>
+---
+ spice.css       | 8 +++++++-
+ spice_auto.html | 5 +++++
+ 2 files changed, 12 insertions(+), 1 deletion(-)
+
+#diff --git a/spice.css b/spice.css
+#index 5d092ba..831b4c9 100644
+#--- a/spice.css
+#+++ b/spice.css
+#@@ -31,6 +31,7 @@  body
+#     font-size: 20px;
+#     font-weight: bolder;
+#     text-shadow: #efefef 1px 1px 0px;
+#+    float: left;
+# }
+# #login label { color: #ffffff; text-shadow: 1px 1px 0px rgba(175, 210, 220, 0.8); }
+# #login input
+#@@ -115,4 +116,9 @@  body
+# .spice-message-error {
+#     color: red;
+# }
+#-
+#+.spice-send-ctrl-alt-del {
+#+    width: 650px;
+#+    margin-left: 100px;
+#+    margin-right: 0px;
+#+    text-align: right;
+#+}
+diff --git a/spice_auto.html b/spice_auto.html
+index d374054..f26dbb6 100644
+--- a/spice_auto.html
++++ b/spice_auto.html
+@@ -186,6 +186,11 @@ 
+ 
+         <div id="login">
+             <span class="logo">SPICE</span>
++            <div class="spice-send-ctrl-alt-del">
++                <button type="button" onclick="sendCtrlAltDel()">
++                Send Ctrl-Alt-Delete
++                </button>
++            </div>
+         </div>
+ 
+         <div id="spice-area">
+
