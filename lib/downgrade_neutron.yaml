@@ -1,0 +1,9 @@
+- hosts: "{{ hosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Downgrade openstack-neutron'
+      yum: name="https://download.iaas.uio.no/uh-iaas/yumrepo/openstack-neutron-9.4.0-2.el7.noarch.rpm" state=present allow_downgrade=yes
+    - name: 'Downgrade openstack-neutron-common'
+      yum: name="https://download.iaas.uio.no/uh-iaas/yumrepo/openstack-neutron-common-9.4.0-2.el7.noarch.rpm" state=present allow_downgrade=yes
+    - name: 'Downgrade python-neutron'
+      yum: name="https://download.iaas.uio.no/uh-iaas/yumrepo/python-neutron-9.4.0-2.el7.noarch.rpm" state=present allow_downgrade=yes
