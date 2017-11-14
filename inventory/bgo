@@ -114,6 +114,8 @@ bgo-nat-01
 
 [bgo-network]
 bgo-network-01
+bgo-network-02
+bgo-network-03
 
 [bgo-novactrl]
 bgo-novactrl-01

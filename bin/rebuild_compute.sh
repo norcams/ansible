@@ -33,7 +33,6 @@ sleep 120
 sudo ansible-playbook -e "hosts=${host}" lib/puppetrun.yaml
 sudo ansible-playbook -e "hosts=${host}" lib/push_secrets.yaml
 sudo ansible-playbook -e "hosts=${host}" lib/puppetrun.yaml
-sudo ansible-playbook -e "hosts=${host} patchfile=${HOME}/ansible/files/patches/python-nova-centos-7.3.0.diff dest=/usr/lib/python2.7/site-packages/nova/virt/libvirt/designer.py" lib/patch.yaml
-sudo ansible-playbook -e "hosts=${host} patchfile=${HOME}/ansible/files/patches/python-nova-centos-7.3.0-discard.diff dest=/usr/lib/python2.7/site-packages/nova/virt/libvirt/driver.py" lib/patch.yaml
+sudo ansible-playbook -e "hosts=${host} patchfile=${HOME}/ansible/files/patches/python-nova-newton-centos-7.3.0-discard.diff dest=/usr/lib/python2.7/site-packages/nova/virt/libvirt/driver.py" lib/patch.yaml
 sudo ansible-playbook -e "hosts=${host}" lib/downgrade_neutron.yaml
 sudo ansible-playbook -e "hosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml

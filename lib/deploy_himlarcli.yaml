@@ -18,12 +18,17 @@
       - python-netifaces
       - python-statsd
     - name: Update norcams/himlarcli git repo
-      git: repo={{himlarcli_repo}} version={{himlarcli_ref}} dest={{himlarcli_path}} force={{himlarcli_force_update}}
+      git: 
+        repo:     "{{himlarcli_repo}}" 
+        version:  "{{himlarcli_ref}}"
+        dest:     "{{himlarcli_path}}"
+        force:    "{{himlarcli_force_update}}"
     - name: Install python modules with pip
-      pip: name={{ item.name }} version={{ item.version }} virtualenv={{himlarcli_path}} virtualenv_site_packages=yes
-      with_items:
-      - { name: 'python-foreman', version: 0.4.5 }
-      - { name: 'python-ldap', version: 2.4.27 }
+      pip: 
+        virtualenv:               "{{himlarcli_path}}"
+        requirements:             "requirements.txt"
+        chdir:                    "{{himlarcli_path}}"
+        virtualenv_site_packages: "yes"
     - name: Run setup.py if himlarcli package is not setup
       command: bin/python setup.py develop chdir={{himlarcli_path}} creates={{himlarcli_path}}/himlarcli.egg-info
     - name: Copy config.ini from remote host
