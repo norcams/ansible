@@ -1,0 +1,19 @@
+---
+ansible_host: 172.28.32.18
+secret_files:
+  cert:
+    path:  '/etc/rndc.key'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
+  ssh_private_key:
+    path:  '/root/.ssh/git_rsa'
+    mode:  '0600'
+    owner: 'root'
+    group: 'root'
+  ssh_public_key:
+    path:  '/root/.ssh/git_rsa.pub'
+    mode:  '0600'
+    owner: 'root'
+    group: 'root'
+
