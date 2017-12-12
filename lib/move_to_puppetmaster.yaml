@@ -8,5 +8,6 @@
     - name: 'Remove all old yum repos'
       file: name='/var/lib/puppet/ssl' state=absent
     - name: 'Write bash script to host'
-        src: reconfig_puppet.j2
+      template:
+        src: '../templates/reconfig_puppet.j2'
         dest: '/tmp/reconfigure_puppet.sh'
