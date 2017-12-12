@@ -5,9 +5,36 @@
 #
 - hosts: "{{ hosts }}"
   tasks:
-    - name: 'Remove all old yum repos'
+    - name: Remove old puppetlabs repo
+      yum_repository:
+        name: puppetlabs
+        file: puppetlabs
+        state: absent
+    - name: Add puppetlabs-PC1
+      yum_repository:
+        name: puppetlabs
+        file: puppetlabs
+        description: 'Puppet 4'
+        baseurl: https://download.iaas.uio.no/uh-iaas/test/puppetlabs-PC1/
+        gpgkey: https://download.iaas.uio.no/uh-iaas/test/puppetlabs-PC1/RPM-GPG-KEY-puppet
+        gpgcheck: yes
+    - name: Clean metadata
+      command: yum clean metadata
+    - name: Purge old puppet packages
+      yum: name={{ item }} state=absent
+      with_items:
+        - puppet
+        - facter
+    - name: Ensure Puppet 3 packages are absent
+      yum: name={{ item }} state=absent
+      with_items:
+        - puppet
+        - facter
+    - name: Ensure Puppet 4 agent is installed
+      yum: name=puppet-agent state=installed
+    - name: Remove all old certs
       file: name='/var/lib/puppet/ssl' state=absent
-    - name: 'Write bash script to host'
+    - name: Write bash script to host
       template:
         src: '../templates/reconfig_puppet.j2'
         dest: '/tmp/reconfigure_puppet.sh'
