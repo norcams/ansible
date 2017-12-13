@@ -19,6 +19,7 @@ bgo-mq
 bgo-nat
 bgo-network
 bgo-novactrl
+bgo-object
 bgo-proxy
 bgo-status
 bgo-storage
@@ -123,6 +124,13 @@ bgo-network-03
 
 [bgo-novactrl]
 bgo-novactrl-01
+
+[bgo-object]
+bgo-object-01
+bgo-object-02
+bgo-object-03
+bgo-object-04
+bgo-object-05
 
 [bgo-proxy]
 bgo-proxy-01
