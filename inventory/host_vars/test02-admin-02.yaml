@@ -1,4 +1,7 @@
 ---
+himlar_repo: https://github.com/norcams/himlar-puppet4.git
+himlar_ref: master
+
 ansible_host: 172.28.32.18
 secret_files:
   cert:
