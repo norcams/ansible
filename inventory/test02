@@ -14,6 +14,7 @@ test02-image
 test02-leaf
 test02-logger
 test02-monitor
+test02-nat
 test02-mq
 test02-network
 test02-novactrl
@@ -97,6 +98,9 @@ test02-monitor-01
 
 [test02-mq]
 test02-mq-01
+
+[test02-nat]
+test02-nat-01
 
 [test02-network]
 test02-network-01
