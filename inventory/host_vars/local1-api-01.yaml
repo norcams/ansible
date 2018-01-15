@@ -10,6 +10,11 @@ secret_files:
     mode:  '0640'
     owner: 'root'
     group: 'root'
+  console:
+    path:  '/etc/pki/tls/certs/console.local1.iaas.intern.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
   star_api:
     path:  '/etc/pki/tls/certs/star.api.local1.iaas.intern.pem'
     mode:  '0640'
