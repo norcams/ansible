@@ -3,5 +3,8 @@
 # Run kickstart run to change hostname and puppet config
 FACTER_RUNMODE=kickstart puppet agent -t --certname {{ansible_host}}.mgmt.{{location}}.uhdc.no --server {{puppetmaster}}.mgmt.{{location}}.uhdc.no
 
+# Wait for user to press enter before we continue
+read -p "Press enter to continue"
+
 # Run normal puppet run
 puppet agent -t
