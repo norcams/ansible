@@ -3,5 +3,7 @@
   user: iaas
   serial: "100%"
   tasks:
+  - name: check for unfinished transactions
+    shell: test -z $(find /var/lib/yum -maxdepth 1 -type f -name 'transaction-all*' -not -name '*disabled' -printf .)
   - name: check update
     shell: /usr/bin/yum clean all &> /dev/null && /usr/bin/yum check-update &> /dev/null
