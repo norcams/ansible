@@ -1,0 +1,46 @@
+# Example:
+#
+# sudo ansible-playbook -e "hosts=test02-leaf-01" lib/cumulus_bootstrap.yaml
+#
+# Last verified: 2018-01-16 (ansible version 2.3.1.0)
+#
+- hosts: "{{ hosts }}"
+  tasks:
+    - name: Write bash script to host
+      template:
+        src: '../templates/reconfig_puppet_debian.j2'
+        dest: '/tmp/reconfigure_puppet.sh'
+        mode: '0755'
+
+#    - command: dpkg -l python-apt || apt-get -y install python-apt
+#      ignore_errors: true
+#    - name: Remove old puppet packages
+#
+#      apt:
+#        state:  absent
+#        name:   "{{item}}"
+#      with_items:
+#        - puppet-agent
+#        - puppet
+#    - name: Autoremove unused packages
+#      apt:
+#        autoremove: yes
+#    - name: Remove old directories
+#      file:
+#        state: absent
+#        name:  "{{item}}"
+#      with_items:
+#        - /etc/puppet
+#        - /var/lib/puppet
+#        - /etc/puppetlabs/puppet/ssl
+#    - name: Install puppetlabs repo package
+#      apt:
+#        - deb: http://apt.puppetlabs.com/puppetlabs-release-pc1-wheezy.deb
+#    - name: Install puppet agent
+#      apt:
+#        name: puppet-agent=1.10.9
+#        update_cache: yes
+#    - name: Remove puppetlabs repo package
+#      apt:
+#        state: absent
+#        name: puppetlabs-release-pc1
