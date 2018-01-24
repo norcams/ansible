@@ -13,13 +13,10 @@ rm -rf /etc/puppet
 apt-get update
 apt-get -y upgrade
 
-# Install puppet repo PC1
-wget -O /tmp/puppetlabs-release-pc1-wheezy.deb http://apt.puppetlabs.com/puppetlabs-release-pc1-wheezy.deb
-dpkg -i /tmp/puppetlabs-release-pc1-wheezy.deb
-apt-get update
-
-apt-get -y install puppet-agent
-apt-get -y purge puppetlabs-release-pc1
+# Install puppet-agent
+arch=$(dpkg --print-architecture)
+wget -O /tmp/puppet-agent_1.10.9-1wheezy_${arch}.deb https://download.iaas.uio.no/uh-iaas/aptrepo/pool/main/p/puppet-agent/puppet-agent_1.10.9-1wheezy_${arch}.deb
+dpkg -i /tmp/puppet-agent_1.10.9-1wheezy_${arch}.deb
 
 FACTER_RUNMODE=bootstrap ${puppet_bin} agent -t --certname=${certname} --server puppet.${domain} --waitforcert 120
 ${puppet_bin} agent -t
