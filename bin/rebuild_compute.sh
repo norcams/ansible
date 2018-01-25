@@ -45,4 +45,4 @@ sudo ansible-playbook -e "hosts=${host} patchfile=${HOME}/ansible/files/patches/
 sudo ansible-playbook -e "hosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
 sudo ansible-playbook -e "hosts=${host} name=openstack-nova-metadata-api.service" lib/systemd_restart.yaml
 sudo ansible-playbook -e "hosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
-
+sudo ansible-playbook -e "hosts=${host}" lib/downgrade_etcd.yaml
