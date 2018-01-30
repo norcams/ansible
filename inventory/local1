@@ -17,6 +17,7 @@ local1-monitor
 local1-mq
 local1-network
 local1-novactrl
+local1-object
 local1-proxy
 local1-volume
 
@@ -52,7 +53,6 @@ local1-builder-01
 
 [local1-compute]
 local1-compute-01
-local1-compute-02
 
 [local1-console]
 local1-console-01
@@ -60,6 +60,7 @@ local1-console-01
 [local1-controller]
 local1-controller-01
 local1-controller-02
+local1-controller-03
 
 [local1-dashboard]
 local1-dashboard-01
@@ -94,6 +95,11 @@ local1-network-01
 
 [local1-novactrl]
 local1-novactrl-01
+
+[local1-object]
+local1-object-01
+local1-object-02
+local1-object-03
 
 [local1-proxy]
 local1-proxy-01
