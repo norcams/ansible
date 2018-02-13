@@ -107,6 +107,7 @@ test01-nat-01
 
 [test01-network]
 test01-network-01
+test01-network-02
 
 [test01-novactrl]
 test01-novactrl-01
