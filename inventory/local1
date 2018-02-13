@@ -20,6 +20,7 @@ local1-novactrl
 local1-object
 local1-proxy
 local1-volume
+local1-metric
 
 [local1-nodes:children]
 local1-access
@@ -38,6 +39,10 @@ local1-network
 local1-novactrl
 local1-proxy
 local1-volume
+local1-metric
+
+[local1-metric]
+local1-metric-01
 
 [local1-access]
 local1-access-01
