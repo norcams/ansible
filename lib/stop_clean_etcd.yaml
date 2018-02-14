@@ -1,0 +1,8 @@
+# Stop etcd and remove old temporary dir created by Puppet 3
+#
+- hosts: "{{ hosts }}"
+  tasks:
+    - name: Stop etcd
+      service: name=etcd state=stopped
+    - name: Remove old tmp dir
+      file: name='/var/lib/etcd/.etcd' state=absent
