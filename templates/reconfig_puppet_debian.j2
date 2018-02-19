@@ -18,5 +18,8 @@ arch=$(dpkg --print-architecture)
 wget -O /tmp/puppet-agent_1.10.9-1wheezy_${arch}.deb https://download.iaas.uio.no/uh-iaas/aptrepo/pool/main/p/puppet-agent/puppet-agent_1.10.9-1wheezy_${arch}.deb
 dpkg -i /tmp/puppet-agent_1.10.9-1wheezy_${arch}.deb
 
-FACTER_RUNMODE=bootstrap ${puppet_bin} agent -t --certname=${certname} --server puppet.${domain} --waitforcert 120
+# Enable puppet agent if disabled
+${puppet_bin} agent --enable
+
+FACTER_RUNMODE=kickstart ${puppet_bin} agent -t --certname=${certname} --server puppet.${domain} --waitforcert 120
 ${puppet_bin} agent -t
