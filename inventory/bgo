@@ -14,6 +14,7 @@ bgo-image
 bgo-leaf
 bgo-logger
 bgo-login
+bgo-mgmt
 bgo-monitor
 bgo-mq
 bgo-nat
@@ -72,7 +73,6 @@ bgo-compute-06
 bgo-compute-07
 bgo-compute-08
 bgo-compute-09
-bgo-compute-10
 
 [bgo-console]
 bgo-console-01
@@ -107,6 +107,9 @@ bgo-logger-01
 
 [bgo-login]
 bgo-login-01
+
+[bgo-mgmt]
+bgo-mgmt-01
 
 [bgo-monitor]
 bgo-monitor-01
