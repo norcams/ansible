@@ -15,11 +15,13 @@ bgo-leaf
 bgo-logger
 bgo-login
 bgo-mgmt
+bgo-metric
 bgo-monitor
 bgo-mq
 bgo-nat
 bgo-network
 bgo-novactrl
+bgo-ns
 bgo-object
 bgo-proxy
 bgo-status
@@ -151,3 +153,9 @@ bgo-storage-05
 [bgo-volume]
 bgo-volume-01
 
+[bgo-metric]
+bgo-metric-01
+
+[bgo-ns]
+bgo-ns-01
+bgo-ns-02

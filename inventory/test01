@@ -13,11 +13,13 @@ test01-identity
 test01-image
 test01-leaf
 test01-logger
+test01-metric
 test01-monitor
 test01-mq
 test01-nat
 test01-network
 test01-novactrl
+test01-ns
 test01-proxy
 test01-rpmbuilder
 test01-status
@@ -146,3 +148,7 @@ test01-resolver-02
 
 [test01-name]
 test01-name-01
+test01-ns-02
+
+[test01-metric]
+test01-metric-01
