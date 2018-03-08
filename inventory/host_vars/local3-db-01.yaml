@@ -1,0 +1,13 @@
+---
+secret_files:
+  cert:
+    path:  '/etc/pki/tls/certs/db01.iaas.intern.cert.pem'
+    mode:  '0644'
+    owner: 'root'
+    group: 'root'
+  key:
+    path:  '/etc/pki/tls/private/db01.iaas.intern.key.pem'
+    mode:  '0440'
+    owner: 'root'
+    #group: 'root'
+    group: 'mysql'
