@@ -5,13 +5,19 @@
 # * hosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "hosts=test01-admin-01" lib/upgrade/foreman.yaml
+# sudo ansible-playbook -e "hosts=test01-admin-01 foreman_version=1.15" lib/upgrade/foreman.yaml
 #
-# Last verified: 2018-02-27 (ansible version 2.3.1.0)
+# Last verified: 2018-03-20 (ansible version 2.3.1.0)
 #
 - hosts: "{{ hosts }}"
   gather_facts: no
   tasks:
+    - name: 'Import gpg key for repo'
+      rpm_key:
+        state: present
+        key: "http://yum.theforeman.org/releases/{{foreman_version}}/RPM-GPG-KEY-foreman"
+    - name: 'Make sure puppet are enabled'
+      command: "puppet agent --enable"
     - name: 'Puppet run to update repo'
       command: "puppet agent --onetime --no-daemonize"
       ignore_errors: yes
@@ -20,11 +26,7 @@
     - name: 'Disable Puppet Agent'
       command: "puppet agent --disable"
     - name: 'Yum update'
-      yum: name={{item}} state=latest update_cache=yes
-      with_items:
-        - ruby*
-        - tfm*
-        - foreman*
+      yum: name=* state=latest update_cache=yes
     - name: 'Migrate database'
       command: "foreman-rake db:migrate"
     - name: 'Update database'
