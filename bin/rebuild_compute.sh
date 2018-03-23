@@ -5,7 +5,7 @@ function usage {
   echo ""
   echo "This will rebuild a compute host."
   echo "You will need the HOSTNAME (not FQDN) of the host"
-  echo "./${0} <location-compute-number> --force"
+  echo "./${0} <location-compute-number>"
   echo ""
   exit 1
 }
@@ -13,17 +13,11 @@ function usage {
 if ! [[ ${1} =~ ^[A-Za-z0-9._]+[-]+["compute"]+[-]+[A-Za-z0-9._] ]]; then
   echo "Usage:"
   echo "You will need the compute HOSTNAME (not FQDN) of the host"
-  echo "./${0} <location-compute-number> --force"
+  echo "./${0} <location-compute-number>"
   echo ""
   exit 1
 fi
-if [ $# -ne 2 ]; then
-  usage
-fi
 
-if [ "${2}" != '--force' ]; then
-  usage
-fi
 host=$1
 
 # Use hostname not fqdn
@@ -33,6 +27,12 @@ fi
 
 IFS='-' read -r -a hostname <<< "$host"
 location=${hostname[0]}
+
+read -p "Are your sure you want to rebuild ${host}? " -n 1 -r
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+  exit 1
+fi
+echo
 
 sudo ansible-playbook -e "hosts=${location}-proxy-01 compute_host=${host}" lib/prepare_compute_reinstall.yaml
 sudo ansible-playbook -e "hosts=${host}" lib/reboot.yaml
