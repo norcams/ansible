@@ -2,16 +2,18 @@
 # This will use himlarcli to prepare a compute host for reinstall
 # {{ hosts }} should be a host with himlarcli installed
 # {{ compute_host }} should be the compute host
-# Verified: This will run under ansible 2.1
+# 
+# Last verified: 2018-03-23 (ansible version 2.4.2.0)
 #
 - hosts: "{{ hosts }}"
   tasks:
-#    - name: Stop all instances on compute node
-#      command: bin/python host.py {{compute_host}} stop chdir={{himlarcli_path}}
-#    - name: Wait 3 minutes for the instances to turn off
-#      pause: minutes=3
-#    - name: Delete all instances on compute node
-#      shell: echo yes | {{himlarcli_path}}/bin/python {{himlarcli_path}}/host.py {{compute_host}} delete
+    - name: "Check for instances on {{ hosts }}"
+      virt: command=list_vms
+      register: instances
+    #- debug: var=instances.list_vms
+    - fail:
+        msg: "{{hosts}} has running instances!!!"
+      when: instances.list_vms | length > 0
     - name: Set foreman to rebuild
       command: bin/python rebuild.py {{compute_host}} chdir={{himlarcli_path}}
       when: location != 'vagrant'
