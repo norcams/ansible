@@ -1,0 +1,15 @@
+#
+# This checks for running instances on a hypervisor.
+# {{ hosts }} should be the compute host
+#
+# Last verified: 2018-03-23 (ansible version 2.4.2.0)
+#
+- hosts: "{{ hosts }}"
+  tasks:
+    - name: "Check for instances on {{ hosts }}"
+      virt: command=list_vms
+      register: instances
+    #- debug: var=instances.list_vms
+    - fail:
+        msg: "{{hosts}} has running instances!!!"
+      when: instances.list_vms | length > 0

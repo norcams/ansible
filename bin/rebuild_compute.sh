@@ -34,6 +34,7 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 echo
 
+sudo ansible-playbook -e "hosts=${host}" lib/check_for_running_instances.yaml || exit 1
 sudo ansible-playbook -e "hosts=${location}-proxy-01 compute_host=${host}" lib/prepare_compute_reinstall.yaml
 sudo ansible-playbook -e "hosts=${host}" lib/reboot.yaml
 sudo ansible-playbook -e "hosts=${location}-login host=${host}" lib/ssh_host_keys.yaml
