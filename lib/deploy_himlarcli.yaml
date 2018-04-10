@@ -14,15 +14,21 @@
       - python-virtualenv
       - gcc
       - openldap-devel
+      - openssl-devel
       - PyYAML
-      - python-netifaces
-      - python-statsd
     - name: Update norcams/himlarcli git repo
       git: 
         repo:     "{{himlarcli_repo}}" 
         version:  "{{himlarcli_ref}}"
         dest:     "{{himlarcli_path}}"
         force:    "{{himlarcli_force_update}}"
+    - name: Update setuptools
+      pip: 
+        state: latest
+        name: setuptools
+        virtualenv:               "{{himlarcli_path}}"
+        chdir:                    "{{himlarcli_path}}"
+        virtualenv_site_packages: "yes"
     - name: Install python modules with pip
       pip: 
         virtualenv:               "{{himlarcli_path}}"
@@ -34,5 +40,5 @@
     - name: Copy config.ini from remote host
       fetch: src=/etc/himlarcli/config.ini dest={{himlarcli_path}}/config.ini.{{location}} flat=yes
       when: '"login" not in inventory_hostname'
-    - name: Run test/deploy.sh
-      command: "{{himlarcli_path}}/tests/deploy.sh"
+#    - name: Run test/deploy.sh
+#      command: "{{himlarcli_path}}/tests/deploy.sh"
