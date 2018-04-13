@@ -18,8 +18,10 @@ osl-monitor
 osl-mq
 osl-nat
 osl-network
+osl-ns
 osl-novactrl
 osl-proxy
+osl-resolver
 osl-status
 osl-storage
 osl-volume
@@ -40,7 +42,9 @@ osl-monitor
 osl-mq
 osl-network
 osl-novactrl
+osl-ns
 osl-proxy
+osl-resolver
 osl-status
 osl-volume
 
@@ -122,8 +126,16 @@ osl-network-03
 [osl-novactrl]
 osl-novactrl-01
 
+[osl-ns]
+osl-ns-01
+osl-ns-02
+
 [osl-proxy]
 osl-proxy-01
+
+[osl-resolver]
+osl-resolver-01
+osl-resolver-02
 
 [osl-status]
 osl-status-01

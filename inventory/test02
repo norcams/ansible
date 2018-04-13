@@ -132,6 +132,7 @@ test02-volume-01
 
 [test02-ns]
 test02-ns-01
+test02-ns-02
 
 [test02-resolver]
 test02-resolver-01

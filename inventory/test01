@@ -25,7 +25,6 @@ test01-rpmbuilder
 test01-status
 test01-storage
 test01-volume
-test01-ns
 test01-resolver
 test01-name
 
@@ -141,14 +140,11 @@ test01-volume-01
 
 [test01-ns]
 test01-ns-01
+test01-ns-02
 
 [test01-resolver]
 test01-resolver-01
 test01-resolver-02
-
-[test01-name]
-test01-name-01
-test01-ns-02
 
 [test01-metric]
 test01-metric-01

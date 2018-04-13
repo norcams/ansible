@@ -24,6 +24,7 @@ bgo-novactrl
 bgo-ns
 bgo-object
 bgo-proxy
+bgo-resolver
 bgo-status
 bgo-storage
 bgo-volume
@@ -44,7 +45,9 @@ bgo-monitor
 bgo-mq
 bgo-network
 bgo-novactrl
+bgo-ns
 bgo-proxy
+bgo-resolver
 bgo-status
 bgo-volume
 
@@ -139,6 +142,10 @@ bgo-object-05
 
 [bgo-proxy]
 bgo-proxy-01
+
+[bgo-resolver]
+bgo-resolver-01
+bgo-resolver-02
 
 [bgo-status]
 bgo-status-01
