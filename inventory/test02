@@ -24,7 +24,6 @@ test02-storage
 test02-volume
 test02-ns
 test02-resolver
-test02-name
 
 [test02-nodes:children]
 test02-access
@@ -47,7 +46,6 @@ test02-status
 test02-volume
 test02-ns
 test02-resolver
-test02-name
 
 [test02-access]
 test02-access-01
@@ -137,6 +135,3 @@ test02-ns-02
 [test02-resolver]
 test02-resolver-01
 test02-resolver-02
-
-[test02-name]
-test02-name-01
