@@ -14,8 +14,8 @@ bgo-image
 bgo-leaf
 bgo-logger
 bgo-login
-bgo-mgmt
 bgo-metric
+bgo-mgmt
 bgo-monitor
 bgo-mq
 bgo-nat
@@ -27,6 +27,7 @@ bgo-proxy
 bgo-resolver
 bgo-status
 bgo-storage
+bgo-telemetry
 bgo-volume
 
 [bgo-nodes:children]
@@ -41,14 +42,17 @@ bgo-db
 bgo-identity
 bgo-image
 bgo-logger
+bgo-metric
 bgo-monitor
 bgo-mq
+bgo-nat
 bgo-network
 bgo-novactrl
 bgo-ns
 bgo-proxy
 bgo-resolver
 bgo-status
+bgo-telemetry
 bgo-volume
 
 [bgo-access]
@@ -114,6 +118,9 @@ bgo-logger-01
 [bgo-login]
 bgo-login-01
 
+[bgo-metric]
+bgo-metric-01
+
 [bgo-mgmt]
 bgo-mgmt-01
 
@@ -124,7 +131,7 @@ bgo-monitor-01
 bgo-mq-01
 
 [bgo-nat]
-bgo-nat-01
+bgo-nat-linux-01
 
 [bgo-network]
 bgo-network-01
@@ -133,6 +140,9 @@ bgo-network-03
 
 [bgo-novactrl]
 bgo-novactrl-01
+
+[bgo-ns]
+bgo-ns-01
 
 [bgo-object]
 bgo-object-01
@@ -160,12 +170,9 @@ bgo-storage-05
 bgo-storage-06
 bgo-storage-07
 
+[bgo-telemetry]
+bgo-telemetry-01
+
 [bgo-volume]
 bgo-volume-01
 
-[bgo-metric]
-bgo-metric-01
-
-[bgo-ns]
-bgo-ns-01
-bgo-ns-02
