@@ -14,16 +14,18 @@ osl-image
 osl-leaf
 osl-logger
 osl-login
+osl-metric
 osl-monitor
 osl-mq
 osl-nat
 osl-network
-osl-ns
 osl-novactrl
+osl-ns
 osl-proxy
 osl-resolver
 osl-status
 osl-storage
+osl-telemetry
 osl-volume
 
 [osl-nodes:children]
@@ -38,14 +40,17 @@ osl-db
 osl-identity
 osl-image
 osl-logger
+osl-metric
 osl-monitor
 osl-mq
+osl-nat
 osl-network
 osl-novactrl
 osl-ns
 osl-proxy
 osl-resolver
 osl-status
+osl-telemetry
 osl-volume
 
 [osl-access]
@@ -109,6 +114,9 @@ osl-logger-01
 [osl-login]
 osl-login-01
 
+[osl-metric]
+osl-metric-01
+
 [osl-monitor]
 osl-monitor-01
 
@@ -116,7 +124,7 @@ osl-monitor-01
 osl-mq-01
 
 [osl-nat]
-osl-nat-01
+osl-nat-linux-01
 
 [osl-network]
 osl-network-01
@@ -128,7 +136,6 @@ osl-novactrl-01
 
 [osl-ns]
 osl-ns-01
-osl-ns-02
 
 [osl-proxy]
 osl-proxy-01
@@ -146,6 +153,9 @@ osl-storage-02
 osl-storage-03
 osl-storage-04
 osl-storage-05
+
+[osl-telemetry]
+osl-telemetry-01
 
 [osl-volume]
 osl-volume-01
