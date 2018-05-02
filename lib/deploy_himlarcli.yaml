@@ -16,6 +16,7 @@
       - openldap-devel
       - openssl-devel
       - PyYAML
+      - libffi-devel
     - name: Update norcams/himlarcli git repo
       git: 
         repo:     "{{himlarcli_repo}}" 
