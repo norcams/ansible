@@ -1,0 +1,17 @@
+# check /etc/yum.repos.d/epel.repo for dual repo configurations
+# baseurl is correct, metalink should not be active
+- hosts: "{{ hosts }}"
+  gather_facts: False
+  user: iaas
+  serial: "100%"
+  tasks:
+  - name: read repo definition lines
+    shell: cat /etc/yum.repos.d/epel.repo | grep ^metalink
+    register: repo_settings
+    failed_when: False
+    changed_when: False
+
+  - name: task which only happens if the offending metalink line exists
+    fail: 
+        msg: "metalink is defined on {{ inventory_hostname }} like {{ repo_settings.stdout }}"
+    when: repo_settings.stdout.find('metalink') != -1
