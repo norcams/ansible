@@ -26,6 +26,7 @@ osl-resolver
 osl-status
 osl-storage
 osl-telemetry
+osl-torack
 osl-volume
 
 [osl-nodes:children]
@@ -103,8 +104,6 @@ osl-identity-01
 osl-image-01
 
 [osl-leaf]
-osl-leaf-01
-osl-leaf-02
 osl-leaf-03
 osl-leaf-04
 
@@ -156,6 +155,10 @@ osl-storage-05
 
 [osl-telemetry]
 osl-telemetry-01
+
+[osl-torack]
+osl-torack-01
+osl-torack-02
 
 [osl-volume]
 osl-volume-01

@@ -11,7 +11,6 @@ test01-dashboard
 test01-db
 test01-identity
 test01-image
-test01-leaf
 test01-logger
 test01-metric
 test01-monitor
@@ -26,6 +25,7 @@ test01-status
 test01-storage
 test01-volume
 test01-resolver
+test01-torack
 
 [test01-nodes:children]
 test01-access
@@ -95,9 +95,6 @@ test01-identity-01
 [test01-image]
 test01-image-01
 
-[test01-leaf]
-test01-leaf-01
-
 [test01-logger]
 test01-logger-01
 
@@ -146,3 +143,6 @@ test01-resolver-02
 
 [test01-metric]
 test01-metric-01
+
+[test01-torack]
+test01-torack-01
