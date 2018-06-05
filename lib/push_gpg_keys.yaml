@@ -1,0 +1,11 @@
+- hosts: "{{ hosts }}"
+  vars:
+    repo_dir: '/opt/repo/secrets/nodes/'
+  tasks:
+    - name: copy secret files to host
+      copy: src={{repo_dir}}/{{ansible_hostname}}/token-secret-key.gpg dest=/tmp/token-secret-key.gpg owner={{item.value.owner}} group={{item.value.group}} mode={{item.value.mode}}
+      with_dict: "{{ secret_files }}"
+    - name: import gpg-key
+      shell: gpg --import /tmp/token-secret-key.gpg
+    - name: delete after importing
+      file: name=/tmp/token-secret-key.gpg state=absent
