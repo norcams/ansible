@@ -11,7 +11,6 @@ test02-dashboard
 test02-db
 test02-identity
 test02-image
-test02-leaf
 test02-logger
 test02-monitor
 test02-nat
@@ -24,6 +23,7 @@ test02-storage
 test02-volume
 test02-ns
 test02-resolver
+test02-torack
 
 [test02-nodes:children]
 test02-access
@@ -91,9 +91,6 @@ test02-identity-01
 [test02-image]
 test02-image-01
 
-[test02-leaf]
-test02-leaf-01
-
 [test02-logger]
 test02-logger-01
 
@@ -135,3 +132,6 @@ test02-ns-02
 [test02-resolver]
 test02-resolver-01
 test02-resolver-02
+
+[test02-torack]
+test02-torack-01
