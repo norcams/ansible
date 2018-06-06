@@ -5,11 +5,10 @@
     - name: copy secret files to host
       copy: src={{repo_dir}}/{{ansible_hostname}}/token-secret-key.gpg dest=/tmp/token-secret-key.gpg owner=root group=root mode=600
     - name: check if there already is a token key
-      shell: gpg --list-secret-keys --with-colons 'UH-IaaS Token Distributor' 2> /dev/null | awk -F':' '/^sec:/ { print $5 }'
+      shell: gpg --list-secret-keys --fingerprint --with-colon 'UH-IaaS Token Distributor' | awk -F':' '/^fpr:/ { print $10 }'
       register: token_key_id
-    - debug: msg={{ token_key_id }}
     - name: delete existing gpg-key if it exists
-      shell: gpg --delete-secret-keys {{token_key_id.stdout}}
+      shell: gpg --batch --yes --delete-secret-keys {{token_key_id.stdout}}
       when: token_key_id.stdout | length > 0
     - name: import gpg-key
       shell: gpg --import /tmp/token-secret-key.gpg
