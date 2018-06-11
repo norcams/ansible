@@ -1,3 +1,5 @@
 ---
 location: test01
 domain: mgmt.test01.uhdc.no
+himlar_repo: https://github.com/norcams/himlar.git
+himlar_ref: ocata/master
