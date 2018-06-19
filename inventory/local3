@@ -66,6 +66,7 @@ local3-cephmon-03
 
 [local3-compute]
 local3-compute-01
+local3-compute-02
 
 [local3-console]
 local3-console-01
