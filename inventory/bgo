@@ -24,6 +24,7 @@ bgo-novactrl
 bgo-ns
 bgo-object
 bgo-proxy
+bgo-report
 bgo-resolver
 bgo-status
 bgo-storage
@@ -51,6 +52,7 @@ bgo-network
 bgo-novactrl
 bgo-ns
 bgo-proxy
+bgo-report
 bgo-resolver
 bgo-status
 bgo-telemetry
@@ -131,6 +133,7 @@ bgo-mq-01
 
 [bgo-nat]
 bgo-nat-linux-01
+bgo-nat-linux-02
 
 [bgo-network]
 bgo-network-01
@@ -152,6 +155,9 @@ bgo-object-05
 
 [bgo-proxy]
 bgo-proxy-01
+
+[bgo-report]
+bgo-report-01
 
 [bgo-resolver]
 bgo-resolver-01

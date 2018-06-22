@@ -1,0 +1,23 @@
+#
+# Deploy norcams/report-utils /opt/report-utils
+# {{ hosts }} should be the report node
+#
+# Last verified: 2018-06-22 (ansible version 2.4.2.0)
+#
+- hosts: "{{ hosts }}"
+  tasks:
+    - name:       Create report-utils directory
+      file:
+        state:    directory
+        path:     /opt/report-utils
+        mode:     0755
+    - name:       Deploy git repo
+      git:
+        repo:     https://github.com/norcams/report-utils
+        version:  master
+        dest:     /opt/report-utils
+        force:    yes
+    - name:       Remove git files from directory
+      file:
+        state:    absent
+        path:     /opt/report-utils/.git
