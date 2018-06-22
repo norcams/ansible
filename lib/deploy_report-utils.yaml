@@ -17,7 +17,3 @@
         version:  master
         dest:     /opt/report-utils
         force:    yes
-    - name:       Remove git files from directory
-      file:
-        state:    absent
-        path:     /opt/report-utils/.git
