@@ -4,7 +4,7 @@
 function usage {
   echo
   echo 'Run this script to patch the designate nova notification_handler'
-  echo 'bin/patch-dashboard.sh <location>-dashboard-01'
+  echo 'bin/patch-designate.sh <location>-dns-01'
   echo
   exit 1
 }
