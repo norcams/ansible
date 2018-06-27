@@ -1,0 +1,39 @@
+- hosts: "{{ hosts }}"
+  pre_tasks:
+  - yum:
+      name: "patch"
+      state: present
+
+  tasks:
+  - patch:
+      src:     "~/ansible/files/patches/designate_notification_handler.diff"
+      basedir: "/usr/lib/python2.7/site-packages/designate/notification_handler"
+      strip:   1
+    notify:
+      - restart designate-api
+      - restart designate-central
+      - restart designate-mdns
+      - restart designate-pool-manager
+      - restart designate-sink
+
+  handlers:
+  - name: restart designate-api
+    systemd:
+      name: "designate-api"
+      state: restarted
+  - name: restart designate-central
+    systemd:
+      name:  designate-central
+      state: restarted
+  - name: restart designate-mdns
+    systemd:
+      name: "designate-mdns"
+      state: restarted
+  - name: restart designate-pool-manager
+    systemd:
+      name: "designate-pool-manager"
+      state: restarted
+  - name: restart designate-sink
+    systemd:
+      name: "designate-sink"
+      state: restarted

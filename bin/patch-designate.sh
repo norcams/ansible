@@ -15,5 +15,4 @@ if [ $# -ne 1 ]; then
   usage
 fi
 
-sudo ansible-playbook -e "hosts=${host} patchfile=${HOME}/ansible/files/patches/designate_notification_handler.diff basedir=/usr/lib/python2.7/site-packages/designate" lib/patch.yaml
-sudo ansible-playbook -e "hosts=${host} name=httpd" lib/systemd_restart.yaml
+sudo ansible-playbook -e "hosts=${host}" lib/designate_patch_notification_handler.yaml

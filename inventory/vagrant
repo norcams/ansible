@@ -1,5 +1,6 @@
 [vagrant-identity]
 vagrant-identity-01 ansible_host=172.31.0.81
+vagrant-dns-01      ansible_host=172.31.0.97
 
 [vagrant:children]
 vagrant-identity
