@@ -1,0 +1,57 @@
+diff -ru ORIG_notification_handler/base.py notification_handler/base.py
+--- ORIG_notification_handler/base.py	2017-10-27 10:37:50.000000000 +0200
++++ notification_handler/base.py	2018-05-31 13:07:54.741088713 +0200
+@@ -94,6 +94,9 @@
+     default_formatv4 = ('%(hostname)s.%(domain)s',)
+     default_formatv6 = ('%(hostname)s.%(domain)s',)
+ 
++    shared_formatv4 = ('%(hostname)s.%(project)s.%(zone)s',)
++    shared_formatv6 = ('%(hostname)s.%(project)s.%(zone)s',)
++
+     def _get_ip_data(self, addr_dict):
+         ip = addr_dict['address']
+         version = addr_dict['version']
+@@ -126,6 +129,16 @@
+             self.default_formatv6
+         )
+ 
++    def _get_shared_formatv4(self):
++        return (
++            self.shared_formatv4
++        )
++
++    def _get_shared_formatv6(self):
++        return (
++            self.shared_formatv6
++        )
++
+     def _create(self, addresses, extra, zone_id, managed=True,
+                 resource_type=None, resource_id=None):
+         """
+@@ -152,6 +165,8 @@
+         LOG.debug('Event data: %s', data)
+         data['zone'] = zone['name']
+ 
++        project_name = data['project']
++
+         context = DesignateContext().elevated()
+         context.all_tenants = True
+         context.edit_managed_records = True
+@@ -161,9 +176,15 @@
+             event_data.update(self._get_ip_data(addr))
+ 
+             if addr['version'] == 4:
+-                format = self._get_formatv4()
++                if re.match('^(DEMO|PRIVATE)', project_name):
++                    format = self._get_formatv4()
++                else:
++                    format = self._get_shared_formatv4()
+             else:
+-                format = self._get_formatv6()
++                if re.match('^(DEMO|PRIVATE)', project_name):
++                    format = self._get_formatv6()
++                else:
++                    format = self._get_shared_formatv6()
+ 
+             for fmt in format:
+                 recordset_values = {
