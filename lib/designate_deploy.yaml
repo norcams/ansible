@@ -3,36 +3,32 @@
   vars:
     openrc: '/root/openrc'
     keystonerc: '/root/keystonerc_admin'
-
-  pre_tasks:
-    - name: Get node
-      shell: "hostname | cut -d- -f2"
-      register: node
+    role: "{{ ansible_hostname | regex_replace('^.+?-(.*?)-.+$', '\\1') }}"
 
   tasks:
     - name: Update pools configuration
       shell: "source {{openrc}} && designate-manage pool update --file /etc/designate/pools.yaml"
-      when: node.stdout == "dns"
+      when: role == "dns"
 
     - name: Check if the zone is present
       shell: "source {{keystonerc}} && openstack zone show customer.{{location}}.uh-iaas.no. -c id -f value"
       register: zone_present
       ignore_errors: yes
-      when: node.stdout == "identity"
+      when: role == "identity"
 
     - name: Create the admin zone
       shell: "source {{keystonerc}} && openstack zone create customer.{{location}}.uh-iaas.no. --email support@uh-iaas.no"
       when:
-        - node.stdout == "identity"
+        - role == "identity"
         - zone_present.rc == 1
 
     - name: Get the zone ID
       shell: "source {{keystonerc}} && openstack zone show customer.{{location}}.uh-iaas.no. -c id -f value"
       register: zone_id
-      when: node.stdout == "identity"
+      when: role == "identity"
 
     - name: Configure zone ID for handler:nova_fixed
-      with_items: "{{ identity_node }}"
+      with_items: "{{location}}-identity-01"
       ini_file:
         path: /etc/designate/designate.conf
         section: handler:nova_fixed
@@ -46,7 +42,7 @@
         - restart designate-mdns
         - restart designate-pool-manager
         - restart designate-sink
-      when: node.stdout == "dns"
+      when: role == "dns"
 
     - patch:
         src: "~/ansible/files/patches/designate_notification_handler.diff"
@@ -58,31 +54,31 @@
         - restart designate-mdns
         - restart designate-pool-manager
         - restart designate-sink
-      when: node.stdout == "dns"
+      when: role == "dns"
 
   handlers:
     - name: restart designate-api
       systemd:
         name: "designate-api"
         state: restarted
-      when: node.stdout == "dns"
+      when: role == "dns"
     - name: restart designate-central
       systemd:
         name:  designate-central
         state: restarted
-      when: node.stdout == "dns"
+      when: role == "dns"
     - name: restart designate-mdns
       systemd:
         name: "designate-mdns"
         state: restarted
-      when: node.stdout == "dns"
+      when: role == "dns"
     - name: restart designate-pool-manager
       systemd:
         name: "designate-pool-manager"
         state: restarted
-      when: node.stdout == "dns"
+      when: role == "dns"
     - name: restart designate-sink
       systemd:
         name: "designate-sink"
         state: restarted
-      when: node.stdout == "dns"
+      when: role == "dns"
