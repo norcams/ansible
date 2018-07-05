@@ -11,6 +11,8 @@
 #
 # Last verified: 2017-08-14 (ansible version 2.3.1.0)
 #
+# Run this to purge epel packages
+- import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ hosts }}"
   gather_facts: no
   tasks:
@@ -27,10 +29,13 @@
       ignore_errors: yes
     - name: 'Stop cinder API service'
       systemd: name=openstack-cinder-api state=stopped
+      ignore_errors: yes
     - name: 'Stop cinder scheduler service'
       systemd: name=openstack-cinder-scheduler state=stopped
+      ignore_errors: yes
     - name: 'Stop cinder volume service'
       systemd: name=openstack-cinder-volume state=stopped
+      ignore_errors: yes
     - name: Purge old package
       yum: name=openstack-cinder state=absent
     - name: 'Remove /etc/cinder/'

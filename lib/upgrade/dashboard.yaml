@@ -11,6 +11,8 @@
 #
 # Last verified: 2017-08-14 (ansible version 2.3.1.0)
 #
+# Run this to purge epel packages
+#- import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ hosts }}"
   gather_facts: no
   tasks:

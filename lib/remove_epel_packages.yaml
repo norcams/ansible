@@ -1,4 +1,4 @@
-- hosts: "{{ myhosts | default('all') }}"
+- hosts: "{{ hosts | default('all') }}"
   tasks:
     - name:     Find packages
       shell:  yum list installed | grep '@epel' | awk '{print $1}'
@@ -9,3 +9,4 @@
         state: absent
         name: "{{ item }}"
       with_items: "{{ packages.stdout_lines }}"
+      ignore_errors: yes
