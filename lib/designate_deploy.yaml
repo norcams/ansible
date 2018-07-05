@@ -14,12 +14,6 @@
       shell: "source {{openrc}} && designate-manage pool update --file /etc/designate/pools.yaml"
       when: node.stdout == "dns"
 
-    - name: Install python2-designateclient
-      yum:
-        name: "python2-designateclient"
-        state: present
-      when: node.stdout == "identity"
-
     - name: Check if the zone is present
       shell: "source {{keystonerc}} && openstack zone show customer.{{location}}.uh-iaas.no. -c id -f value"
       register: zone_present
@@ -54,16 +48,10 @@
         - restart designate-sink
       when: node.stdout == "dns"
 
-    - name: Install patch
-      yum:
-        name: "patch"
-        state: present
-      when: node.stdout == "dns"
-
     - patch:
-        src:     "~/ansible/files/patches/designate_notification_handler.diff"
+        src: "~/ansible/files/patches/designate_notification_handler.diff"
         basedir: "/usr/lib/python2.7/site-packages/designate/notification_handler"
-        strip:   1
+        strip: 1
       notify:
         - restart designate-api
         - restart designate-central
