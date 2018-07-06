@@ -20,6 +20,8 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Enable puppet'
+      command: "puppet agent --enable"
     - name: 'Puppet kickstart runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
@@ -27,8 +29,10 @@
       ignore_errors: yes
     - name: 'Stop image api'
       systemd: name=openstack-glance-api state=stopped
+      ignore_errors: yes
     - name: 'Stop image registry'
       systemd: name=openstack-glance-registry state=stopped
+      ignore_errors: yes
     - name: Purge old package
       yum: name=openstack-glance state=absent
     - name: 'Remove /etc/glance/'
