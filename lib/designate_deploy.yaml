@@ -3,7 +3,7 @@
   vars:
     openrc: '/root/openrc'
     keystonerc: '/root/keystonerc_admin'
-    role: "{{ ansible_hostname | regex_replace('^.+?-(.*?)-.+$', '\\1') }}"
+    role: "{{ ansible_hostname | regex_replace('^.+?-(.+?)-.+$', '\\1') }}"
 
   tasks:
     - name: Update pools configuration
@@ -44,7 +44,8 @@
         - restart designate-sink
       when: role == "dns"
 
-    - patch:
+    - name: Patch Designate/Nova notification handler
+      patch:
         src: "~/ansible/files/patches/designate_notification_handler.diff"
         basedir: "/usr/lib/python2.7/site-packages/designate/notification_handler"
         strip: 1
