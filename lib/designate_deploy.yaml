@@ -65,7 +65,7 @@
       when: role == "dns"
     - name: restart designate-central
       systemd:
-        name:  designate-central
+        name: "designate-central"
         state: restarted
       when: role == "dns"
     - name: restart designate-mdns
