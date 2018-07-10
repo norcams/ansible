@@ -20,6 +20,8 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Enable puppet'
+      command: "puppet agent --enable"
     - name: 'Puppet kickstart runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
