@@ -31,6 +31,7 @@
       ignore_errors: yes
     - name: 'Stop neutron server'
       systemd: name=neutron-server state=stopped
+      ignore_errors: yes
     - name: Purge old packages
       yum: name=openstack-neutron state=absent
     - name: Purge old plugins
