@@ -9,7 +9,7 @@
 # Example:
 # sudo ansible-playbook -e "hosts=test01-volume-01" lib/upgrade/volume.yaml
 #
-# Last verified: 2017-08-14 (ansible version 2.3.1.0)
+# Last verified: 2018-08-11 (ansible version 2.4.2.0)
 #
 # Run this to purge epel packages
 - import_playbook: ../remove_epel_packages.yaml
@@ -22,6 +22,8 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Enable puppet'
+      command: "puppet agent --enable"
     - name: 'Puppet kickstart runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
@@ -29,6 +31,9 @@
       ignore_errors: yes
     - name: 'Stop cinder API service'
       systemd: name=openstack-cinder-api state=stopped
+      ignore_errors: yes
+    - name: 'Disable API service'
+      systemd: name=openstack-cinder-api state=disabled
       ignore_errors: yes
     - name: 'Stop cinder scheduler service'
       systemd: name=openstack-cinder-scheduler state=stopped
