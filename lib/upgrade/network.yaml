@@ -9,8 +9,10 @@
 # Example:
 # sudo ansible-playbook -e "hosts=test02-network-01" lib/upgrade/network.yaml
 #
-# Last verified: 2017-08-18 (ansible version 2.3.1.0)
+# Last verified: 2018-07-11 (ansible version 2.4.2.0)
 #
+# Run this to purge epel packages
+- import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ hosts }}"
   gather_facts: no
   tasks:
