@@ -11,6 +11,7 @@ test01-dashboard
 test01-db
 test01-identity
 test01-image
+test01-leaf
 test01-logger
 test01-metric
 test01-monitor
@@ -20,12 +21,12 @@ test01-network
 test01-novactrl
 test01-ns
 test01-proxy
-test01-rpmbuilder
+test01-resolver
 test01-status
 test01-storage
-test01-volume
-test01-resolver
+test01-telemetry
 test01-torack
+test01-volume
 
 [test01-nodes:children]
 test01-access
@@ -39,16 +40,19 @@ test01-db
 test01-identity
 test01-image
 test01-logger
+test01-metric
 test01-monitor
 test01-mq
+test01-nat
 test01-network
 test01-novactrl
-test01-proxy
-test01-rpmbuilder
-test01-status
-test01-volume
 test01-ns
+test01-proxy
 test01-resolver
+test01-status
+test01-telemetry
+test01-torack
+test01-volume
 
 [test01-access]
 test01-access-01
@@ -80,7 +84,6 @@ test01-console-01
 test01-controller-01
 test01-controller-02
 test01-controller-03
-test01-controller-04
 
 [test01-dashboard]
 test01-dashboard-01
@@ -91,12 +94,19 @@ test01-db-02
 
 [test01-identity]
 test01-identity-01
+test01-identity-02
 
 [test01-image]
 test01-image-01
 
+[test01-leaf]
+test01-leaf-01
+
 [test01-logger]
 test01-logger-01
+
+[test01-metric]
+test01-metric-01
 
 [test01-monitor]
 test01-monitor-01
@@ -105,7 +115,7 @@ test01-monitor-01
 test01-mq-01
 
 [test01-nat]
-test01-nat-01
+test01-nat-linux-01
 
 [test01-network]
 test01-network-01
@@ -114,35 +124,31 @@ test01-network-02
 [test01-novactrl]
 test01-novactrl-01
 
-[test01-proxy]
-test01-proxy-01
-
-[test01-rpmbuilder]
-test01-rpmbuilder-01
-
-[test01-status]
-test01-status-01
-
-[test01-storage]
-test01-storage-01
-test01-storage-02
-test01-storage-03
-test01-storage-04
-test01-storage-05
-
-[test01-volume]
-test01-volume-01
-
 [test01-ns]
 test01-ns-01
-test01-ns-02
+
+[test01-proxy]
+test01-proxy-01
 
 [test01-resolver]
 test01-resolver-01
 test01-resolver-02
 
-[test01-metric]
-test01-metric-01
+[test01-status]
+test01-status-01
+
+[test01-storage]
+test01-storage-02
+test01-storage-03
+test01-storage-04
+test01-storage-05
+
+[test01-telemetry]
+test01-telemetry-01
 
 [test01-torack]
 test01-torack-01
+
+[test01-volume]
+test01-volume-01
+
