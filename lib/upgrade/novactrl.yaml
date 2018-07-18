@@ -11,8 +11,9 @@
 # Example:
 # sudo ansible-playbook -e "hosts=test01-novactrl-01" lib/upgrade/novactrl.yaml
 #
-# Last verified: 2017-08-18 (ansible version 2.3.1.0)
+# Last verified: 2018-07-18 (ansible version 2.4.2.0)
 #
+- import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ hosts }}"
   gather_facts: no
   tasks:
@@ -31,12 +32,16 @@
       ignore_errors: yes
     - name: 'Stop nova API service'
       systemd: name=openstack-nova-api state=stopped
+      ignore_errors: yes
     - name: 'Stop nova scheduler service'
       systemd: name=openstack-nova-scheduler state=stopped
+      ignore_errors: yes
     - name: 'Stop nova consoleauth service'
       systemd: name=openstack-nova-consoleauth state=stopped
+      ignore_errors: yes
     - name: 'Stop nova conductor service'
       systemd: name=openstack-nova-conductor state=stopped
+      ignore_errors: yes
     - name: Purge old package
       yum: name=openstack-nova-common state=absent
     - name: 'Remove /etc/nova/'
