@@ -29,3 +29,6 @@ can be used)
 
 # Update repo pointers (after changes have been commited to the repo-admin git repo)
 sudo ansible-playbook -e "hosts=download" lib/update_repo.yaml
+
+# Run a custom command (this will check etcd version on compute hosts)
+sudo ansible -u iaas -a 'rpm -qa | grep etcd' -m shell test01-compute
