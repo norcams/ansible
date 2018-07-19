@@ -11,19 +11,22 @@ test02-dashboard
 test02-db
 test02-identity
 test02-image
+test02-leaf
 test02-logger
+test02-metric
 test02-monitor
-test02-nat
 test02-mq
+test02-nat
 test02-network
 test02-novactrl
+test02-ns
 test02-proxy
+test02-resolver
 test02-status
 test02-storage
-test02-volume
-test02-ns
-test02-resolver
+test02-telemetry
 test02-torack
+test02-volume
 
 [test02-nodes:children]
 test02-access
@@ -37,15 +40,19 @@ test02-db
 test02-identity
 test02-image
 test02-logger
+test02-metric
 test02-monitor
 test02-mq
+test02-nat
 test02-network
 test02-novactrl
-test02-proxy
-test02-status
-test02-volume
 test02-ns
+test02-proxy
 test02-resolver
+test02-status
+test02-telemetry
+test02-torack
+test02-volume
 
 [test02-access]
 test02-access-01
@@ -87,12 +94,19 @@ test02-db-02
 
 [test02-identity]
 test02-identity-01
+test02-identity-02
 
 [test02-image]
 test02-image-01
 
+[test02-leaf]
+test02-leaf-01
+
 [test02-logger]
 test02-logger-01
+
+[test02-metric]
+test02-metric-01
 
 [test02-monitor]
 test02-monitor-01
@@ -101,16 +115,24 @@ test02-monitor-01
 test02-mq-01
 
 [test02-nat]
-test02-nat-01
+test02-nat-linux-01
 
 [test02-network]
 test02-network-01
+test02-network-02
 
 [test02-novactrl]
 test02-novactrl-01
 
+[test02-ns]
+test02-ns-01
+
 [test02-proxy]
 test02-proxy-01
+
+[test02-resolver]
+test02-resolver-01
+test02-resolver-02
 
 [test02-status]
 test02-status-01
@@ -122,16 +144,12 @@ test02-storage-03
 test02-storage-04
 test02-storage-05
 
-[test02-volume]
-test02-volume-01
-
-[test02-ns]
-test02-ns-01
-test02-ns-02
-
-[test02-resolver]
-test02-resolver-01
-test02-resolver-02
+[test02-telemetry]
+test02-telemetry-01
 
 [test02-torack]
 test02-torack-01
+
+[test02-volume]
+test02-volume-01
+
