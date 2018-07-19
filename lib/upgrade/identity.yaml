@@ -14,6 +14,7 @@
 - import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ hosts }}"
   gather_facts: no
+  serial: 1
   tasks:
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
@@ -21,6 +22,8 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Make sure puppet are enabled'
+      command: "puppet agent --enable"
     - name: 'Puppet kickstart runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:

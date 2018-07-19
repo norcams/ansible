@@ -1,11 +1,12 @@
 - hosts: "{{ hosts | default('all') }}"
   tasks:
-    - name:     Find packages
+    - name:     Find epel packages
       shell:  yum list installed | grep '@epel' | awk '{print $1}'
       register: packages
     # - debug:
     #     msg: "{{packages}}"
-    - yum:
+    - name: Remove epel packages
+      yum:
         state: absent
         name: "{{ item }}"
       with_items: "{{ packages.stdout_lines }}"

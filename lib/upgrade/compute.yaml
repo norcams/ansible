@@ -41,6 +41,8 @@
     - name: 'Stop openstack-nova-spicehtml5proxy'
       systemd: name=openstack-nova-spicehtml5proxy state=stopped
       when: '"console" in inventory_hostname'
+    - name: 'Make sure puppet are enabled'
+      command: "puppet agent --enable"
     - name: 'Puppet kickstart runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
