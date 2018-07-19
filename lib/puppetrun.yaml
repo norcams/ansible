@@ -1,5 +1,8 @@
 - hosts: "{{ hosts }}"
   serial: 2
-  max_fail_percentage: 100
+  gather_facts: no
   tasks:
-    - puppet: 
+    - name: 'Make sure puppet are enabled'
+      command: "puppet agent --enable"
+    - puppet:
+      ignore_errors: "yes" 
