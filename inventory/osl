@@ -124,6 +124,7 @@ osl-mq-01
 
 [osl-nat]
 osl-nat-linux-01
+osl-nat-linux-02
 
 [osl-network]
 osl-network-01
