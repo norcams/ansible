@@ -3,6 +3,4 @@
   user: iaas
   tasks:
     - name: "{{ action }} puppet agent"
-      command: puppet agent --{{ action }}
-    - service: name=crond state=started
-      when: ansible_nodename != 'cumulus'
+      command: /opt/puppetlabs/bin/puppet agent --{{ action }}
