@@ -54,9 +54,6 @@
     - name: "db sync"
       when: '"novactrl" in inventory_hostname'
       command: "nova-manage db sync"
-    - name: "api_db sync"
-      when: '"novactrl" in inventory_hostname'
-      command: "nova-manage api_db sync"
     - name: "db cell_v2 simple_cell_setup"
       when: '"novactrl" in inventory_hostname'
       command: "nova-manage cell_v2 simple_cell_setup"
