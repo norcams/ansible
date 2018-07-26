@@ -33,8 +33,8 @@
         https_proxy: 172.16.32.12:8888
         http_proxy: 172.16.32.12:8888
       ignore_errors: yes
-    - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
+#    - name: 'Yum update'
+#      yum: name=* state=latest update_cache=yes
     - name: Purge old openstack-nova-common
       yum: name=openstack-nova-common state=absent
     - name: Purge old openstack-nova-api
