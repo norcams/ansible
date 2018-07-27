@@ -2,7 +2,6 @@
 - hosts: "{{ myhosts }}"
   vars:
     openrc: '/root/openrc'
-    keystonerc: '/root/keystonerc_admin'
     role: "{{ ansible_hostname | regex_replace('^.+?-(.+?)-.+$', '\\1') }}"
 
   tasks:
@@ -11,19 +10,19 @@
       when: role == "dns"
 
     - name: Check if the zone is present
-      shell: "source {{keystonerc}} && openstack zone show customer.{{location}}.uh-iaas.no. -c id -f value"
+      shell: "source {{openrc}} && openstack zone show customer.{{location}}.uh-iaas.no. -c id -f value"
       register: zone_present
       ignore_errors: yes
       when: role == "identity"
 
     - name: Create the admin zone
-      shell: "source {{keystonerc}} && openstack zone create customer.{{location}}.uh-iaas.no. --email support@uh-iaas.no"
+      shell: "source {{openrc}} && openstack zone create customer.{{location}}.uh-iaas.no. --email support@uh-iaas.no"
       when:
         - role == "identity"
         - zone_present.rc == 1
 
     - name: Get the zone ID
-      shell: "source {{keystonerc}} && openstack zone show customer.{{location}}.uh-iaas.no. -c id -f value"
+      shell: "source {{openrc}} && openstack zone show customer.{{location}}.uh-iaas.no. -c id -f value"
       register: zone_id
       when: role == "identity"
 
