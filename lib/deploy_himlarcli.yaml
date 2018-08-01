@@ -18,20 +18,22 @@
       - PyYAML
       - libffi-devel
     - name: Update norcams/himlarcli git repo
-      git: 
-        repo:     "{{himlarcli_repo}}" 
+      git:
+        repo:     "{{himlarcli_repo}}"
         version:  "{{himlarcli_ref}}"
         dest:     "{{himlarcli_path}}"
         force:    "{{himlarcli_force_update}}"
     - name: Update setuptools
-      pip: 
+      pip:
         state: latest
         name: setuptools
         virtualenv:               "{{himlarcli_path}}"
         chdir:                    "{{himlarcli_path}}"
         virtualenv_site_packages: "yes"
+    - name: Upgrade pip
+      command: bin/pip install --upgrade pip chdir={{himlarcli_path}}
     - name: Install python modules with pip
-      pip: 
+      pip:
         virtualenv:               "{{himlarcli_path}}"
         requirements:             "requirements.txt"
         chdir:                    "{{himlarcli_path}}"
