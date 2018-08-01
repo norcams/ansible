@@ -11,7 +11,6 @@ test02-dashboard
 test02-db
 test02-identity
 test02-image
-test02-leaf
 test02-logger
 test02-metric
 test02-monitor
@@ -51,7 +50,6 @@ test02-proxy
 test02-resolver
 test02-status
 test02-telemetry
-test02-torack
 test02-volume
 
 [test02-access]
@@ -98,9 +96,6 @@ test02-identity-02
 
 [test02-image]
 test02-image-01
-
-[test02-leaf]
-test02-leaf-01
 
 [test02-logger]
 test02-logger-01
