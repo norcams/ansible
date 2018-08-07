@@ -15,4 +15,4 @@ if [ $# -ne 1 ]; then
   usage
 fi
 
-ansible-playbook -e "myhosts=${LOC}-identity-01,${LOC}-dns-01" lib/designate_deploy.yaml
+ansible-playbook -e "myhosts=${LOC}-identity-01,${LOC}-dns-01,${LOC}-dns-02,${LOC}-dns-03" lib/designate_deploy.yaml
