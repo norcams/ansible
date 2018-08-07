@@ -5,17 +5,17 @@
 # and update puppet modules.
 #
 # Mandatory input variables:
-# * hosts (str): ansible node(s)
+# * myhosts (str): ansible node(s)
 #
 # ATTENTION: Upgrade on cephmon node at a time, otherwise cluster will stop.
 # After upgrade, the cephmon node will reboot
 #
 # Example:
-# sudo ansible-playbook -e "hosts=test01-cephmon-01" lib/upgrade/cephmon.yaml
+# sudo ansible-playbook -e "myhosts=test01-cephmon-01" lib/upgrade/cephmon.yaml
 #
 # Last verified: 2017-09-15 (ansible version 2.3.1.0)
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   gather_facts: no
   serial: 1
   tasks:

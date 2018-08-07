@@ -4,16 +4,16 @@
 # Before you start you need to stop puppet and deploy latest version of himlar.
 #
 # Mandatory input variables:
-# * hosts (str): ansible node(s)
+# * myhosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "hosts=test01-volume-01" lib/upgrade/volume.yaml
+# sudo ansible-playbook -e "myhosts=test01-volume-01" lib/upgrade/volume.yaml
 #
 # Last verified: 2018-08-11 (ansible version 2.4.2.0)
 #
 # Run this to purge epel packages
 - import_playbook: ../remove_epel_packages.yaml
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
     - name: 'Repo files'

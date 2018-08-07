@@ -34,16 +34,16 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 echo
 
-sudo ansible-playbook -e "hosts=${host}" lib/check_for_running_instances.yaml || exit 1
-sudo ansible-playbook -e "hosts=${location}-proxy-01 compute_host=${host}" lib/prepare_compute_reinstall.yaml
-sudo ansible-playbook -e "hosts=${host}" lib/reboot.yaml
-sudo ansible-playbook -e "hosts=${location}-login host=${host}" lib/ssh_host_keys.yaml
+sudo ansible-playbook -e "myhosts=${host}" lib/check_for_running_instances.yaml || exit 1
+sudo ansible-playbook -e "myhosts=${location}-proxy-01 compute_host=${host}" lib/prepare_compute_reinstall.yaml
+sudo ansible-playbook -e "myhosts=${host}" lib/reboot.yaml
+sudo ansible-playbook -e "myhosts=${location}-login host=${host}" lib/ssh_host_keys.yaml
 sleep 120
-sudo ansible-playbook -e "hosts=${host}" lib/puppetrun.yaml
-sudo ansible-playbook -e "hosts=${host}" lib/push_secrets.yaml
-sudo ansible-playbook -e "hosts=${host}" lib/puppetrun.yaml
-#sudo ansible-playbook -e "hosts=${host} patchfile=${HOME}/ansible/files/patches/python-nova-newton-centos-7.3.0-discard.diff dest=/usr/lib/python2.7/site-packages/nova/virt/libvirt/driver.py" lib/patch.yaml
-sudo ansible-playbook -e "hosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
-sudo ansible-playbook -e "hosts=${host} name=openstack-nova-metadata-api.service" lib/systemd_restart.yaml
-sudo ansible-playbook -e "hosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
-sudo ansible-playbook -e "hosts=${host}" lib/downgrade_etcd.yaml
+sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
+sudo ansible-playbook -e "myhosts=${host}" lib/push_secrets.yaml
+sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
+#sudo ansible-playbook -e "myhosts=${host} patchfile=${HOME}/ansible/files/patches/python-nova-newton-centos-7.3.0-discard.diff dest=/usr/lib/python2.7/site-packages/nova/virt/libvirt/driver.py" lib/patch.yaml
+sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
+sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-metadata-api.service" lib/systemd_restart.yaml
+sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
+sudo ansible-playbook -e "myhosts=${host}" lib/downgrade_etcd.yaml

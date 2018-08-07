@@ -1,4 +1,4 @@
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   tasks:
     - name: Transfer OSD destroy script
       copy: src={{ playbook_dir }}/../files/scripts/destroy_osds.sh dest=/root/destroy_osds.sh mode=0777

@@ -1,9 +1,9 @@
 # Example:
-# sudo ansible-playbook -e "hosts=test02-api-01" -e "location=test02" -e "puppetmaster=puppet4" lib/move_to_puppetmaster.yaml
+# sudo ansible-playbook -e "myhosts=test02-api-01" -e "location=test02" -e "puppetmaster=puppet4" lib/move_to_puppetmaster.yaml
 #
 # Last verified: 2017-12-12 (ansible version 2.3.1.0)
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   tasks:
     - name: Remove old puppetlabs repo
       yum_repository:

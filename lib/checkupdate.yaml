@@ -1,4 +1,4 @@
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   gather_facts: False
   user: iaas
   serial: "100%"

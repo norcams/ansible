@@ -6,7 +6,7 @@
 # *** ALL CEPHMONs MUST BE UPGRADED BEFORE STORAGE ***
 #
 # Mandatory input variables:
-# * hosts (str): ansible node(s)
+# * myhosts (str): ansible node(s)
 #
 # ATTENTION: Upgrade one storage node at a time, otherwise cluster will stop.
 # It's recommended to set
@@ -19,11 +19,11 @@
 # ceph osd unset noout
 #
 # Example:
-# sudo ansible-playbook -e "hosts=test01-storage-01" lib/upgrade/cephmon.yaml
+# sudo ansible-playbook -e "myhosts=test01-storage-01" lib/upgrade/cephmon.yaml
 #
 # Last verified: 2017-09-19 (ansible version 2.3.1.0)
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   serial: 1
   gather_facts: no
   tasks:

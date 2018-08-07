@@ -4,14 +4,14 @@
 # Before you start you need to stop puppet and deploy latest version of himlar.
 #
 # Mandatory input variables:
-# * hosts (str): ansible node(s)
+# * myhosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "hosts=test01-novactrl-01" lib/upgrade/etcd_multinetwork.yaml
+# sudo ansible-playbook -e "myhosts=test01-novactrl-01" lib/upgrade/etcd_multinetwork.yaml
 #
 # Last verified: 2017-09-25 (ansible version 2.3.1.0)
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   gather_facts: no
   serial: 1
   tasks:

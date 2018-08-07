@@ -1,4 +1,4 @@
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   tasks:
     - yum: name=patch state=present
     - name: patch file

@@ -1,4 +1,4 @@
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   gather_facts: yes
   user: iaas
   tasks:

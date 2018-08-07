@@ -2,10 +2,10 @@
 # Downgrade etcd to version 3.1
 # Verified: This will run under ansible 2.3.
 #
-# sudo ansible-playbook -e "hosts=test01-compute-01" lib/downgrade_etcd.yaml
+# sudo ansible-playbook -e "myhosts=test01-compute-01" lib/downgrade_etcd.yaml
 #
 
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   gather_facts: False
   tasks:
     - shell: source /root/proxy.sh && yum downgrade -y http://vault.centos.org/7.3.1611/extras/x86_64/Packages/etcd-3.1.9-1.el7.x86_64.rpm

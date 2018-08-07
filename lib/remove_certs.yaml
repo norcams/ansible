@@ -1,7 +1,7 @@
 # Example:
-# sudo ansible-playbook -e "hosts=test02-admin-01" lib/remove_certs.yaml
+# sudo ansible-playbook -e "myhosts=test02-admin-01" lib/remove_certs.yaml
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   tasks:
     - name: Remove all old certs
       file: name='/etc/puppetlabs/puppet/ssl' state=absenti

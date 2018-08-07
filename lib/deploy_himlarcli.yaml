@@ -2,9 +2,9 @@
 # Deploy himlarcli to hosts under himlarcli_path
 # Verified: This will run under ansible 2.1
 #
-# sudo ansible-playbook -e "hosts=bgo-login:bgo-master" lib/himlarcli.yaml
+# sudo ansible-playbook -e "myhosts=bgo-login:bgo-master" lib/himlarcli.yaml
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   tasks:
     - name: Install packages needed to run himlarcli on host
       yum: state=present name={{ item }}

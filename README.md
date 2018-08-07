@@ -24,7 +24,7 @@ All playbook should be stored under lib/ and hosts can be single hostname,
 
 Example:
 ```bash
-sudo ansible-playbook -e "hosts=bgo" lib/ping.yaml
+sudo ansible-playbook -e "myhosts=bgo" lib/ping.yaml
 ```
 ## Dry-run
 

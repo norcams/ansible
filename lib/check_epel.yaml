@@ -1,6 +1,6 @@
 # check /etc/yum.repos.d/epel.repo for dual repo configurations
 # baseurl is correct, metalink should not be active
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   gather_facts: False
   user: iaas
   serial: "100%"

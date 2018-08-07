@@ -1,5 +1,5 @@
 - name: manage nodes on controller with libvirt
-  hosts: "{{ hosts }}"
+  hosts: "{{ myhosts }}"
   user: iaas
   tasks:
     - name: find nodes on controller

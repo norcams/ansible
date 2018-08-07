@@ -1,10 +1,10 @@
 #
 # Deploy norcams/report-utils /opt/report-utils
-# {{ hosts }} should be the report node
+# {{ myhosts }} should be the report node
 #
 # Last verified: 2018-06-22 (ansible version 2.4.2.0)
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   tasks:
     - name:       Create report-utils directory
       file:

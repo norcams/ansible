@@ -15,5 +15,5 @@ if [ $# -ne 1 ]; then
   usage
 fi
 
-sudo ansible-playbook -e "hosts=${host} patchfile=${HOME}/ansible/files/patches/horizon-tables-size.diff dest=/usr/share/openstack-dashboard/openstack_dashboard/dashboards/project/instances/tables.py" lib/patch.yaml
-sudo ansible-playbook -e "hosts=${host} name=httpd" lib/systemd_restart.yaml
+sudo ansible-playbook -e "myhosts=${host} patchfile=${HOME}/ansible/files/patches/horizon-tables-size.diff dest=/usr/share/openstack-dashboard/openstack_dashboard/dashboards/project/instances/tables.py" lib/patch.yaml
+sudo ansible-playbook -e "myhosts=${host} name=httpd" lib/systemd_restart.yaml
