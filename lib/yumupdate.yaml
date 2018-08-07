@@ -5,7 +5,7 @@
 # Example 1: Normal upgrade
 #   ansible-playbook -e 'myhosts=vagrant-dns,vagrant-identity' lib/yumupdate.yaml
 #
-# Example 2: Upgrade while excluding package
+# Example 2: Upgrade while excluding some packages
 #   ansible-playbook -e 'myhosts=vagrant-dns,vagrant-identity exclude=httpd*,MariaDB*' lib/yumupdate.yaml
 #
 ---
@@ -14,20 +14,12 @@
   gather_facts: False
   tasks:
 
-  - name: Upgrade all packages excluding {{ exclude }}
+  - name: Upgrade all packages excluding {{ exclude | default('none') }}
     yum:
       name: '*'
       state: latest
       update_cache: yes
-      exclude: "{{ exclude }}"
-    when: exclude is defined
-
-  - name: Upgrade all packages
-    yum:
-      name: '*'
-      state: latest
-      update_cache: yes
-    when: exclude is not defined
+      exclude: "{{ exclude | default(omit) }}"
 
   - name: Run puppet agent and fail if anything goes wrong
     puppet:
