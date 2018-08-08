@@ -6,7 +6,7 @@
 #   ansible-playbook -e 'myhosts=vagrant-dns,vagrant-identity' lib/yumupdate.yaml
 #
 # Example 2: Upgrade while excluding some packages
-#   ansible-playbook -e 'myhosts=vagrant-dns,vagrant-identity exclude=httpd*,MariaDB*' lib/yumupdate.yaml
+#   ansible-playbook -e 'myhosts=vagrant-dns,vagrant-identity exclude=httpd*,MariaDB*,mod_ssl' lib/yumupdate.yaml
 #
 ---
 - hosts: "{{ myhosts }}"
