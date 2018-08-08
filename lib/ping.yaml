@@ -1,4 +1,4 @@
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   serial: 10
   gather_facts: False
   tasks:

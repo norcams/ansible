@@ -21,8 +21,8 @@ else
   opt="$2"
 fi
 
-sudo ansible-playbook $opt -e "hosts=${loc}-identity-01" lib/puppetrun.yaml
+sudo ansible-playbook $opt -e "myhosts=${loc}-identity-01" lib/puppetrun.yaml
 sudo ansible $opt "${loc}-proxy-01" --become -m shell -a '. /root/openrc && for id in `openstack endpoint list -f json | jq -r ".[] | select(.\"Service Name\" == \"novav3\") | .ID"`; do openstack endpoint delete $id; done'
-sudo ansible-playbook $opt -e "hosts=${loc}-db-02" lib/puppetrun.yaml
-sudo ansible-playbook $opt -e "hosts=${loc}-db-02" lib/puppetrun.yaml
-sudo ansible-playbook $opt -e "hosts=${loc}-novactrl-01" lib/upgrade/compute.yaml
+sudo ansible-playbook $opt -e "myhosts=${loc}-db-02" lib/puppetrun.yaml
+sudo ansible-playbook $opt -e "myhosts=${loc}-db-02" lib/puppetrun.yaml
+sudo ansible-playbook $opt -e "myhosts=${loc}-novactrl-01" lib/upgrade/compute.yaml

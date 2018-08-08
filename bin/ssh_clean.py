@@ -52,6 +52,6 @@ if section:
 
 for h in host:
     print "Run for host [%s]" % h
-    command = 'sudo ansible-playbook -e "hosts=%s-login host=%s" \
+    command = 'sudo ansible-playbook -e "myhosts=%s-login host=%s" \
         %s/../lib/ssh_host_keys.yaml' % (loc, h, dir_path)
     os.system(command)

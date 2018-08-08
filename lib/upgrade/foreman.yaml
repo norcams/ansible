@@ -2,14 +2,14 @@
 # This can be used to upgrade Foreman to the release version given by the foreman_version variable
 #
 # Mandatory input variables:
-# * hosts (str): ansible node(s)
+# * myhosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "hosts=test01-admin-01 foreman_version=1.15" lib/upgrade/foreman.yaml
+# sudo ansible-playbook -e "myhosts=test01-admin-01 foreman_version=1.15" lib/upgrade/foreman.yaml
 #
 # Last verified: 2018-03-20 (ansible version 2.3.1.0)
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
     - name: 'Import gpg key for repo'

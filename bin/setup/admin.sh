@@ -23,9 +23,9 @@ himlarcli_path='/opt/himlarcli'
 loc=$1
 
 sudo ansible -u iaas -a "/bin/bash /root/puppet_bootstrap.sh" -m shell ${loc}-admin
-sudo ansible-playbook -e "hosts=${loc}-admin" lib/push_secrets.yaml
+sudo ansible-playbook -e "myhosts=${loc}-admin" lib/push_secrets.yaml
 sudo ansible -u iaas -a "${himlar_path}/provision/puppetrun.sh" -m shell ${loc}-admin
 sudo ansible -u iaas -a "${himlar_path}/provision/foreman-settings.sh" -m shell ${loc}-admin
 sudo ansible -u iaas -a "source ${himlarcli_path}/bin/activate && ${himlarcli_path}/foreman_setup.py -c ${himlarcli_path}/config.ini.${loc}" -m shell ${loc}-login
-sudo ansible-playbook -e "hosts=${loc}-admin" lib/git_access.yaml
+sudo ansible-playbook -e "myhosts=${loc}-admin" lib/git_access.yaml
 

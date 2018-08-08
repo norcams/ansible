@@ -1,10 +1,10 @@
 # Example:
 #
-# sudo ansible-playbook -e "hosts=test02-leaf-01" lib/cumulus_bootstrap.yaml
+# sudo ansible-playbook -e "myhosts=test02-leaf-01" lib/cumulus_bootstrap.yaml
 #
 # Last verified: 2018-01-16 (ansible version 2.3.1.0)
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   tasks:
     - name: Write bash script to host
       template:

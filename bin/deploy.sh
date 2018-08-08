@@ -19,4 +19,4 @@ fi
 
 loc=$1
 
-sudo ansible-playbook -e "hosts=${loc}-admin" lib/deploy_himlar.yaml
+sudo ansible-playbook -e "myhosts=${loc}-admin" lib/deploy_himlar.yaml

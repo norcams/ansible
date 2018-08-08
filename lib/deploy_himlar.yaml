@@ -2,9 +2,9 @@
 # Deploy himlar puppet code to puppetmaster under himlar_path
 # Verified: This will run under ansible 2.1
 #
-# sudo ansible-playbook -e "hosts=bgo-admin" lib/deploy_himlar.yaml
+# sudo ansible-playbook -e "myhosts=bgo-admin" lib/deploy_himlar.yaml
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   tasks:
     - name: Update norcams/himlar git repo
       git: repo={{himlar_repo}} version={{himlar_ref}} dest={{himlar_path}} force={{himlar_force_update}}

@@ -1,10 +1,10 @@
 #
 # Clean up ssh host keys in known hosts root
-# {{ hosts }} should be a the host to run on (most likely login-01)
+# {{ myhosts }} should be a the host to run on (most likely login-01)
 # {{ host }} should be the host to remove from known hosts
 # Verified: This will run under ansible 2.1
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   gather_facts: False
   tasks:
     - name: find ip

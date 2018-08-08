@@ -19,5 +19,5 @@ fi
 
 loc=$1
 
-sudo ansible-playbook -e "hosts=${loc}-console-01 patchfile=${HOME}/ansible/files/patches/spice.css-ctrl-alt-delete-button.diff dest=/usr/share/spice-html5/spice.css" lib/patch.yaml
-sudo ansible-playbook -e "hosts=${loc}-console-01 patchfile=${HOME}/ansible/files/patches/spice_auto.html-ctrl-alt-delete-button.diff dest=/usr/share/spice-html5/spice_auto.html" lib/patch.yaml
+sudo ansible-playbook -e "myhosts=${loc}-console-01 patchfile=${HOME}/ansible/files/patches/spice.css-ctrl-alt-delete-button.diff dest=/usr/share/spice-html5/spice.css" lib/patch.yaml
+sudo ansible-playbook -e "myhosts=${loc}-console-01 patchfile=${HOME}/ansible/files/patches/spice_auto.html-ctrl-alt-delete-button.diff dest=/usr/share/spice-html5/spice_auto.html" lib/patch.yaml

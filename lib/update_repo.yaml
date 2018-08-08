@@ -5,9 +5,9 @@
 # This only makes sense on the uio repo server (and thus the 'uio'
 # environment).
 #
-# sudo ansible-playbook -e "hosts=download" lib/update_repo.yaml
+# sudo ansible-playbook -e "myhosts=download" lib/update_repo.yaml
 #
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   tasks:
     - name: Update git.iaas.uio.no:repo-admin git repo
       git: repo={{repoadmin_repo}} version={{repoadmin_ref}} dest={{repoadmin_path}} force={{repoadmin_force_update}} accept_hostkey=yes clone=no key_file=/home/iaas/.ssh/id_rsa

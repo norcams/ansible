@@ -26,6 +26,6 @@ else
   opt="$2"
 fi
 
-sudo ansible-playbook $opt -e "hosts=${host}" lib/upgrade/dashboard.yaml
-sudo ansible-playbook $opt -e "hosts=${host} patchfile=${HOME}/ansible/files/patches/0001-Only-show-the-image-visibility-option-if-it-s-allowe.patch basedir=/usr/share/openstack-dashboard" lib/patch.yaml
-sudo ansible-playbook $opt -e "hosts=${host} name=httpd.service" lib/systemd_restart.yaml
+sudo ansible-playbook $opt -e "myhosts=${host}" lib/upgrade/dashboard.yaml
+sudo ansible-playbook $opt -e "myhosts=${host} patchfile=${HOME}/ansible/files/patches/0001-Only-show-the-image-visibility-option-if-it-s-allowe.patch basedir=/usr/share/openstack-dashboard" lib/patch.yaml
+sudo ansible-playbook $opt -e "myhosts=${host} name=httpd.service" lib/systemd_restart.yaml

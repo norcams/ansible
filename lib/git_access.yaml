@@ -1,4 +1,4 @@
-- hosts: "{{ hosts }}"
+- hosts: "{{ myhosts }}"
   user: iaas
   tasks:
     - file: path=/root/.ssh owner=root group=root state=directory
