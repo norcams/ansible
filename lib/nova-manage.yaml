@@ -1,0 +1,14 @@
+---
+#
+# Example:
+#
+# sudo ansible-playbook -e "myhosts=test02-novactrl-01" -e action="discover_hosts" lib/nova-manage.yaml
+#
+# Last verified: 2018-08-08 (ansible version 2.6.1)
+#
+- hosts: "{{ myhosts }}"
+  vars:
+    subcommand: 'cell_v2'
+  tasks:
+  - name: "Run nova-manage {{ subcommand }} {{ actions }}"
+    command: "/bin/nova-manage {{ subcommand }} {{ actions }}"
