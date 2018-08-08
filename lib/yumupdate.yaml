@@ -26,9 +26,11 @@
     when:
     - '"admin" not in inventory_hostname'
     - location != "vagrant"
+    - exclude is not defined
 
   - name: Run Puppet via himlar/provision/puppetrun.sh
     command: /opt/himlar/provision/puppetrun.sh
     when:
     - '"admin" in inventory_hostname'
     - location != "vagrant"
+    - exclude is not defined
