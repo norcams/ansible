@@ -1,0 +1,42 @@
+#
+# This will re-add a member to an existing etcd cluster
+#
+- hosts: "{{ manage_from }}"
+  gather_facts: False
+  tasks:
+  - name: Find member id
+    shell: etcdctl member list | grep {{ member }} | awk '{print substr($1, 1, length($1)-1)}'
+    register: member_id
+  - name: Find member trp ip
+    shell: grep -oP '{{ member + '\=\K[^,]+' }}' /etc/etcd/etcd.conf
+    register: member_trp_ip
+  - name: Delete old member
+    command: etcdctl member remove {{ member_id.stdout }}
+    when: member_id.stdout | length > 0
+  - name: Add new member
+    command: etcdctl member add {{ member }} {{ member_trp_ip.stdout }}
+
+- hosts: "{{ member }}"
+  gather_facts: False
+  vars:
+    etcd_path: "{{ '/var/lib/etcd/' + member + '.etcd' }}"
+  tasks:
+  - name: Disable puppet agent
+    command: /opt/puppetlabs/bin/puppet agent --disable
+  - name: Stop etcd-service
+    systemd:
+      state: stopped
+      name: etcd
+  - name: Empty /var/lib/etcd
+    file:
+      path: "{{ etcd_path }}"
+      state: absent
+  - name: Bootstrap member
+    become_user: etcd
+    command: /usr/local/sbin/bootstrap-etcd-member
+    async: 30
+    ignore_errors: yes
+  - name: Enable puppet agent
+    command: /opt/puppetlabs/bin/puppet agent --enable
+  - puppet:
+    ignore_errors: yes
