@@ -1,0 +1,10 @@
+#
+# Part 2 in upgrade - just some service restarts
+#
+- hosts: "{{ myhosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Restart calico dhcp agent'
+      systemd: name=calico-dhcp-agent state=restarted
+    - name: 'Restart Openstack Nova Compute'
+      systemd: name=openstack-nova-compute state=restarted
