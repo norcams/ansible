@@ -1,0 +1,39 @@
+#
+# This can be used to upgrade calico from version 2.6.x to 3.1.x on compute hosts
+#
+# Before you start you need to stop puppet and deploy latest version of himlar, including modules.
+#
+- hosts: "{{ myhosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - name: 'Stop calico dhcp agent'
+      systemd: name=calico-dhcp-agent state=stopped
+    - name: 'Stop calico felix'
+      systemd: name=calico-felix state=stopped
+    - name: 'Make sure puppet are enabled'
+      command: "puppet agent --enable"
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+    - name: 'Run puppet again'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+    - name: 'Restart felix agent'
+      systemd: name=calico-felix state=restarted
+    - name: 'Restart calico dhcp agent'
+      systemd: name=calico-dhcp-agent state=restarted
+    - name: 'Restart Openstack Nova Compute'
+      systemd: name=openstack-nova-compute state=restarted
