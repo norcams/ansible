@@ -24,3 +24,4 @@ fi
 
 sudo ansible-playbook $opt -e "myhosts=${loc}-compute" lib/upgrade/calico31-compute.yaml
 sudo ansible-playbook $opt -e "myhosts=${loc}-network" lib/upgrade/calico31-network.yaml
+sudo ansible-playbook $opt -e "myhosts=${loc}-compute" lib/upgrade/calico31-compute-2.yaml
