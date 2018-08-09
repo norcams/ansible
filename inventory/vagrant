@@ -2,9 +2,9 @@
 vagrant-compute-01 ansible_host=172.31.0.103
 
 [vagrant-dns]
-vagrant-dns-01      ansible_host=172.31.0.97
-vagrant-dns-02      ansible_host=172.31.0.98
-vagrant-dns-03      ansible_host=172.31.0.99
+vagrant-dns-01      ansible_host=172.31.0.34
+vagrant-dns-02      ansible_host=172.31.0.35
+vagrant-dns-03      ansible_host=172.31.0.39
 
 [vagrant-identity]
 vagrant-identity-01 ansible_host=172.31.0.81
