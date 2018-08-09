@@ -1,5 +1,7 @@
 #
 # This will re-add a member to an existing etcd cluster
+# Read this http://iaas.readthedocs.io/en/latest/team/operations/etcd.htm
+# before running.
 #
 - hosts: "{{ manage_from }}"
   gather_facts: False
