@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # print help
 function usage {
@@ -35,5 +36,3 @@ sleep 120
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
 sudo ansible-playbook -e "member=${host} manage_from=${manage_from}" lib/reconfigure_etcd_cluster.yaml
-sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
-
