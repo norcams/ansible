@@ -28,7 +28,7 @@ location=${hostname[0]}
 
 # Stop and destory all OSDs on target node
 sudo ansible-playbook -e "myhosts=${host}" lib/osd_destroy.yaml
-sudo ansible-playbook -e "myhosts=${location}-proxy-01 storage_host=${host}" lib/prepare_storage_reinstall.yaml
+sudo ansible-playbook -e "myhosts=${location}-proxy-01 install_host=${host}" lib/prepare_reinstall.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/reboot.yaml
 sleep 120
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml

@@ -1,12 +1,12 @@
 #
-# This will use himlarcli to prepare a compute host for reinstall
+# This will use himlarcli to prepare a host for reinstall
 # {{ myhosts }} should be a host with himlarcli installed
-# {{ compute_host }} should be the compute host
+# {{ install_host }} should be the host you're reinstalling.
 #
 # Last verified: 2018-03-23 (ansible version 2.4.2.0)
 #
 - hosts: "{{ myhosts }}"
   tasks:
     - name: Set foreman to rebuild
-      command: bin/python rebuild.py {{compute_host}} chdir={{himlarcli_path}}
+      command: bin/python rebuild.py {{install_host}} chdir={{himlarcli_path}}
       when: location != 'vagrant'
