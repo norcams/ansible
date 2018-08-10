@@ -10,7 +10,7 @@
     shell: etcdctl member list | grep {{ member }} | awk '{print substr($1, 1, length($1)-1)}'
     register: member_id
   - name: Find member trp ip
-    shell: grep -oP '{{ member + '\=\K[^,"]+' }}' /etc/etcd/etcd.conf
+    shell: grep -oP '{{ member + '\=\K[^,\"]+' }}' /etc/etcd/etcd.conf
     register: member_trp_ip
   - name: Delete old member
     command: etcdctl member remove {{ member_id.stdout }}
