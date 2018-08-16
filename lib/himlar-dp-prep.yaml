@@ -7,6 +7,6 @@
   - name: Remove
     command: "rm -rf /opt/dpapp
   - name: Run puppet agent and fail if anything goes wrong
-    commad: puppet agent -t
+    command: puppet agent -t
   - name: restart httpd
-    commad: systemctl restart httpd.service
+    command: systemctl restart httpd.service
