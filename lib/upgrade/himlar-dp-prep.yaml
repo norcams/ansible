@@ -1,0 +1,13 @@
+---
+- hosts: "{{ myhosts }}"
+  user: iaas
+  tasks:
+  - name: Erase the old package
+    command: yum erase -y himlar-dp-prep
+  - name: Remove
+    command: rm -rf /opt/dpapp
+  - name: Run puppet agent and fail if anything goes wrong
+    command: puppet agent -t
+    ignore_errors: yes
+  - name: restart httpd
+    command: systemctl restart httpd.service
