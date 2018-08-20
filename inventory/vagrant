@@ -1,3 +1,6 @@
+[vagrant-access]
+vagrant-access-01 ansible_host=172.31.0.56
+
 [vagrant-compute]
 vagrant-compute-01 ansible_host=172.31.0.103
 
@@ -27,6 +30,7 @@ vagrant-proxy
 vagrant-report
 
 [vagrant:children]
+vagrant-access
 vagrant-compute
 vagrant-dns
 vagrant-novactrl
