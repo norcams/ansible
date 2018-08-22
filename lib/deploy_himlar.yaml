@@ -6,7 +6,7 @@
 #
 - hosts: "{{ myhosts }}"
   tasks:
-    - name: Update norcams/himlar git repo
+    - name: "Deploy {{himlar_repo}} with version {{himlar_ref}}"
       git: repo={{himlar_repo}} version={{himlar_ref}} dest={{himlar_path}} force={{himlar_force_update}}
     - name: Update /etc/puppet/modules
       command: "{{himlar_path}}/provision/puppetmodules.sh"
