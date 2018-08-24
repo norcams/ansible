@@ -35,7 +35,7 @@ fi
 echo
 
 sudo ansible-playbook -e "myhosts=${host}" lib/check_for_running_instances.yaml || exit 1
-sudo ansible-playbook -e "myhosts=${location}-proxy-01 compute_host=${host}" lib/prepare_compute_reinstall.yaml
+sudo ansible-playbook -e "myhosts=${location}-proxy-01 install_host=${host}" lib/prepare_reinstall.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/reboot.yaml
 sudo ansible-playbook -e "myhosts=${location}-login host=${host}" lib/ssh_host_keys.yaml
 sleep 120
@@ -46,4 +46,4 @@ sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-metadata-api.service" lib/systemd_restart.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
-sudo ansible-playbook -e "myhosts=${host}" lib/downgrade_etcd.yaml
+#sudo ansible-playbook -e "myhosts=${host}" lib/downgrade_etcd.yaml

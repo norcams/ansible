@@ -24,7 +24,7 @@
         FACTER_RUNMODE: kickstart
       ignore_errors: yes
     - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
+      yum: name=*calico* state=latest update_cache=yes
     - name: 'Puppet run'
       command: "puppet agent --onetime --no-daemonize"
       ignore_errors: yes

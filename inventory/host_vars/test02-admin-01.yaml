@@ -1,7 +1,4 @@
 ---
-himlar_repo: https://github.com/norcams/himlar.git
-himlar_ref: master
-
 ansible_host: 172.28.32.11
 secret_files:
   cert:

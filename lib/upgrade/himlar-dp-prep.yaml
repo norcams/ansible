@@ -1,0 +1,19 @@
+---
+- hosts: "{{ myhosts }}"
+  tasks:
+    - name: Erase the old himlar-dp-prep package
+      yum:
+        name: himlar-dp-prep
+        state: absent
+    - name: Remove /opt/dpapp folder
+      file:
+        path: /opt/dpapp
+        state: absent
+    - name: Remove .egg
+      file:
+        path: /usr/lib/python2.7/site-packages/himlar_dp_prep-0.0-py2.7.egg
+        state: absent
+    - name: Run puppet agent and fail if anything goes wrong
+      puppet:
+      ignore_errors: yes
+      when: "'vagrant' not in group_names"
