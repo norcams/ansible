@@ -17,3 +17,6 @@
         version:  master
         dest:     /opt/report-utils
         force:    yes
+    - name:       Run Makefile
+      make:
+        chdir:    /opt/report-utils
