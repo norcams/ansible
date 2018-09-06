@@ -11,10 +11,5 @@
       - location != "vagrant"
       - exclude is not defined
     - name: Pull keys from db
-      cron:
-        name: Pull fernet key from db
-        user: iaas
-        command: "/usr/local/sbin/token_dist.sh fernet"
-        name: Pull credential key from db
-        user: iaas
-        command: "/usr/local/sbin/token_dist.sh credentials
+      command: "/usr/local/sbin/token_dist.sh fernet"
+      command: "/usr/local/sbin/token_dist.sh credentials
