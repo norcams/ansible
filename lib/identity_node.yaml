@@ -1,0 +1,20 @@
+#   ansible-playbook -e 'myhosts=test-identity-02 masterhost=test-identity-01' lib/identity_node.yaml
+- import_playbook: push_gpg_keys.yaml
+- name: setup a new identity node
+- hosts: "{{ myhosts }}"
+  user: iaas
+  tasks:
+    - name: Run puppet agent and fail if anything goes wrong
+      puppet:
+      when:
+      - '"admin" not in inventory_hostname'
+      - location != "vagrant"
+      - exclude is not defined
+    - name: Pull keys from db
+      cron:
+        name: Pull fernet key from db
+        user: iaas
+        command: "/usr/local/sbin/token_dist.sh fernet"
+        name: Pull credential key from db
+        user: iaas
+        command: "/usr/local/sbin/token_dist.sh credentials
