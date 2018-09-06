@@ -20,8 +20,6 @@
   gather_facts: no
   serial: 1
   tasks:
-    - name: 'Stop crond'
-      systemd: name=crond state=stopped
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
