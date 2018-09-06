@@ -15,6 +15,7 @@
 #
 # Last verified: 2017-09-15 (ansible version 2.3.1.0)
 #
+- import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ myhosts }}"
   gather_facts: no
   serial: 1
