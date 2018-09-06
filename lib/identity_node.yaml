@@ -13,3 +13,4 @@
     - name: Pull keys from db
       command: "/usr/local/sbin/token_dist.sh fernet"
       command: "/usr/local/sbin/token_dist.sh credentials
+      
