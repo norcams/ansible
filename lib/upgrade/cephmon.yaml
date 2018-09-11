@@ -15,12 +15,11 @@
 #
 # Last verified: 2017-09-15 (ansible version 2.3.1.0)
 #
+- import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ myhosts }}"
   gather_facts: no
   serial: 1
   tasks:
-    - name: 'Stop crond'
-      systemd: name=crond state=stopped
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
