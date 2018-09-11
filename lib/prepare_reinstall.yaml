@@ -1,0 +1,12 @@
+#
+# This will use himlarcli to prepare a host for reinstall
+# {{ myhosts }} should be a host with himlarcli installed
+# {{ install_host }} should be the host you're reinstalling.
+#
+# Last verified: 2018-03-23 (ansible version 2.4.2.0)
+#
+- hosts: "{{ myhosts }}"
+  tasks:
+    - name: Set foreman to reinstall
+      command: bin/python node.py reinstall -n {{install_host}} -y chdir={{himlarcli_path}}
+      when: location != 'vagrant'
