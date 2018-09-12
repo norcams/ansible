@@ -11,7 +11,7 @@
       command: bin/python node.py reinstall -n {{ install_host.split('-')[1:] | join("-") }} -y chdir={{himlarcli_path}}
       when: location != 'vagrant'
     - name: Waiting for installation to finish
-      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
+      local_action: wait_for port=22 host={{ install_host }} timeout=1800 delay=75 state=present
 # This will fix SSH host keys on login
 - hosts: "{{ myhosts.split('-')[0] }}-login-01"
   tasks:
@@ -26,3 +26,6 @@
     - name: Remove host ip in /root/.ssh/known_hosts
       shell: ssh-keygen -R {{host_ip.stdout}}
       when: host_ip.rc == 0
+- hosts: "{{ myhosts }}"
+  tasks:
+
