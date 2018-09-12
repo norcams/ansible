@@ -32,11 +32,12 @@
       create: no
       backup: yes
     notify:
+    - restart designate-worker
     - restart designate-api
     - restart designate-central
     - restart designate-mdns
-    - restart designate-pool-manager
     - restart designate-sink
+    - restart designate-producer
     when: role == "dns"
 
   - name: Patch Designate/Nova notification handler
@@ -45,14 +46,20 @@
       basedir: "/usr/lib/python2.7/site-packages/designate/notification_handler"
       strip: 1
     notify:
+    - restart designate-worker
     - restart designate-api
     - restart designate-central
     - restart designate-mdns
-    - restart designate-pool-manager
     - restart designate-sink
+    - restart designate-producer
     when: role == "dns"
 
   handlers:
+  - name: restart designate-worker
+    systemd:
+      name: "designate-worker"
+      state: restarted
+    when: role == "dns"
   - name: restart designate-api
     systemd:
       name: "designate-api"
@@ -68,13 +75,13 @@
       name: "designate-mdns"
       state: restarted
     when: role == "dns"
-  - name: restart designate-pool-manager
-    systemd:
-      name: "designate-pool-manager"
-      state: restarted
-    when: role == "dns"
   - name: restart designate-sink
     systemd:
       name: "designate-sink"
+      state: restarted
+    when: role == "dns"
+  - name: restart designate-producer
+    systemd:
+      name: "designate-producer"
       state: restarted
     when: role == "dns"
