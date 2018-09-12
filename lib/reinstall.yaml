@@ -1,5 +1,5 @@
 #
-# This will use himlarcli to prepare a host for reinstall
+# This will use himlarcli to reinstall a host.
 # {{ myhosts }} should be a host with himlarcli installed
 # {{ install_host }} should be the host you're reinstalling.
 #
@@ -7,6 +7,8 @@
 #
 - hosts: "{{ myhosts }}"
   tasks:
-    - name: Set foreman to reinstall
+    - name: Reinstalling node
       command: bin/python node.py reinstall -n {{install_host}} -y chdir={{himlarcli_path}}
       when: location != 'vagrant'
+    - name: Waiting for installation to finish
+      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
