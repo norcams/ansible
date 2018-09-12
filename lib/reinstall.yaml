@@ -8,7 +8,20 @@
 - hosts: "{{ myhosts }}"
   tasks:
     - name: Reinstalling node
-      command: bin/python node.py reinstall -n {{install_host}} -y chdir={{himlarcli_path}}
+      command: bin/python node.py reinstall -n {{ install_host.split('-')[1:] }} -y chdir={{himlarcli_path}}
       when: location != 'vagrant'
     - name: Waiting for installation to finish
       local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
+# This will fix SSH host keys on login
+- hosts: "{{ location }}-login-01"
+    - name: find ip
+      shell: getent hosts {{install_host}} | awk '{ print $1 }'
+      register: host_ip
+      ignore_errors: yes
+    - name: remove host fqdn in /root/.ssh/known_hosts
+      shell: ssh-keygen -R {{install_host}}.{{domain}}
+    - name: remove host name in /root/.ssh/known_hosts
+      shell: ssh-keygen -R {{install_host}}
+    - name: Remove host ip in /root/.ssh/known_hosts
+      shell: ssh-keygen -R {{host_ip.stdout}}
+      when: host_ip.rc == 0
