@@ -4,7 +4,8 @@
 function usage {
   echo
   echo 'Run this script to finish up deploying designate'
-  echo 'bin/patch-designate.sh <location>'
+  echo 'USAGE:'
+  echo '  bin/designate_deploy.sh <location>'
   echo
   exit 1
 }
@@ -16,7 +17,7 @@ if [ $# -ne 1 ]; then
 fi
 
 echo "====> Running playbook: lib/designate_pool_update.yaml"
-ansible-playbook -e "myhosts=${LOC}-dns-01" lib/designate_pool_update.yaml
+sudo ansible-playbook -e "myhosts=${LOC}-dns-01" lib/designate_pool_update.yaml
 
 ### We're not running the sink service
 #echo "====> Running playbook: lib/designate_sink_config.yaml"
