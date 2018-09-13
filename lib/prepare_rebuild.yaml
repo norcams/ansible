@@ -8,5 +8,5 @@
 - hosts: "{{ myhosts }}"
   tasks:
     - name: Set foreman to rebuild
-      command: bin/python rebuild.py {{install_host}} chdir={{himlarcli_path}}
+      command: bin/python node.py reinstall -n {{ install_host.split('-')[1:] | join("-") }} -y chdir={{himlarcli_path}}
       when: location != 'vagrant'
