@@ -18,5 +18,6 @@ fi
 echo "====> Running playbook: lib/designate_pool_update.yaml"
 ansible-playbook -e "myhosts=${LOC}-dns-01" lib/designate_pool_update.yaml
 
-echo "====> Running playbook: lib/designate_deploy.yaml"
-ansible-playbook -e "myhosts=${LOC}-identity,${LOC}-dns" lib/designate_deploy.yaml
+### We're not running the sink service
+#echo "====> Running playbook: lib/designate_sink_config.yaml"
+#ansible-playbook -e "myhosts=${LOC}-identity,${LOC}-dns" lib/designate_sink_config.yaml

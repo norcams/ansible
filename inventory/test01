@@ -9,6 +9,7 @@ test01-console
 test01-controller
 test01-dashboard
 test01-db
+test01-dns
 test01-identity
 test01-image
 test01-leaf
@@ -37,6 +38,7 @@ test01-cephmon
 test01-console
 test01-dashboard
 test01-db
+test01-dns
 test01-identity
 test01-image
 test01-logger
@@ -91,6 +93,9 @@ test01-dashboard-01
 [test01-db]
 test01-db-01
 test01-db-02
+
+[test01-dns]
+test01-dns-01
 
 [test01-identity]
 test01-identity-01
