@@ -1,0 +1,22 @@
+---
+# This playbook needs rpm package "python2-dns"
+
+- hosts: localhost
+  vars:
+    uhdc_a_records:
+    - db01
+    - db02
+    - test01-db-01.mgmt
+    - test01-db-02.mgmt
+
+  tasks:
+  - name: Remove unwanted A records in uhdc.no zone
+    nsupdate:
+      key_name: "rndc-key-login"
+      key_secret: "<key here>"
+      server: "{{ location }}-ns-01"
+      zone: "{{ location }}.uhdc.no"
+      record: "{{ item }}"
+      type: "A"
+      state: absent
+    loop: "{{ uhdc_a_records }}"
