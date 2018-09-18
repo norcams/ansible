@@ -1,0 +1,23 @@
+# Restart all of the openstack services
+# This was used when changing ip for db
+- hosts: "{{ myhosts }}"
+  gather_facts: False
+  tasks:
+    - systemd: name=httpd state=restarted
+      when: ("novactrl" in inventory_hostname) or
+            ("identity" in inventory_hostname) or
+            ("volume" in inventory_hostname) or
+            ("dashboard" in inventory_hostname) or
+            ("metric" in inventory_hostname)
+    - systemd: name=neutron-server state=restarted
+      when: ("network" in inventory_hostname)
+    - systemd: name={{item}} state=restarted
+      with_items:
+        - openstack-glance-api
+        - openstack-glance-registry
+      when: ("image" in inventory_hostname)
+    - systemd: name={{item}} state=restarted
+      with_items:
+        - openstack-nova-conductor
+        - openstack-nova-scheduler
+      when: ("novactrl" in inventory_hostname)
