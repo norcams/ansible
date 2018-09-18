@@ -9,7 +9,6 @@ test02-console
 test02-controller
 test02-dashboard
 test02-db
-test02-dns
 test02-identity
 test02-image
 test02-logger
@@ -37,7 +36,6 @@ test02-cephmon
 test02-console
 test02-dashboard
 test02-db
-test02-dns
 test02-identity
 test02-image
 test02-logger
@@ -87,13 +85,13 @@ test02-controller-03
 
 [test02-dashboard]
 test02-dashboard-01
+test02-dashboard-mgmt-01
 
 [test02-db]
 test02-db-01
 test02-db-02
-
-[test02-dns]
-test02-dns-01
+test02-db-global-01
+test02-db-regional-01
 
 [test02-identity]
 test02-identity-01
@@ -123,6 +121,7 @@ test02-network-02
 
 [test02-novactrl]
 test02-novactrl-01
+test02-novactrl-02
 
 [test02-ns]
 test02-ns-01
