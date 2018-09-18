@@ -6,8 +6,8 @@
     uhdc_a_records:
     - db01
     - db02
-    - test01-db-01.mgmt
-    - test01-db-02.mgmt
+    - "{{ location }}-db-01.mgmt"
+    - "{{ location }}-db-02.mgmt"
 
   tasks:
   - name: Remove unwanted A records in uhdc.no zone
