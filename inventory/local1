@@ -9,18 +9,12 @@ local1-controller
 local1-dashboard
 local1-db
 local1-identity
-local1-image
 local1-leaf
-local1-logger
 local1-login
 local1-monitor
 local1-mq
-local1-network
 local1-novactrl
-local1-object
 local1-proxy
-local1-volume
-local1-metric
 
 [local1-nodes:children]
 local1-access
@@ -31,18 +25,10 @@ local1-console
 local1-dashboard
 local1-db
 local1-identity
-local1-image
-local1-logger
 local1-monitor
 local1-mq
-local1-network
 local1-novactrl
 local1-proxy
-local1-volume
-local1-metric
-
-[local1-metric]
-local1-metric-01
 
 [local1-access]
 local1-access-01
@@ -71,20 +57,14 @@ local1-controller-03
 local1-dashboard-01
 
 [local1-db]
-local1-db-01
-local1-db-02
+local1-db-global-01
+local1-db-regional-01
 
 [local1-identity]
 local1-identity-01
 
-[local1-image]
-local1-image-01
-
 [local1-leaf]
 local1-leaf-01
-
-[local1-logger]
-local1-logger-01
 
 [local1-login]
 local1-login-01
@@ -95,20 +75,9 @@ local1-monitor-01
 [local1-mq]
 local1-mq-01
 
-[local1-network]
-local1-network-01
-
 [local1-novactrl]
 local1-novactrl-01
 
-[local1-object]
-local1-object-01
-local1-object-02
-local1-object-03
-
 [local1-proxy]
 local1-proxy-01
-
-[local1-volume]
-local1-volume-01
 
