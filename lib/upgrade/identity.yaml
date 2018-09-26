@@ -9,7 +9,7 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-identity-01" lib/upgrade/identity.yaml
 #
-# Last verified: 2018-07-18 (ansible version 2.4.2.0)
+# Last verified: 2018-09-25 (ansible version 2.6.3.0)
 #
 - import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ myhosts }}"
@@ -24,11 +24,18 @@
       with_items: "{{repo_files.stdout_lines | default([])}}"
     - name: 'Make sure puppet are enabled'
       command: "puppet agent --enable"
+      when: location != "vagrant"
     - name: 'Puppet kickstart runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
         FACTER_RUNMODE: kickstart
       ignore_errors: yes
+      when: location != "vagrant"
+    - name: Run puppet locally
+      command: /opt/himlar/provision/puppetrun.sh
+      environment:
+        FACTER_RUNMODE: kickstart
+      when: location == "vagrant"
     - name: 'Stop keystone webserver'
       systemd: name=httpd state=stopped
     - name: Purge old package
@@ -40,3 +47,7 @@
     - name: 'Puppet run'
       command: "puppet agent --onetime --no-daemonize"
       ignore_errors: yes
+      when: location != "vagrant"
+    - name: Run puppet locally
+      command: /opt/himlar/provision/puppetrun.sh
+      when: location == "vagrant"
