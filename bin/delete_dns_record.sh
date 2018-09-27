@@ -28,4 +28,4 @@ if [ $# -ne 3 ]; then
 fi
 
 echo "====> Running playbook: lib/delete_dns_record.yaml"
-sudo ansible-playbook -e "myhosts=${LOC}-admin-01 type=${TYPE} name=${NAME}" lib/delete_dns_record.yaml
+sudo ansible-playbook -e "myhosts=${LOC}-admin-01 type=${TYPE} record=${NAME}" lib/delete_dns_record.yaml
