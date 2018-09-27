@@ -1,22 +1,20 @@
 ---
-# This playbook needs rpm package "python2-dns"
-
-- hosts: localhost
+- hosts: "{{ myhosts }}"
   vars:
-    uhdc_a_records:
-    - db01
-    - db02
-    - "{{ location }}-db-01.mgmt"
-    - "{{ location }}-db-02.mgmt"
+    server: "{{ location }}-ns-01.{{ domain }}"
 
   tasks:
-  - name: Remove unwanted A records in uhdc.no zone
-    nsupdate:
-      key_name: "rndc-key-login"
-      key_secret: "<key here>"
-      server: "{{ location }}-ns-01"
-      zone: "{{ location }}.uhdc.no"
-      record: "{{ item }}"
-      type: "A"
-      state: absent
-    loop: "{{ uhdc_a_records }}"
+  - name: Delete A records
+    shell: "echo -e 'server {{ server }}\ndelete {{ item }} A\nsend' | nsupdate -k /etc/rndc-admin.key"
+    loop: "{{ unwanted_a_records }}"
+    when: unwanted_a_records is defined
+
+  - name: Delete AAAA records
+    shell: "echo -e 'server {{ server }}\ndelete {{ item }} AAAA\nsend' | nsupdate -k /etc/rndc-admin.key"
+    loop: "{{ unwanted_aaaa_records }}"
+    when: unwanted_aaaa_records is defined
+
+  - name: Delete CNAME records
+    shell: "echo -e 'server {{ server }}\ndelete {{ item }} CNAME\nsend' | nsupdate -k /etc/rndc-admin.key"
+    loop: "{{ unwanted_cname_records }}"
+    when: unwanted_cname_records is defined
