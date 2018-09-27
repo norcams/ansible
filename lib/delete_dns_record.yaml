@@ -1,0 +1,6 @@
+---
+- hosts: "{{ myhosts }}"
+
+  tasks:
+  - name: "Delete DNS record {{ name }}"
+    shell: "echo -e 'server {{ location }}-ns-01.{{ domain }}\ndelete {{ name }} {{ type }}\nsend' | nsupdate -k /etc/rndc-admin.key"

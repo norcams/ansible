@@ -1,9 +1,3 @@
 ---
 location: test01
 domain: mgmt.test01.uhdc.no
-ns_server: "{{ location }}-ns-01.{{ domain }}"
-unwanted_a_records:
-- "db01.test01.uhdc.no"
-- "db02.test01.uhdc.no"
-- "test01-db-01.mgmt.test01.uhdc.no"
-- "test01-db-02.mgmt.test01.uhdc.no"
