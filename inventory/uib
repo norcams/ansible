@@ -2,5 +2,10 @@
 uib-ha-01
 uib-ha-02
 
+[uib-ha-test]
+uib-ha-test-01
+uib-ha-test-02
+
 [uib:children]
 uib-ha
+uib-ha-test
