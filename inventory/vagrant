@@ -12,6 +12,9 @@ vagrant-dns-01      ansible_host=172.31.0.34
 [vagrant-identity]
 vagrant-identity-01 ansible_host=172.31.0.81
 
+[vagrant-monitor]
+vagrant-monitor-01 ansible_host=172.31.0.14
+
 [vagrant-novactrl]
 vagrant-novactrl-01 ansible_host=172.31.0.66
 
@@ -25,6 +28,7 @@ vagrant-report-01 ansible_host=172.31.0.22
 vagrant-compute
 vagrant-dns
 vagrant-identity
+vagrant-monitor
 vagrant-novactrl
 vagrant-proxy
 vagrant-report
@@ -33,6 +37,7 @@ vagrant-report
 vagrant-access
 vagrant-compute
 vagrant-dns
+vagrant-monitor
 vagrant-novactrl
 vagrant-identity
 vagrant-proxy
