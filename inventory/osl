@@ -22,6 +22,7 @@ osl-network
 osl-novactrl
 osl-ns
 osl-proxy
+osl-report
 osl-resolver
 osl-status
 osl-storage
@@ -49,6 +50,7 @@ osl-network
 osl-novactrl
 osl-ns
 osl-proxy
+osl-report
 osl-resolver
 osl-status
 osl-telemetry
@@ -94,8 +96,8 @@ osl-controller-04
 osl-dashboard-01
 
 [osl-db]
-osl-db-01
-osl-db-02
+osl-db-global-01
+osl-db-regional-01
 
 [osl-identity]
 osl-identity-01
@@ -133,12 +135,17 @@ osl-network-03
 
 [osl-novactrl]
 osl-novactrl-01
+osl-novactrl-02
+osl-novactrl-03
 
 [osl-ns]
 osl-ns-01
 
 [osl-proxy]
 osl-proxy-01
+
+[osl-report]
+osl-report-01
 
 [osl-resolver]
 osl-resolver-01
