@@ -100,8 +100,8 @@ bgo-controller-04
 bgo-dashboard-01
 
 [bgo-db]
-bgo-db-01
-bgo-db-02
+bgo-db-global-01
+bgo-db-regional-01
 
 [bgo-identity]
 bgo-identity-01
@@ -142,6 +142,8 @@ bgo-network-03
 
 [bgo-novactrl]
 bgo-novactrl-01
+bgo-novactrl-02
+bgo-novactrl-03
 
 [bgo-ns]
 bgo-ns-01
