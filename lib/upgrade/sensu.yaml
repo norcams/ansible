@@ -1,0 +1,36 @@
+#
+# This can be used to update sensu to new version. First update yum repo
+#
+# Example:
+# sudo ansible-playbook -e "myhosts=test01-nodes" lib/upgrade/sensu.yaml
+#
+# Last verified: 2018-10-01 (ansible version 2.6.3.0)
+#
+- hosts: "{{ myhosts }}"
+  tasks:
+  - name: Upgrade sensu package
+    yum:
+      name:         'sensu'
+      state:        latest
+      update_cache: yes
+    when: ansible_distribution == 'CentOS'
+  - name: Restart sensu-client service
+    systemd:
+      name:         'sensu-client'
+      state:        restarted
+    when: ansible_distribution == 'CentOS'
+  - name: Restart sensu-server on monitor
+    systemd:
+      name:         'sensu-server'
+      state:        restarted
+    when: '"monitor" in inventory_hostname'
+  - name: Restart sensu-api on monitor
+    systemd:
+      name:         'sensu-api'
+      state:        restarted
+    when: '"monitor" in inventory_hostname'
+  - name: Restart uchiwa dashboard on monitor
+    systemd:
+      name:         'uchiwa'
+      state:        restarted
+    when: '"monitor" in inventory_hostname'
