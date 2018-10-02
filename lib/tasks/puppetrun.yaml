@@ -1,0 +1,26 @@
+# This is a ansible task and must be included in a playbook.
+# For vagrant we use provision script and all other location use puppet agent.
+# runmode variable must be set to run anything other than default runmode.
+# Example usage of runmode=kickstart in tasks:
+# tasks:
+#   - import_tasks: tasks/puppetrun.yaml
+#     vars:
+#       runmode: kickstart
+#
+- name: Run puppet agent with runmode {{ runmode | default('default')}}
+  command: "puppet agent --onetime --no-daemonize"
+  environment:
+    FACTER_RUNMODE: "{{ runmode | default('default')}}"
+  ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
+  when: location != "vagrant"
+  register: puppet_debug
+- name: Run puppet provision script with runmode {{ runmode | default('default')}}
+  command: /opt/himlar/provision/puppetrun.sh
+  environment:
+        FACTER_RUNMODE: "{{ runmode | default('default')}}"
+  when: location == "vagrant"
+  register: puppet_debug
+- name: Puppetrun output (debug {{ debug_puppetrun | default('false')}})
+  debug:
+    var: puppet_debug.stdout_lines
+  when: debug_puppetrun is defined and debug_puppetrun
