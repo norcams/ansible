@@ -28,5 +28,5 @@ fi
 echo
 
 sudo ansible-playbook -e "myhosts=${location}-proxy-01 install_host=${host}" lib/reinstall.yaml
-sleep 120
+sleep 15
 sudo ansible-playbook -e "myhosts=${host}" lib/setup_identity.yaml
