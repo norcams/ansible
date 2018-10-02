@@ -7,7 +7,7 @@
 #     vars:
 #       runmode: kickstart
 #
-- name: Enable puppet on {{ ansible-hostname }}
+- name: Enable puppet
   command: puppet agent --enable
   when: enable_puppet | default(true)
 - name: Run puppet agent with runmode {{ runmode | default('default')}}

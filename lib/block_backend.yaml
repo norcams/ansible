@@ -8,7 +8,7 @@
   name: Remove {{ myhosts }} as backend in haproxy
   gather_facts: true
   tasks:
-     - name: Disable puppet on {{ ansible-hostname }}
+     - name: Disable puppet
        command: puppet agent --disable
      - name: Get last octet from mgmt ip of {{ myhosts }}
        local_action: shell getent hosts {{ myhosts }} | awk '{ print $1 }' | cut -d'.' -f4
