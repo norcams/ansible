@@ -1,15 +1,21 @@
 - hosts: "{{ myhosts }}"
+  name: Distrubute gpg keys and import into gpg keyring
   vars:
     repo_dir: '/opt/repo/secrets/nodes/'
   tasks:
     - name: copy secret files to host
-      copy: src={{repo_dir}}/{{ansible_hostname}}/token-secret-key.gpg dest=/tmp/token-secret-key.gpg owner=root group=root mode=600
+      copy:
+        src:    "{{repo_dir}}/{{ location }}-identity/token-secret-key.gpg"
+        dest:   "/tmp/token-secret-key.gpg"
+        owner:  "root" 
+        group:  "root" 
+        mode:   0600
     - name: check if there already is a token key
       shell: gpg --list-secret-keys --fingerprint --with-colon 'UH-IaaS Token Distributor' | awk -F':' '/^fpr:/ { print $10 }'
       register: token_key_id
     - name: delete existing gpg-key if it exists
       shell: gpg --batch --yes --delete-secret-keys {{token_key_id.stdout}}
-      when: token_key_id.stdout | length > 0
+      when: token_key_id.stdout is defined and token_key_id.stdout | length > 0
     - name: import gpg-key
       shell: gpg --import /tmp/token-secret-key.gpg
     - name: delete after importing

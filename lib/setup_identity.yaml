@@ -1,0 +1,24 @@
+#
+# Setup a new identity node with gpg keys and fernet/credential tokens
+#
+# Example:
+# sudo ansible-playbook -e myhosts=test-identity-02 lib/identity_node.yaml
+#
+- import_playbook: push_secrets.yaml # needed when using selfsigned CA (eg. local)
+- import_playbook: push_gpg_keys.yaml
+- import_playbook: block_backend.yaml
+- hosts: "{{ myhosts }}"
+  name: Setup a new identity node
+  gather_facts: false
+  tasks:
+    - import_tasks: tasks/puppetrun.yaml
+    - name: Pull fernet keys from db
+      command: "/usr/local/sbin/token_dist.sh fernet"
+    - name: Pull credential keys from db
+      command: "/usr/local/sbin/token_dist.sh credentials"
+- hosts: "{{ myhosts.split('-')[0] }}-api-01"
+  name: Run puppet on {{ myhosts.split('-')[0] }}-api-01 to reverse the backend block
+  gather_facts: false
+  tasks:
+     - import_tasks: tasks/puppetrun.yaml
+      

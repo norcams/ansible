@@ -1,0 +1,20 @@
+#
+# Based on myhosts variable we will block the trp address for myhosts in
+# haproxy on api-01. We also stop puppet on api-01 to make the change active
+#
+# To reverse this change run the puppetrun task on api-01
+#
+- hosts: "{{ myhosts.split('-')[0] }}-api-01"
+  name: Remove {{ myhosts }} as backend in haproxy
+  gather_facts: true
+  tasks:
+     - name: Disable puppet
+       command: puppet agent --disable
+     - name: Get last octet from mgmt ip of {{ myhosts }}
+       local_action: shell getent hosts {{ myhosts }} | awk '{ print $1 }' | cut -d'.' -f4
+       register: node_last_octet
+     - name: Set {{ myhosts }} trp ip fact
+       set_fact:
+          identity_trp1: "{{ansible_eth1.ipv4.network.split('.')[:3]}} + {{node_last_octet.stdout_lines}}"
+     - name: Block {{ myhosts }} as backend in iptables
+       command: iptables -I OUTPUT 1 -d {{ identity_trp1 | join('.') }}/32 -m state --state NEW -j REJECT
