@@ -1,8 +1,17 @@
 [vagrant-access]
 vagrant-access-01 ansible_host=172.31.0.56
 
+[vagrant-api]
+vagrant-api-01 ansible_host=172.31.0.86
+
 [vagrant-compute]
 vagrant-compute-01 ansible_host=172.31.0.103
+
+[vagrant-db-global]
+vagrant-db-global-01 ansible_host=172.31.0.41
+
+[vagrant-db-regional]
+vagrant-db-regional-01 ansible_host=172.31.0.42
 
 [vagrant-dns]
 vagrant-dns-01      ansible_host=172.31.0.34
@@ -11,6 +20,7 @@ vagrant-dns-01      ansible_host=172.31.0.34
 
 [vagrant-identity]
 vagrant-identity-01 ansible_host=172.31.0.81
+vagrant-identity-02 ansible_host=172.31.0.82
 
 [vagrant-monitor]
 vagrant-monitor-01 ansible_host=172.31.0.14
@@ -25,8 +35,12 @@ vagrant-proxy-01 ansible_host=172.31.0.12
 vagrant-report-01 ansible_host=172.31.0.22
 
 [vagrant-nodes:children]
+vagrant-access
+vagrant-api
 vagrant-compute
 vagrant-dns
+vagrant-db-global
+vagrant-db-regional
 vagrant-identity
 vagrant-monitor
 vagrant-novactrl
@@ -35,7 +49,10 @@ vagrant-report
 
 [vagrant:children]
 vagrant-access
+vagrant-api
 vagrant-compute
+vagrant-db-global
+vagrant-db-regional
 vagrant-dns
 vagrant-monitor
 vagrant-novactrl
