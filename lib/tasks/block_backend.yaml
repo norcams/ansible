@@ -1,0 +1,20 @@
+# This is a ansible task and must be included in a playbook.
+# node variable is the hostname of the backend
+# Example:
+# tasks:
+#   - import_tasks: tasks/block_backend.yaml
+#     vars:
+#       node: test01-identity-02
+#
+- name: Disable puppet
+  command: puppet agent --disable
+- name: Get last octet from mgmt ip of {{ node }}
+  local_action: shell getent hosts {{ node }} | awk '{ print $1 }' | cut -d'.' -f4
+  register: node_last_octet
+- name: Set {{ node }} trp ip fact
+  set_fact:
+    node_trp1: "{{ansible_eth1.ipv4.network.split('.')[:3]}} + {{node_last_octet.stdout_lines}}"
+  when: "'stdout_lines' in node_last_octet and node_last_octet"
+- name: Block {{ node }} as backend in iptables
+  command: iptables -I OUTPUT 1 -d {{ node_trp1 | join('.') }}/32 -m state --state NEW -j REJECT
+  when: node_trp1 is defined

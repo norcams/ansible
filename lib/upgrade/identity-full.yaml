@@ -1,0 +1,105 @@
+# This will try to upgrade keystone without downtime
+#
+# Example:
+# ansible-playbook -e location=test01 lib/upgrade/identity-full.yaml
+#
+# Vagrant example:
+# ansible-playbook -K -e location=vagrant lib/upgrade/identity-full.yaml
+#
+# Variables:
+#   location: name of location (mandatory)
+
+# Step 0: stop puppet on all identity nodes
+- import_playbook: ../toggle_puppet.yaml
+  vars:
+    myhosts:  "{{ location }}-identity"
+    action:   disable
+  when: location != 'vagrant'
+
+# Step 1: block backend
+- hosts: "{{ location }}-api-01"
+  tasks:
+    - import_tasks: ../tasks/block_backend.yaml
+      vars:
+        node: "{{location}}-identity-01"
+
+# Step 2: run backup on login
+- hosts: "{{ location }}-login-01"
+  tasks:
+    - shell: "/usr/local/sbin/db-dump.sh {{location}}-db-global-01 >/dev/null"
+      when: location != 'vagrant'
+
+# Step 3: run on db to allow schema change
+- hosts: "{{ location }}-db-global-01"
+  gather_facts: false
+  tasks:
+    - command: mysql --execute='set global log_bin_trust_function_creators=1'
+
+# Step 4: upgrade identity-01
+- hosts: "{{ location }}-identity-01"
+  gather_facts: false
+  tasks:
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - name: 'Stop keystone webserver'
+      systemd: name=httpd state=stopped
+    - name: Run db_sync expand
+      command: keystone-manage db_sync --expand
+    - name: Run db_sync migrate
+      command: keystone-manage db_sync --migrate
+    - name: Purge old package
+      yum: name=openstack-keystone state=absent
+    - name: 'Remove /etc/keystone/'
+      file: name=/etc/keystone state=absent
+    - import_tasks: ../tasks/puppetrun.yaml
+
+# Step 5: enable all backends on api
+- hosts: "{{ location }}-api-01"
+  gather_facts: false
+  tasks:
+     - import_tasks: ../tasks/puppetrun.yaml
+
+# Step 6: disable rest of the backends
+- hosts: "{{ location }}-api-01"
+  tasks:
+    - import_tasks: ../tasks/block_backend.yaml
+      vars:
+        node: "{{location}}-identity-02"
+      when: "location+'-identity-02' in groups[location+'-identity']"
+    - import_tasks: ../tasks/block_backend.yaml
+      vars:
+        node: "{{location}}-identity-03"
+      when: "location+'-identity-03' in groups[location+'-identity']"
+
+# Step 7: upgrade the rest of the identity nodes
+- hosts: "{{ location }}-identity,!{{ location }}-identity-01"
+  gather_facts: false
+  tasks:
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - name: 'Stop keystone webserver'
+      systemd: name=httpd state=stopped
+    - name: Purge old package
+      yum: name=openstack-keystone state=absent
+    - name: 'Remove /etc/keystone/'
+      file: name=/etc/keystone state=absent
+    - import_tasks: ../tasks/puppetrun.yaml
+
+# Step 8: end the upgrade
+- hosts: "{{ location }}-identity-01"
+  gather_facts: false
+  tasks:
+    - name: Run db_sync contract
+      command: keystone-manage db_sync --contract
+
+# Step 9: run on db to disable schema change
+- hosts: "{{ location }}-db-global-01"
+  gather_facts: false
+  tasks:
+    - command: mysql --execute='set global log_bin_trust_function_creators=0'
