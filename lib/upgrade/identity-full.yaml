@@ -44,6 +44,7 @@
   vars:
     multi_region: 'none'
   tasks:
+    - systemd: name=crond state=stopped
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
@@ -66,6 +67,7 @@
       command: "/usr/local/sbin/token_dist.sh fernet slave"
     - name: Pull credential keys from db
       command: "/usr/local/sbin/token_dist.sh credentials slave"
+    - systemd: name=crond state=started
 
 # Step 5: enable all backends on api
 - hosts: "{{ location }}-api-01"
@@ -89,6 +91,7 @@
 - hosts: "{{ location }}-identity,!{{ location }}-identity-01"
   gather_facts: false
   tasks:
+    - systemd: name=crond state=stopped
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
@@ -105,6 +108,7 @@
       command: "/usr/local/sbin/token_dist.sh fernet slave"
     - name: Pull credential keys from db
       command: "/usr/local/sbin/token_dist.sh credentials slave"
+    - systemd: name=crond state=started
 
 # Step 8: enable all backends on api
 - hosts: "{{ location }}-api-01"
