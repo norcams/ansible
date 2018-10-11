@@ -4,7 +4,7 @@
 #
 # To reverse this change run the puppetrun task on api-01
 #
-- hosts: "mysubhosts | {{ myhosts.split('-')[0] }}-api-01"
+- hosts: "{{ myhosts.split('-')[0] }}-api-01"
   name: Remove {{ myhosts }} as backend in haproxy
   gather_facts: true
   tasks:
