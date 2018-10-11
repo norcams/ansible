@@ -9,7 +9,7 @@
   gather_facts: true
   tasks:
      - name: Disable puppet
-       command: puppet agent --disable
+       command: puppet agent --disable "disabled by ansible => block access to {{ myhosts }} backend"
      - name: Get last octet from mgmt ip of {{ myhosts }}
        local_action: shell getent hosts {{ myhosts }} | awk '{ print $1 }' | cut -d'.' -f4
        register: node_last_octet
