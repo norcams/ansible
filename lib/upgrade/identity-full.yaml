@@ -62,6 +62,10 @@
     - name: 'Remove /etc/keystone/'
       file: name=/etc/keystone state=absent
     - import_tasks: ../tasks/puppetrun.yaml
+    - name: Pull fernet keys from db
+      command: "/usr/local/sbin/token_dist.sh fernet slave"
+    - name: Pull credential keys from db
+      command: "/usr/local/sbin/token_dist.sh credentials slave"
 
 # Step 5: enable all backends on api
 - hosts: "{{ location }}-api-01"
@@ -97,8 +101,18 @@
     - name: 'Remove /etc/keystone/'
       file: name=/etc/keystone state=absent
     - import_tasks: ../tasks/puppetrun.yaml
+    - name: Pull fernet keys from db
+      command: "/usr/local/sbin/token_dist.sh fernet slave"
+    - name: Pull credential keys from db
+      command: "/usr/local/sbin/token_dist.sh credentials slave"
 
-# Step 8: end the upgrade
+# Step 8: enable all backends on api
+- hosts: "{{ location }}-api-01"
+  gather_facts: false
+  tasks:
+     - import_tasks: ../tasks/puppetrun.yaml
+
+# Step 9: end the upgrade
 - hosts: "{{ location }}-identity-01"
   gather_facts: false
   vars:
@@ -108,7 +122,7 @@
       command: keystone-manage db_sync --contract
       when: (multi_region == 'none') or (multi_region == 'last')
 
-# Step 9: run on db to disable schema change
+# Step 10: run on db to disable schema change
 - hosts: "{{ location }}-db-global-01"
   gather_facts: false
   vars:
