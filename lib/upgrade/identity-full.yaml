@@ -8,6 +8,9 @@
 #
 # Variables:
 #   location: name of location (mandatory)
+#
+# For multi-region this is mandatory
+#   multi_region: default 'none', use 'first', 'middle' or 'last'
 
 # Step 0: stop puppet on all identity nodes
 - import_playbook: ../toggle_puppet.yaml
@@ -38,6 +41,8 @@
 # Step 4: upgrade identity-01
 - hosts: "{{ location }}-identity-01"
   gather_facts: false
+  vars:
+    multi_region: 'none'
   tasks:
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
@@ -48,8 +53,10 @@
       systemd: name=httpd state=stopped
     - name: Run db_sync expand
       command: keystone-manage db_sync --expand
+      when: (multi_region == 'none') or (multi_region == 'first')
     - name: Run db_sync migrate
       command: keystone-manage db_sync --migrate
+      when: (multi_region == 'none') or (multi_region == 'first')
     - name: Purge old package
       yum: name=openstack-keystone state=absent
     - name: 'Remove /etc/keystone/'
@@ -94,12 +101,18 @@
 # Step 8: end the upgrade
 - hosts: "{{ location }}-identity-01"
   gather_facts: false
+  vars:
+    multi_region: 'none'
   tasks:
     - name: Run db_sync contract
       command: keystone-manage db_sync --contract
+      when: (multi_region == 'none') or (multi_region == 'last')
 
 # Step 9: run on db to disable schema change
 - hosts: "{{ location }}-db-global-01"
   gather_facts: false
+  vars:
+    multi_region: 'none'
   tasks:
     - command: mysql --execute='set global log_bin_trust_function_creators=0'
+      when: (multi_region == 'none') or (multi_region == 'last')
