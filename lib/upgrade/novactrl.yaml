@@ -11,9 +11,8 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-novactrl-01" lib/upgrade/novactrl.yaml
 #
-# Last verified: 2018-07-18 (ansible version 2.4.2.0)
+# Last verified: 2018-09-26 (ansible version 2.6.3.0)
 #
-- import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
@@ -23,13 +22,9 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
-    - name: 'Enable puppet'
-      command: "puppet agent --enable"
-    - name: 'Puppet kickstart runmode'
-      command: "puppet agent --onetime --no-daemonize"
-      environment:
-        FACTER_RUNMODE: kickstart
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
     - name: 'Stop nova API service'
       systemd: name=openstack-nova-api state=stopped
       ignore_errors: yes
@@ -48,9 +43,7 @@
       file: name=/etc/nova state=absent
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
     - name: "db sync"
       when: '"novactrl" in inventory_hostname'
       command: "nova-manage db sync"
@@ -62,8 +55,5 @@
       command: "nova-manage api_db sync"
     - name: "db online_data_migrations"
       when: '"novactrl" in inventory_hostname'
-      command: "nova-manage db online_data_migrations"    
-    - name: 'Puppet run again'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
-
+      command: "nova-manage db online_data_migrations"
+    - import_tasks: ../tasks/puppetrun.yaml
