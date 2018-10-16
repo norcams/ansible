@@ -1,0 +1,23 @@
+diff --git a/openstack_dashboard/templates/header/_user_menu.html b/openstack_dashboard/templates/header/_user_menu.html
+index 1f7d7f41d..716ea9f4f 100644
+--- a/openstack_dashboard/templates/header/_user_menu.html
++++ b/openstack_dashboard/templates/header/_user_menu.html
+@@ -34,18 +34,6 @@
+           </a>
+         </li>
+       {% endif %}
+-      <li>
+-        <a href="{% url 'horizon:project:api_access:openrcv2' %}">
+-          <span class="fa fa-download"></span>
+-          {% trans "OpenStack RC File v2" %}
+-        </a>
+-      </li>
+-      <li>
+-        <a href="{% url 'horizon:project:api_access:openrc' %}">
+-          <span class="fa fa-download"></span>
+-          {% trans "OpenStack RC File v3" %}
+-        </a>
+-      </li>
+       {% themes as available_themes %}
+       {% if available_themes and available_themes|length > 1 %}
+         <li class="divider"></li>
