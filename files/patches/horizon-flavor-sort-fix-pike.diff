@@ -1,0 +1,64 @@
+From cf06d278af6952a8df8ae4f7367d0873d497cbbc Mon Sep 17 00:00:00 2001
+From: Feilong Wang <flwang@catalyst.net.nz>
+Date: Tue, 29 Aug 2017 15:57:27 +1200
+Subject: [PATCH] Get flavor list sorted when launching instance
+
+Currently, the flavor list is random on the panel of booting
+instance, which is not a good experience for end user. This
+patch fixes it and adds test accordingly.
+
+Closes-Bug: #1715042
+
+Change-Id: Id5369ab75487d214a3395ba507b4394d4497903e
+---
+
+diff --git a/openstack_dashboard/api/rest/nova.py b/openstack_dashboard/api/rest/nova.py
+index a5fbdca..4074d58 100644
+--- a/openstack_dashboard/api/rest/nova.py
++++ b/openstack_dashboard/api/rest/nova.py
+@@ -25,6 +25,8 @@
+ from openstack_dashboard.api.rest import json_encoder
+ from openstack_dashboard.api.rest import urls
+ from openstack_dashboard.api.rest import utils as rest_utils
++from openstack_dashboard.dashboards.project.instances \
++    import utils as instances_utils
+ from openstack_dashboard.usage import quotas
+
+
+@@ -543,6 +545,8 @@
+         get_extras = bool(get_extras and get_extras.lower() == 'true')
+         flavors = api.nova.flavor_list(request, is_public=is_public,
+                                        get_extras=get_extras)
++        flavors = instances_utils.sort_flavor_list(request, flavors,
++                                                   with_menu_label=False)
+         result = {'items': []}
+         for flavor in flavors:
+             d = flavor.to_dict()
+diff --git a/openstack_dashboard/dashboards/project/instances/utils.py b/openstack_dashboard/dashboards/project/instances/utils.py
+index 3c60091..647a264 100644
+--- a/openstack_dashboard/dashboards/project/instances/utils.py
++++ b/openstack_dashboard/dashboards/project/instances/utils.py
+@@ -34,7 +34,7 @@
+         return []
+
+
+-def sort_flavor_list(request, flavors):
++def sort_flavor_list(request, flavors, with_menu_label=True):
+     """Utility method to sort a list of flavors.
+
+     By default, returns the available flavors, sorted by RAM usage (ascending).
+@@ -57,8 +57,12 @@
+                 return get_key(flavor, sort_key)
+         else:
+             key = sort_key
+-        flavor_list = [(flavor.id, '%s' % flavor.name)
+-                       for flavor in sorted(flavors, key=key, reverse=rev)]
++
++        if with_menu_label:
++            flavor_list = [(flavor.id, '%s' % flavor.name)
++                           for flavor in sorted(flavors, key=key, reverse=rev)]
++        else:
++            flavor_list = sorted(flavors, key=key, reverse=rev)
+         return flavor_list
+     except Exception:
+         exceptions.handle(request,
