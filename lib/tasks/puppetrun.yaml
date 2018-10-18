@@ -14,13 +14,15 @@
   command: "puppet agent --onetime --no-daemonize"
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
+    http_proxy: "{{ http_proxy | default(omit) }}"
+    https_proxy: "{{ http_proxy | default(omit) }}"
   ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
   when: location != "vagrant"
   register: puppet_debug
 - name: Run puppet provision script with runmode {{ runmode | default('default')}}
   command: /opt/himlar/provision/puppetrun.sh
   environment:
-        FACTER_RUNMODE: "{{ runmode | default('default')}}"
+    FACTER_RUNMODE: "{{ runmode | default('default')}}"
   when: location == "vagrant"
   register: puppet_debug
 - name: Puppetrun output (debug {{ debug_puppetrun | default('false')}})
