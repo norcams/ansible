@@ -13,6 +13,7 @@
 - name: Get proxy mgmt ip of {{ node }}
   local_action: shell getent hosts "{{ location }}-proxy-01" | awk '{ print $1 }'
   register: http_proxy
+  when: '"compute" in inventory_hostname'
 - name: Run puppet agent with runmode {{ runmode | default('default')}}
   command: "puppet agent --onetime --no-daemonize"
   environment:
@@ -26,6 +27,8 @@
   command: /opt/himlar/provision/puppetrun.sh
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
+    http_proxy: "{{ http_proxy | default(omit) }}"
+    https_proxy: "{{ http_proxy | default(omit) }}"
   when: location == "vagrant"
   register: puppet_debug
 - name: Puppetrun output (debug {{ debug_puppetrun | default('false')}})
