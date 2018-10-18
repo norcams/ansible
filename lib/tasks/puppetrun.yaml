@@ -27,8 +27,6 @@
   command: /opt/himlar/provision/puppetrun.sh
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
-    http_proxy: "{{ http_proxy | default(omit) }}"
-    https_proxy: "{{ http_proxy | default(omit) }}"
   when: location == "vagrant"
   register: puppet_debug
 - name: Puppetrun output (debug {{ debug_puppetrun | default('false')}})
