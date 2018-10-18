@@ -1,32 +1,27 @@
 [local2:children]
 local2-admin
 local2-api
-local2-compute
 local2-controller
-local2-dashboard
 local2-db
+local2-dns
 local2-identity
-local2-image
 local2-leaf
 local2-login
 local2-mq
-local2-network
 local2-novactrl
+local2-ns
 local2-proxy
-local2-volume
 
 [local2-nodes:children]
 local2-admin
 local2-api
-local2-dashboard
 local2-db
+local2-dns
 local2-identity
-local2-image
 local2-mq
-local2-network
 local2-novactrl
+local2-ns
 local2-proxy
-local2-volume
 
 [local2-admin]
 local2-admin-01
@@ -34,24 +29,19 @@ local2-admin-01
 [local2-api]
 local2-api-01
 
-[local2-compute]
-local2-compute-01
-
 [local2-controller]
 local2-controller-01
 
-[local2-dashboard]
-local2-dashboard-01
-
 [local2-db]
-local2-db-01
-local2-db-02
+local2-db-global-01
+local2-db-regional-01
+
+[local2-dns]
+local2-dns-01
 
 [local2-identity]
 local2-identity-01
-
-[local2-image]
-local2-image-01
+local2-identity-02
 
 [local2-leaf]
 local2-leaf-01
@@ -62,15 +52,12 @@ local2-login-01
 [local2-mq]
 local2-mq-01
 
-[local2-network]
-local2-network-01
-
 [local2-novactrl]
 local2-novactrl-01
 
+[local2-ns]
+local2-ns-01
+
 [local2-proxy]
 local2-proxy-01
-
-[local2-volume]
-local2-volume-01
 
