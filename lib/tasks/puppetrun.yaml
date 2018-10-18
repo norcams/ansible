@@ -10,6 +10,9 @@
 - name: Enable puppet
   command: puppet agent --enable
   when: enable_puppet | default(true)
+- name: Get proxy mgmt ip of {{ node }}
+  local_action: shell getent hosts "{{ location }}-proxy-01" | awk '{ print $1 }'
+  register: http_proxy
 - name: Run puppet agent with runmode {{ runmode | default('default')}}
   command: "puppet agent --onetime --no-daemonize"
   environment:
