@@ -1,0 +1,12 @@
+- yum: name=patch state=present
+- name: patch file
+  patch: >
+    src="{{patchfile}}"
+    dest="{{dest}}"
+  when: dest is defined
+- name: patch in basedir
+  patch: >
+    src="{{patchfile}}"
+    basedir="{{basedir}}"
+    strip=1
+  when: basedir is defined
