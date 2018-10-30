@@ -24,11 +24,9 @@
       with_items: "{{repo_files.stdout_lines | default([])}}"
     - name: 'Make sure puppet are enabled'
       command: "puppet agent --enable"
-    - name: 'Puppet kickstart runmode'
-      command: "puppet agent --onetime --no-daemonize"
-      environment:
-        FACTER_RUNMODE: kickstart
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
     - name: 'Stop httpd'
       systemd: name=httpd state=stopped
     - name: Purge old package
@@ -37,18 +35,17 @@
       file: name=/etc/openstack-dashboard state=absent
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
-    - import_tasks: ../patch.yaml
+    - import_playbook: ../patch.yaml
       vars:
         patchfile: '../../files/patches/horizon-flavor-sort-fix-pike.diff'
         basedir: '/usr/share/openstack-dashboard'
-    - import_tasks: ../patch.yaml
+    - import_playbook: ../patch.yaml
       vars:
         patchfile: '../../files/patches/horizon-remove-rc-download.diff'
         basedir: '/usr/share/openstack-dashboard'
-    - import_tasks: ../patch.yaml
+    - import_playbook: ../patch.yaml
       vars:
         patchfile: '../../files/patches/horizon-tables-size.diff'
         basedir: '/usr/share/openstack-dashboard'
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+
