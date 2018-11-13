@@ -24,9 +24,16 @@
       systemd: name=openstack-nova-compute state=stopped
     - name: 'Stop openstack-nova-metadata-api'
       systemd: name=openstack-nova-metadata-api state=stopped
-    - import_tasks: ../tasks/puppetrun.yaml
-      vars:
-        runmode: 'kickstart'
+    - name: 'Enable puppet'
+      command: "puppet agent --enable"
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+#    - import_tasks: ../tasks/puppetrun.yaml
+#      vars:
+#        runmode: 'kickstart'
 #    - name: 'Yum update'
 #      yum: name=* state=latest update_cache=yes
     - name: Purge old openstack-nova-common
@@ -35,8 +42,14 @@
       yum: name=openstack-nova-api state=absent
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
-    - import_tasks: ../tasks/puppetrun.yaml
-    - import_tasks: ../tasks/puppetrun.yaml
+#    - import_tasks: ../tasks/puppetrun.yaml
+#    - import_tasks: ../tasks/puppetrun.yaml
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
     - name: 'Restart metadata-api'
       systemd: name=openstack-nova-metadata-api state=restarted
 
