@@ -98,6 +98,7 @@ bgo-controller-04
 
 [bgo-dashboard]
 bgo-dashboard-01
+bgo-dashboard-mgmt-01
 
 [bgo-db]
 bgo-db-global-01
