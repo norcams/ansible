@@ -88,8 +88,6 @@ test02-dashboard-01
 test02-dashboard-mgmt-01
 
 [test02-db]
-test02-db-01
-test02-db-02
 test02-db-global-01
 test02-db-regional-01
 
@@ -99,6 +97,7 @@ test02-identity-02
 
 [test02-image]
 test02-image-01
+test02-image-02
 
 [test02-logger]
 test02-logger-01
@@ -118,6 +117,7 @@ test02-nat-linux-01
 [test02-network]
 test02-network-01
 test02-network-02
+test02-network-03
 
 [test02-novactrl]
 test02-novactrl-01
@@ -151,4 +151,5 @@ test02-torack-01
 
 [test02-volume]
 test02-volume-01
+test02-volume-02
 
