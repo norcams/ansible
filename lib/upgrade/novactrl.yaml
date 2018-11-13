@@ -11,7 +11,7 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-novactrl-01" lib/upgrade/novactrl.yaml
 #
-# Last verified: 2018-09-26 (ansible version 2.6.3.0)
+# Last verified: 2018-11-13 (ansible version 2.6.1.0)
 #
 - hosts: "{{ myhosts }}"
   gather_facts: no
@@ -22,9 +22,13 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
-    - import_tasks: ../tasks/puppetrun.yaml
-      vars:
-        runmode: 'kickstart'
+    - name: 'Enable puppet'
+      command: "puppet agent --enable"
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
     - name: 'Stop nova API service'
       systemd: name=openstack-nova-api state=stopped
       ignore_errors: yes
@@ -33,6 +37,9 @@
       ignore_errors: yes
     - name: 'Stop nova consoleauth service'
       systemd: name=openstack-nova-consoleauth state=stopped
+      ignore_errors: yes
+    - name: 'Disable nova consoleauth service'
+      systemd: name=openstack-nova-consoleauth enabled=no
       ignore_errors: yes
     - name: 'Stop nova conductor service'
       systemd: name=openstack-nova-conductor state=stopped
@@ -43,7 +50,10 @@
       file: name=/etc/nova state=absent
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
-    - import_tasks: ../tasks/puppetrun.yaml
+    #- import_tasks: ../tasks/puppetrun.yaml
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
     - name: "db sync"
       when: '"novactrl" in inventory_hostname'
       command: "nova-manage db sync"
@@ -56,4 +66,8 @@
     - name: "db online_data_migrations"
       when: '"novactrl" in inventory_hostname'
       command: "nova-manage db online_data_migrations"
-    - import_tasks: ../tasks/puppetrun.yaml
+    #- import_tasks: ../tasks/puppetrun.yaml
+    - name: 'Puppet run'
+      command: "puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+
