@@ -94,6 +94,7 @@ osl-controller-04
 
 [osl-dashboard]
 osl-dashboard-01
+osl-dashboard-mgmt-01
 
 [osl-db]
 osl-db-global-01
@@ -162,6 +163,8 @@ osl-storage-02
 osl-storage-03
 osl-storage-04
 osl-storage-05
+osl-storage-06
+osl-storage-07
 
 [osl-telemetry]
 osl-telemetry-01

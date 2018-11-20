@@ -53,7 +53,6 @@ test01-proxy
 test01-resolver
 test01-status
 test01-telemetry
-test01-torack
 test01-volume
 
 [test01-access]
@@ -89,10 +88,11 @@ test01-controller-03
 
 [test01-dashboard]
 test01-dashboard-01
+test01-dashboard-mgmt-01
 
 [test01-db]
-test01-db-01
-test01-db-02
+test01-db-global-01
+test01-db-regional-01
 
 [test01-dns]
 test01-dns-01
@@ -125,9 +125,11 @@ test01-nat-linux-01
 [test01-network]
 test01-network-01
 test01-network-02
+test01-network-03
 
 [test01-novactrl]
 test01-novactrl-01
+test01-novactrl-02
 
 [test01-ns]
 test01-ns-01
@@ -143,6 +145,7 @@ test01-resolver-02
 test01-status-01
 
 [test01-storage]
+test01-storage-01
 test01-storage-02
 test01-storage-03
 test01-storage-04
