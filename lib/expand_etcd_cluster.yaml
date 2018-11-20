@@ -1,0 +1,40 @@
+#
+# This will expand an etcd-cluster to include a new member.
+#
+# Read this http://iaas.readthedocs.io/en/latest/team/operations/etcd.htm
+# before running.
+#
+# Example use:
+#
+# sudo ansible-playbook -e "manage_from=bgo-network-01" -e "member=bgo-network-02" -e "member_ip=172.18.0.72"
+#
+- hosts: "{{ manage_from }}"
+  gather_facts: False
+  tasks:
+  - name: Add new member
+    command: etcdctl member add {{ member }} "{{ 'http://' + member_ip + ':2380' }}"
+
+- hosts: "{{ member }}"
+  gather_facts: False
+  vars:
+    etcd_path: "{{ '/var/lib/etcd/' + member + '.etcd' }}"
+  tasks:
+  - name: Disable puppet agent
+    command: /opt/puppetlabs/bin/puppet agent --disable
+  - name: Stop etcd-service
+    systemd:
+      state: stopped
+      name: etcd
+  - name: Empty /var/lib/etcd
+    file:
+      path: "{{ etcd_path }}"
+      state: absent
+  - name: Bootstrap member
+    become_user: etcd
+    command: /usr/local/sbin/bootstrap-etcd-member
+    async: 30
+    ignore_errors: yes
+  - name: Enable puppet agent
+    command: /opt/puppetlabs/bin/puppet agent --enable
+  - puppet:
+    ignore_errors: yes
