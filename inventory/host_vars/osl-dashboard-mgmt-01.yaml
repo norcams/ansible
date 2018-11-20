@@ -1,0 +1,17 @@
+---
+secret_files:
+  cert:
+    path:  '/etc/pki/tls/certs/dashboard.mgmt.osl.uhdc.no.cert.pem'
+    mode:  '0644'
+    owner: 'root'
+    group: 'root'
+  key:
+    path:  '/etc/pki/tls/private/dashboard.mgmt.osl.uhdc.no.key.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
+  cafile:
+    path:  '/etc/pki/tls/certs/cachain.pem'
+    mode:  '0644'
+    owner: 'root'
+    group: 'root'
