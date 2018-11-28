@@ -1,0 +1,23 @@
+# Restart all of the services when etcd-cluster is on netwerk
+- hosts: "{{ myhosts }}"
+  gather_facts: False
+  tasks:
+  #  - service: name=etcd status=started enabled=yes
+    - systemd: name=etcd state=restarted
+      when: ("network" in inventory_hostname)
+    - pause: minutes=1
+    - systemd: name=etcd-grpc-proxy
+      when: ("network" in inventory_hostname)
+    - pause: minutes=1
+    - systemd: name=calico-dhcp-agent
+      when: ("network" in inventory_hostname)
+    - pause: minutes=1
+    - systemd: name=calico-felix
+      when: ("network" in inventory_hostname)
+    - pause: minutes=1
+    - systemd: name=openstack-nova-compute
+      when: ("network" in inventory_hostname)
+    - pause: minutes=1
+    - systemd: name=openstack-nova-metadata-api
+      when: ("network" in inventory_hostname)
+    - pause: minutes=1
