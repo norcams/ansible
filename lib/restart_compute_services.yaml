@@ -2,22 +2,15 @@
 - hosts: "{{ myhosts }}"
   gather_facts: False
   tasks:
-  #  - service: name=etcd status=started enabled=yes
     - systemd: name=etcd state=restarted
-      when: ("network" in inventory_hostname)
     - pause: minutes=1
-    - systemd: name=etcd-grpc-proxy
-      when: ("network" in inventory_hostname)
+    - systemd: name=etcd-grpc-proxy state=restarted
     - pause: minutes=1
-    - systemd: name=calico-dhcp-agent
-      when: ("network" in inventory_hostname)
+    - systemd: name=calico-dhcp-agent state=restarted
     - pause: minutes=1
-    - systemd: name=calico-felix
-      when: ("network" in inventory_hostname)
+    - systemd: name=calico-felix state=restarted
     - pause: minutes=1
-    - systemd: name=openstack-nova-compute
-      when: ("network" in inventory_hostname)
+    - systemd: name=openstack-nova-compute state=restarted
     - pause: minutes=1
-    - systemd: name=openstack-nova-metadata-api
-      when: ("network" in inventory_hostname)
+    - systemd: name=openstack-nova-metadata-api state=restarted
     - pause: minutes=1
