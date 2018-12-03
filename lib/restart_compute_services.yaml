@@ -1,0 +1,16 @@
+# Restart all of the services when etcd-cluster is on netwerk
+- hosts: "{{ myhosts }}"
+  gather_facts: False
+  tasks:
+    - systemd: name=etcd state=restarted
+    - pause: seconds=10
+    - systemd: name=etcd-grpc-proxy state=restarted
+    - pause: seconds=10
+    - systemd: name=calico-dhcp-agent state=restarted
+    - pause: seconds=10
+    - systemd: name=calico-felix state=restarted
+    - pause: seconds=10
+    - systemd: name=openstack-nova-compute state=restarted
+    - pause: seconds=10
+    - systemd: name=openstack-nova-metadata-api state=restarted
+    - pause: seconds=10
