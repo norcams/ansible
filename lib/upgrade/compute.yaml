@@ -14,6 +14,9 @@
 - hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
+    - name: Get last octet from mgmt ip of {{ node }}
+      local_action: shell getent hosts {{ location }}-proxy-01 | awk '{ print $1 }'
+      register: proxy_ip
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -26,16 +29,10 @@
     - name: 'Stop openstack-nova-metadata-api'
       systemd: name=openstack-nova-metadata-api state=stopped
       ignore_errors: yes
-    - name: 'Enable puppet'
-      command: "puppet agent --enable"
-    - name: 'Puppet kickstart runmode'
-      command: "puppet agent --onetime --no-daemonize"
-      environment:
-        FACTER_RUNMODE: kickstart
-      ignore_errors: yes
-#    - import_tasks: ../tasks/puppetrun.yaml
-#      vars:
-#        runmode: 'kickstart'
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+        http_proxy: "{{proxy_ip}}:8888"
 #    - name: 'Yum update'
 #      yum: name=* state=latest update_cache=yes
     - name: Purge old openstack-nova-common
@@ -44,14 +41,12 @@
       yum: name=openstack-nova-api state=absent
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
-#    - import_tasks: ../tasks/puppetrun.yaml
-#    - import_tasks: ../tasks/puppetrun.yaml
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        http_proxy: "{{proxy_ip}}:8888"
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        http_proxy: "{{proxy_ip}}:8888"
     - name: 'Restart metadata-api'
       systemd: name=openstack-nova-metadata-api state=restarted
 
