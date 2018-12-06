@@ -10,24 +10,26 @@
 - name: Enable puppet
   command: puppet agent --enable
   when: enable_puppet | default(true)
-- name: Get proxy mgmt ip of {{ node }}
-  local_action: shell getent hosts "{{ location }}-proxy-01" | awk '{ print $1 }'
-  register: http_proxy
-  when: '"compute" in inventory_hostname'
-- name: Run puppet agent with runmode {{ runmode | default('default')}}
-  command: "puppet agent --onetime --no-daemonize"
+- name: Run puppetmodules in Vagrant
+  command: "/opt/himlar/provision/puppetmodules.sh"
   environment:
-    FACTER_RUNMODE: "{{ runmode | default('default')}}"
-    http_proxy: "{{ http_proxy | default(omit) }}"
-    https_proxy: "{{ http_proxy | default(omit) }}"
-  ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
-  when: location != "vagrant"
-  register: puppet_debug
-- name: Run puppet provision script with runmode {{ runmode | default('default')}}
-  command: /opt/himlar/provision/puppetrun.sh
-  environment:
-    FACTER_RUNMODE: "{{ runmode | default('default')}}"
+    HIMLAR_PUPPETFILE: 'deploy'
   when: location == "vagrant"
+- name: Run puppet agent with runmode {{ runmode | default('default')}} and http proxy
+  command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog"
+  environment:
+    FACTER_RUNMODE: "{{ runmode | default('default')}}"
+    http_proxy: "{{ http_proxy }}"
+    https_proxy: "{{ http_proxy }}"
+  ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
+  when: http_proxy is defined
+  register: puppet_debug
+- name: Run puppet agent with runmode {{ runmode | default('default')}}
+  command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog"
+  environment:
+    FACTER_RUNMODE: "{{ runmode | default('default')}}"
+  ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
+  when: location != "vagrant" and http_proxy is not defined
   register: puppet_debug
 - name: Puppetrun output (debug {{ debug_puppetrun | default('false')}})
   debug:
