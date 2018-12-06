@@ -22,8 +22,10 @@
       with_items: "{{repo_files.stdout_lines | default([])}}"
     - name: 'Stop openstack-nova-compute'
       systemd: name=openstack-nova-compute state=stopped
+      ignore_errors: yes
     - name: 'Stop openstack-nova-metadata-api'
       systemd: name=openstack-nova-metadata-api state=stopped
+      ignore_errors: yes
     - name: 'Enable puppet'
       command: "puppet agent --enable"
     - name: 'Puppet kickstart runmode'
