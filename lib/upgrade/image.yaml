@@ -1,13 +1,15 @@
 #
-# This can be used to upgrade image to new version of openstack
+# This can be used to upgrade console to new version of openstack
 #
 # Before you start you need to stop puppet and deploy latest version of himlar.
+#
+# *** Disable puppet on computes ***
 #
 # Mandatory input variables:
 # * myhosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test02-image-01" lib/upgrade/image.yaml
+# sudo ansible-playbook -e "myhosts=test01-image-01" lib/upgrade/image.yaml
 #
 # Last verified: 2018-11-13 (ansible version 2.6.1.0)
 #
@@ -20,18 +22,15 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
-    - name: 'Make sure puppet are enabled'
-      command: "puppet agent --enable"
-    - name: 'Puppet kickstart runmode'
-      command: "puppet agent --onetime --no-daemonize"
-      environment:
-        FACTER_RUNMODE: kickstart
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+    - name: 'Remove image registry'
+      systemd: name=openstack-glance-registry state=stopped
+      systemd: name=openstack-glance-registry state=disabled
       ignore_errors: yes
     - name: 'Stop image api'
       systemd: name=openstack-glance-api state=stopped
-      ignore_errors: yes
-    - name: 'Stop image registry'
-      systemd: name=openstack-glance-registry state=stopped
       ignore_errors: yes
     - name: Purge old package
       yum: name=openstack-glance state=absent
@@ -39,6 +38,6 @@
       file: name=/etc/glance state=absent
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+    - import_tasks: ../tasks/puppetrun.yaml
+- import_playbook: ../openstack-version.yaml
