@@ -21,13 +21,9 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
-    - name: 'Enable puppet'
-      command: "puppet agent --enable"
-    - name: 'Puppet kickstart runmode'
-      command: "puppet agent --onetime --no-daemonize"
-      environment:
-        FACTER_RUNMODE: kickstart
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
     - name: 'Stop cinder API service'
       systemd: name=openstack-cinder-api state=stopped
       ignore_errors: yes
@@ -40,12 +36,11 @@
     - name: 'Stop cinder volume service'
       systemd: name=openstack-cinder-volume state=stopped
       ignore_errors: yes
-    - name: Purge old package
+    - name: 'Purge old package'
       yum: name=openstack-cinder state=absent
     - name: 'Remove /etc/cinder/'
       file: name=/etc/cinder state=absent
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+    - import_tasks: ../tasks/puppetrun.yaml
