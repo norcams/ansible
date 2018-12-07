@@ -15,6 +15,12 @@
   environment:
     HIMLAR_PUPPETFILE: 'deploy'
   when: location == "vagrant"
+- name: Run puppet provision script with runmode {{ runmode | default('default')}}
+  command: /opt/himlar/provision/puppetrun.sh
+  environment:
+    FACTER_RUNMODE: "{{ runmode | default('default')}}"
+  when: location == "vagrant"
+  register: puppet_debug
 - name: Run puppet agent with runmode {{ runmode | default('default')}} and http proxy
   command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog"
   environment:
@@ -22,7 +28,7 @@
     http_proxy: "{{ http_proxy }}"
     https_proxy: "{{ http_proxy }}"
   ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
-  when: http_proxy is defined
+  when: location != "vagrant" and http_proxy is defined
   register: puppet_debug
 - name: Run puppet agent with runmode {{ runmode | default('default')}}
   command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog"
