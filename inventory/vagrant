@@ -34,6 +34,9 @@ vagrant-proxy-01 ansible_host=172.31.0.12
 [vagrant-report]
 vagrant-report-01 ansible_host=172.31.0.22
 
+[vagrant-volume]
+vagrant-volume-01 ansible_host=172.31.0.46
+
 [vagrant-nodes:children]
 vagrant-access
 vagrant-api
@@ -46,6 +49,7 @@ vagrant-monitor
 vagrant-novactrl
 vagrant-proxy
 vagrant-report
+vagrant-volume
 
 [vagrant:children]
 vagrant-access
@@ -59,3 +63,4 @@ vagrant-novactrl
 vagrant-identity
 vagrant-proxy
 vagrant-report
+vagrant-volume
