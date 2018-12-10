@@ -14,7 +14,7 @@
 - hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
-    - name: Get last octet from mgmt ip of {{ node }}
+    - name: Get http_proxy ip for {{location}}
       local_action: shell getent hosts {{ location }}-proxy-01 | awk '{ print $1 }'
       register: proxy_ip
     - name: 'Repo files'
