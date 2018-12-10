@@ -22,7 +22,7 @@
   when: location == "vagrant"
   register: puppet_debug
 - name: Run puppet agent with runmode {{ runmode | default('default')}} and http proxy
-  command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog"
+  command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
     http_proxy: "{{ http_proxy }}"
@@ -31,7 +31,7 @@
   when: location != "vagrant" and http_proxy is defined
   register: puppet_debug
 - name: Run puppet agent with runmode {{ runmode | default('default')}}
-  command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog"
+  command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
   ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
