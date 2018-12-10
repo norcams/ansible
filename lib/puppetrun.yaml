@@ -4,5 +4,13 @@
   tasks:
     - name: 'Make sure puppet are enabled'
       command: "puppet agent --enable"
-    - puppet:
-      ignore_errors: "yes" 
+    - name: Run puppet agent with runmode {{ runmode | default('default')}}
+      command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
+      environment:
+        FACTER_RUNMODE: "{{ runmode | default('default')}}"
+      ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
+      register: puppet_debug
+    - name: Puppetrun output (debug {{ debug_puppetrun | default('false')}})
+      debug:
+        var: puppet_debug.stdout_lines
+      when: debug_puppetrun is defined and debug_puppetrun
