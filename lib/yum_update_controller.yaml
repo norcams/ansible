@@ -1,0 +1,49 @@
+#
+# Upgrade and boot controller and all nodes on the controller
+#
+- name: Patch controller and all nodes on the controller
+  hosts: "{{ myhosts }}"
+  tasks:
+    - name: Find nodes on controller
+      virt: command=list_vms
+      register: nodes
+
+    - name: Get node info
+      virt: command=info
+      register: virt_info
+    
+    - name: Patch controller
+      yum:
+        name: '*'
+        state: latest
+        update_cache: yes
+        exclude: "{{ exclude | default(omit) }}"
+
+    - name: Patch nodes
+      yum:
+        name: '*'
+        state: latest
+        update_cache: yes
+        exclude: "{{ exclude | default(omit) }}"
+      delegate_to: "{{ item }}"
+      when: nodes.list_vms is defined and (virt_info[item]['state'] == 'running')
+      with_items: "{{nodes.list_vms}}"
+
+# Autostart nodes
+- import_playbook: autostart_nodes.yaml
+
+# Stop nodes
+- import_playbook: manage_nodes.yaml
+  vars:
+     action: stop
+
+# Sleep  minutts
+- name: Sleep while the nodes are shutting down
+  hosts: "{{ myhosts }}"
+  gather_facts: False
+  tasks:
+    - pause: minutes=1
+
+# Boot controller
+- import_playbook: reboot.yaml
+
