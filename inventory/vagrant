@@ -7,6 +7,12 @@ vagrant-api-01 ansible_host=172.31.0.86
 [vagrant-compute]
 vagrant-compute-01 ansible_host=172.31.0.103
 
+[vagrant-dashboard]
+vagrant-dashboard-01 ansible_host=172.31.0.51
+
+[vagrant-dashboard-mgmt]
+vagrant-dashboard-mgmt-01 ansible_host=172.31.0.54
+
 [vagrant-db-global]
 vagrant-db-global-01 ansible_host=172.31.0.41
 
@@ -45,6 +51,8 @@ vagrant-volume-01 ansible_host=172.31.0.46
 vagrant-access
 vagrant-api
 vagrant-compute
+vagrant-dashboard
+vagrant-dashboard-mgmt
 vagrant-dns
 vagrant-db-global
 vagrant-db-regional
@@ -60,6 +68,8 @@ vagrant-volume
 vagrant-access
 vagrant-api
 vagrant-compute
+vagrant-dashboard
+vagrant-dashboard-mgmt
 vagrant-db-global
 vagrant-db-regional
 vagrant-dns
