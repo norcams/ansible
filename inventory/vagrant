@@ -44,6 +44,12 @@ vagrant-proxy-01 ansible_host=172.31.0.12
 [vagrant-report]
 vagrant-report-01 ansible_host=172.31.0.22
 
+[vagrant-telemetry]
+vagrant-telemetry-01 ansible_host=172.31.0.76
+
+[vagrant-metric]
+vagrant-metric-01 ansible_host=172.31.0.96
+
 [vagrant-volume]
 vagrant-volume-01 ansible_host=172.31.0.46
 
@@ -63,6 +69,8 @@ vagrant-proxy
 vagrant-report
 vagrant-image
 vagrant-volume
+vagrant-telemetry
+vagrant-metric
 
 [vagrant:children]
 vagrant-access
@@ -80,3 +88,5 @@ vagrant-proxy
 vagrant-report
 vagrant-image
 vagrant-volume
+vagrant-telemetry
+vagrant-metric

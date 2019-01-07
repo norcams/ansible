@@ -1,0 +1,41 @@
+#
+# This can be used to upgrade telemetry to new version of openstack
+#
+# Before you start you need to stop puppet and deploy latest version of himlar.
+#
+# Mandatory input variables:
+# * myhosts (str): ansible node(s)
+#
+# Example:
+# sudo ansible-playbook -e "myhosts=test02-telemetry-01" lib/upgrade/telemetry.yaml
+#
+# Last verified: 2018-07-18 (ansible version 2.4.2.0)
+#
+# Run this to purge epel packages
+- import_playbook: ../remove_epel_packages.yaml
+- hosts: "{{ myhosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+    - name: 'Stop ceilometer serviices'
+      systemd: name=openstack-ceilometer-notification.service state=stopped
+      systemd: name=openstack-ceilometer-polling.service state=stopped
+    - name: Purge old package
+      yum: name=openstack-ceilometer-common state=absent
+    - name: 'Remove /etc/ceilometer'
+      file: name=/etc/ceilometer state=absent
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - import_tasks: ../tasks/puppetrun.yaml
+    - import_tasks: ../tasks/puppetrun.yaml
+    - name: 'Restart ceilometer services'
+      systemd: name=openstack-ceilometer-polling.service state=restarted
+      systemd: name=openstack-ceilometer-notification.service state=restarted

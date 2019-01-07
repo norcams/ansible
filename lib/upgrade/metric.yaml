@@ -1,0 +1,41 @@
+#
+# This can be used to upgrade metric to new version of openstack
+#
+# Before you start you need to stop puppet and deploy latest version of himlar.
+#
+# Mandatory input variables:
+# * myhosts (str): ansible node(s)
+#
+# Example:
+# sudo ansible-playbook -e "myhosts=test02-metric-01" lib/upgrade/metric.yaml
+#
+# Last verified: 2018-07-18 (ansible version 2.4.2.0)
+#
+# Run this to purge epel packages
+- import_playbook: ../remove_epel_packages.yaml
+- hosts: "{{ myhosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+    - name: 'Stop gnocchi services'
+      systemd: name=openstack-gnocchi-metricd.service state=stopped
+      systemd: name=openstack-gnocchi-statsd.service state=stopped
+    - name: 'Purge old package'
+      yum: name=openstack-gnocchi-common state=absent
+    - name: 'Remove /etc/gnocchi'
+      file: name=/etc/gnocchi state=absent
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - import_tasks: ../tasks/puppetrun.yaml
+    - import_tasks: ../tasks/puppetrun.yaml
+    - name: 'Restart gnocchi services'
+      systemd: name=openstack-gnocchi-metricd.service state=restarted
+      systemd: name=openstack-gnocchi-statsd.service state=restarted
