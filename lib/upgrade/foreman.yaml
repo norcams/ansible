@@ -7,7 +7,7 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-admin-01 foreman_version=1.15" lib/upgrade/foreman.yaml
 #
-# Last verified: 2018-03-20 (ansible version 2.3.1.0)
+# Last verified: 2019-01-11 (ansible version 2.6.1)
 #
 - hosts: "{{ myhosts }}"
   gather_facts: no
@@ -16,17 +16,19 @@
       rpm_key:
         state: present
         key: "http://yum.theforeman.org/releases/{{foreman_version}}/RPM-GPG-KEY-foreman"
-    - name: 'Make sure puppet are enabled'
-      command: "puppet agent --enable"
-    - name: 'Puppet run to update repo'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
     - name: 'Stop httpd'
       systemd: name=httpd state=stopped
     - name: 'Disable Puppet Agent'
       command: "puppet agent --disable"
     - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
+      yum: name={{ item }} state=latest update_cache=yes
+      with_items:
+        - tfm*
+        - ruby*
+        - foreman*
     - name: 'Migrate database'
       command: "foreman-rake db:migrate"
     - name: 'Update database'
@@ -35,11 +37,6 @@
       command: "foreman-rake tmp:cache:clear"
     - name: 'Clear sessions'
       command: "foreman-rake tmp:sessions:clear"
-    - name: 'Enable Puppet Agent'
-      command: "puppet agent --enable"
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
-    - name: 'Puppet run again'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+    # Do we need both runs?
+    - import_tasks: ../tasks/puppetrun.yaml
