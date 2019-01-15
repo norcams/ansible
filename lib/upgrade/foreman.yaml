@@ -16,19 +16,32 @@
       rpm_key:
         state: present
         key: "http://yum.theforeman.org/releases/{{foreman_version}}/RPM-GPG-KEY-foreman"
+    - name: 'Remove CentOS SCL packages'
+      yum: name={{ item }} state=absent
+      with_items:
+        - centos-release-scl 
+        - centos-release-scl-rh
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
+
+    - name: 'Install CentOS SCL packages'
+      yum: name={{ item }} state=present update_cache=yes
+      with_items:
+        - centos-release-scl
+        - centos-release-scl-rh
     - name: 'Stop httpd'
       systemd: name=httpd state=stopped
     - name: 'Disable Puppet Agent'
       command: "puppet agent --disable"
     - name: 'Yum update'
-      yum: name={{ item }} state=latest update_cache=yes
-      with_items:
-        - tfm*
-        - ruby*
-        - foreman*
+      yum: name=* state=latest update_cache=yes
     - name: 'Migrate database'
       command: "foreman-rake db:migrate"
     - name: 'Update database'
@@ -36,7 +49,7 @@
     - name: 'Clear cache'
       command: "foreman-rake tmp:cache:clear"
     - name: 'Clear sessions'
-      command: "foreman-rake tmp:sessions:clear"
+      command: "foreman-rake db:sessions:clear"
     - import_tasks: ../tasks/puppetrun.yaml
     # Do we need both runs?
     - import_tasks: ../tasks/puppetrun.yaml

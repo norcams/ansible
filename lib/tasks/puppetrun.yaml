@@ -19,7 +19,7 @@
   command: /opt/himlar/provision/puppetrun.sh
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
-  when: location == "vagrant"
+  when: location == "vagrant" or "admin" in inventory_hostname
   register: puppet_debug
 - name: Run puppet agent with runmode {{ runmode | default('default')}} and http proxy
   command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
@@ -35,7 +35,7 @@
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
   ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
-  when: location != "vagrant" and http_proxy is not defined
+  when: location != "vagrant" and http_proxy is not defined and "admin" not in inventory_hostname
   register: puppet_debug
 - name: Puppetrun output (debug {{ debug_puppetrun | default('false')}})
   debug:
