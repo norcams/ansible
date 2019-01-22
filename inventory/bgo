@@ -9,6 +9,7 @@ bgo-console
 bgo-controller
 bgo-dashboard
 bgo-db
+bgo-dns
 bgo-identity
 bgo-image
 bgo-leaf
@@ -41,6 +42,7 @@ bgo-cephmon
 bgo-console
 bgo-dashboard
 bgo-db
+bgo-dns
 bgo-identity
 bgo-image
 bgo-logger
@@ -103,6 +105,9 @@ bgo-dashboard-mgmt-01
 [bgo-db]
 bgo-db-global-01
 bgo-db-regional-01
+
+[bgo-dns]
+bgo-dns-01
 
 [bgo-identity]
 bgo-identity-01
