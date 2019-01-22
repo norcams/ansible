@@ -25,9 +25,6 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-    - name: 'Remove image registry'
-      systemd: name=openstack-glance-registry state=stopped enabled=no
-      ignore_errors: yes
     - name: 'Stop image api'
       systemd: name=openstack-glance-api state=stopped
       ignore_errors: yes
