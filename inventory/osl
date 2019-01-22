@@ -9,6 +9,7 @@ osl-console
 osl-controller
 osl-dashboard
 osl-db
+osl-dns
 osl-identity
 osl-image
 osl-leaf
@@ -39,6 +40,7 @@ osl-cephmon
 osl-console
 osl-dashboard
 osl-db
+osl-dns
 osl-identity
 osl-image
 osl-logger
@@ -99,6 +101,9 @@ osl-dashboard-mgmt-01
 [osl-db]
 osl-db-global-01
 osl-db-regional-01
+
+[osl-dns]
+osl-dns-01
 
 [osl-identity]
 osl-identity-01
