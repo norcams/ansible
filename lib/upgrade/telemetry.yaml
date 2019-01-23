@@ -12,7 +12,7 @@
 # Last verified: 2018-07-18 (ansible version 2.4.2.0)
 #
 # Run this to purge epel packages
-- import_playbook: ../remove_epel_packages.yaml
+#- import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
@@ -25,17 +25,27 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-    - name: 'Stop ceilometer serviices'
+    - name: 'Stop ceilometer notification service'
       systemd: name=openstack-ceilometer-notification.service state=stopped
+      when: '"telemetry" in inventory_hostname'
+    - name: 'Stop ceilometer polling service'
       systemd: name=openstack-ceilometer-polling.service state=stopped
     - name: Purge old package
       yum: name=openstack-ceilometer-common state=absent
+      with_items:
+        - openstack-ceilometer*
+        - python-ceilometer
     - name: 'Remove /etc/ceilometer'
       file: name=/etc/ceilometer state=absent
-    - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
+    # - name: 'Yum update'
+    #   yum: name={{items}} state=latest update_cache=yes
+    #   with_items:
+    #     - openstack-ceilometer*
+    #     - python-ceilometer
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
-    - name: 'Restart ceilometer services'
+    - name: 'Restart ceilometer polling service'
       systemd: name=openstack-ceilometer-polling.service state=restarted
+    - name: 'Restart ceilometer notification service'
       systemd: name=openstack-ceilometer-notification.service state=restarted
+      when: '"telemetry" in inventory_hostname'
