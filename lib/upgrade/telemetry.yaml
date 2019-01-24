@@ -37,11 +37,8 @@
         - python-ceilometer
     - name: 'Remove /etc/ceilometer'
       file: name=/etc/ceilometer state=absent
-    # - name: 'Yum update'
-    #   yum: name={{items}} state=latest update_cache=yes
-    #   with_items:
-    #     - openstack-ceilometer*
-    #     - python-ceilometer
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
     - name: 'Restart ceilometer polling service'
