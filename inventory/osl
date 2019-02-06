@@ -16,6 +16,7 @@ osl-leaf
 osl-logger
 osl-login
 osl-metric
+osl-mgmt
 osl-monitor
 osl-mq
 osl-nat
@@ -125,6 +126,9 @@ osl-login-01
 
 [osl-metric]
 osl-metric-01
+
+[osl-mgmt]
+osl-mgmt-opx-01
 
 [osl-monitor]
 osl-monitor-01
