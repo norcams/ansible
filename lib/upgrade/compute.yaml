@@ -9,6 +9,10 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-compute-01" lib/upgrade/compute.yaml
 #
+# Note for vagrant:
+#    You will need to have sudo on the vagrant host, just run `sudo ls` before
+#    you run this playbook WITHOUT sudo as all other vagrant runs
+#
 # Last verified: 2018-07-23 (ansible version 2.4.2.0)
 #
 - hosts: "{{ myhosts }}"
@@ -49,4 +53,3 @@
         http_proxy: "{{proxy_ip}}:8888"
     - name: 'Restart metadata-api'
       systemd: name=openstack-nova-metadata-api state=restarted
-

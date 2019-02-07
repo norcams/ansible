@@ -9,7 +9,7 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test02-network-01" lib/upgrade/network.yaml
 #
-# Last verified: 2018-11-13 (ansible version 2.6.1.0)
+# Last verified: 2019-0207 (ansible version 2.7.5)
 #
 # Run this to purge epel packages
 - hosts: "{{ myhosts }}"
@@ -22,13 +22,9 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
-    - name: 'Enable puppet'
-      command: "puppet agent --enable"
-    - name: 'Puppet kickstart runmode'
-      command: "puppet agent --onetime --no-daemonize"
-      environment:
-        FACTER_RUNMODE: kickstart
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
     - name: 'Stop neutron server'
       systemd: name=neutron-server state=stopped
       ignore_errors: yes
@@ -38,9 +34,5 @@
       file: name=/etc/neutron state=absent
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
-    - name: 'Puppet run - again'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
+    - import_tasks: ../tasks/puppetrun.yaml
+    - import_tasks: ../tasks/puppetrun.yaml
