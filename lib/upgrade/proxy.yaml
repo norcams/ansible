@@ -1,0 +1,34 @@
+#
+# This can be used to upgrade proxy to new version of openstack
+#
+# Mandatory input variables:
+# * myhosts (str): ansible node(s)
+#
+# Example:
+# sudo ansible-playbook -e "myhosts=test01-proxy-01" lib/upgrade/proxy.yaml
+#
+# Last verified: 2019-02-07 (ansible version 2.7.5)
+#
+- hosts: "{{ myhosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+    - name: Purge old package
+      yum:
+        name: "{{ packages }}"
+        state: absent
+      vars:
+        packages:
+          - python2-openstack*
+          - python-openstack*
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - import_tasks: ../tasks/puppetrun.yaml
