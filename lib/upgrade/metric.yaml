@@ -9,10 +9,10 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test02-metric-01" lib/upgrade/metric.yaml
 #
-# Last verified: 2018-07-18 (ansible version 2.4.2.0)
+# Last verified: 2019-02-07 (ansible version 2.7.5)
 #
 # Run this to purge epel packages
-- import_playbook: ../remove_epel_packages.yaml
+#- import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
@@ -25,8 +25,9 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-    - name: 'Stop gnocchi services'
+    - name: 'Stop gnocchi metricd services'
       systemd: name=openstack-gnocchi-metricd.service state=stopped
+    - name: 'Stop gnocchi statsd service'
       systemd: name=openstack-gnocchi-statsd.service state=stopped
     - name: 'Purge old package'
       yum: name=openstack-gnocchi-common state=absent
@@ -36,6 +37,7 @@
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
-    - name: 'Restart gnocchi services'
+    - name: 'Restart gnocchi metricd service'
       systemd: name=openstack-gnocchi-metricd.service state=restarted
+    - name: 'Restart gnocchi statsd service'
       systemd: name=openstack-gnocchi-statsd.service state=restarted
