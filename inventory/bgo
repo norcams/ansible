@@ -132,6 +132,7 @@ bgo-metric-01
 
 [bgo-mgmt]
 bgo-mgmt-01
+bgo-mgmt-opx-01
 
 [bgo-monitor]
 bgo-monitor-01
