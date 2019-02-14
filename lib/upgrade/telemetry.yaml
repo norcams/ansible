@@ -39,6 +39,7 @@
       file: name=/etc/ceilometer state=absent
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
+      when: '"telemetry" in inventory_hostname'
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
     - name: 'Restart ceilometer polling service'
