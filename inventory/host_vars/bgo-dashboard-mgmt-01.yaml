@@ -1,7 +1,7 @@
 ---
 secret_files:
   cert:
-    path:  '/etc/pki/tls/certs/dashboard.mgmt.bgo.no.cert.pem'
+    path:  '/etc/pki/tls/certs/dashboard.mgmt.bgo.uhdc.no.cert.pem'
     mode:  '0644'
     owner: 'root'
     group: 'root'
