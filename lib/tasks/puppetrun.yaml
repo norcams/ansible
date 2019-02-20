@@ -10,17 +10,20 @@
 - name: Enable puppet
   command: puppet agent --enable
   when: enable_puppet | default(true)
+
 - name: Run puppetmodules in Vagrant
   command: "/opt/himlar/provision/puppetmodules.sh"
   environment:
     HIMLAR_PUPPETFILE: 'deploy'
   when: location == "vagrant"
+
 - name: Run puppet provision script with runmode {{ runmode | default('default')}}
   command: /opt/himlar/provision/puppetrun.sh
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
   when: location == "vagrant" or "admin" in inventory_hostname
   register: puppet_debug
+
 - name: Run puppet agent with runmode {{ runmode | default('default')}} and http proxy
   command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
   environment:
@@ -30,6 +33,8 @@
   ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
   when: location != "vagrant" and http_proxy is defined
   register: puppet_debug
+  failed_when: puppet_debug.rc != 0 and puppet_debug.rc != 2
+
 - name: Run puppet agent with runmode {{ runmode | default('default')}}
   command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
   environment:
@@ -37,6 +42,8 @@
   ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
   when: location != "vagrant" and http_proxy is not defined and "admin" not in inventory_hostname
   register: puppet_debug
+  failed_when: puppet_debug.rc != 0 and puppet_debug.rc != 2
+
 - name: Puppetrun output (debug {{ debug_puppetrun | default('false')}})
   debug:
     var: puppet_debug.stdout_lines
