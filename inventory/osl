@@ -85,6 +85,13 @@ osl-compute-05
 osl-compute-06
 osl-compute-07
 osl-compute-08
+osl-compute-09
+osl-compute-10
+osl-compute-atlas-11
+osl-compute-atlas-12
+osl-compute-atlas-13
+osl-compute-atlas-14
+osl-compute-vgpu-42
 
 [osl-console]
 osl-console-01
@@ -113,6 +120,8 @@ osl-identity-03
 
 [osl-image]
 osl-image-01
+osl-image-02
+osl-image-03
 
 [osl-leaf]
 osl-leaf-03
