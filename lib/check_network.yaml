@@ -1,0 +1,21 @@
+# Use to test physical network connection for trp
+- hosts: "{{ myhosts }}"
+  gather_facts: false
+  vars:
+    interfaces: []
+  tasks:
+    - name: 'Collect interface name for team1'
+      command: 'teamdctl team1 config dump'
+      register: teamdctl
+    - name: 'Set interface fact'
+      set_fact:
+        testing: "{{item}}"        
+        interfaces: "{{ interfaces }} + [ '{{ item }}' ]"
+      with_items: "{{teamdctl.stdout|from_json|json_query('ports')}}"
+    - include_tasks: tasks/disable_interface.yaml
+      vars:
+        interface: "{{item}}"
+        count: 10
+      loop: "{{interfaces}}"
+
+

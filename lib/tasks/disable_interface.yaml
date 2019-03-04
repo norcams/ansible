@@ -1,0 +1,22 @@
+# Used to test network connectivity
+- name: 'Take down interface'
+  command: "ip link set down {{interface}}"
+- name: 'Get trp network'
+  command: ip addr show team1
+  register: team_net
+- name: "Save trp gateway fact"
+  set_fact:
+    dst: "{{team_net.stdout_lines[2]|regex_search('\\b(?:[0-9]{1,3}\\.){2}[0-9]{1,3}\\b') }}.1"
+- name: 'Run ping test'
+  command: "ping -c {{count|default(5)}} {{dst|default('1.1.1.1')}}"
+  register: ping_output
+  ignore_errors: true
+- name: 'Ping output'
+  debug:
+    msg: "{{ping_output.stdout_lines[-2:]}}"
+- name: 'Take up interface'
+  command: "ip link set up {{interface}}"
+- name: 'Sleep to make sure the interface are up'
+  pause:
+    seconds: 15
+
