@@ -37,7 +37,6 @@ echo
 sudo ansible-playbook -e "myhosts=${host}" lib/check_for_running_instances.yaml || exit 1
 sudo ansible-playbook -e "myhosts=${location}-proxy-01 install_host=${host}" lib/reinstall.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/reboot.yaml
-#sudo ansible-playbook -e "myhosts=${location}-login host=${host}" lib/ssh_host_keys.yaml
 sleep 120
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/push_secrets.yaml
