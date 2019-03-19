@@ -8,7 +8,7 @@
 - hosts: "{{ myhosts }}"
   tasks:
     - name: Reinstalling node
-      command: bin/python node.py reinstall -n {{ install_host.split('-')[1:] | join("-") }} -y chdir={{himlarcli_path}}
+      command: bin/python node.py reinstall -e {{ sensu_expire }} -n {{ install_host.split('-')[1:] | join("-") }} -y chdir={{himlarcli_path}}
       when: location != 'vagrant'
     - name: Waiting for installation to finish
       local_action: wait_for port=22 host={{ install_host }} timeout=1800 delay=75 state=present
