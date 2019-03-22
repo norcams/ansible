@@ -1,0 +1,11 @@
+--- a/usr/lib/node_modules/statsd/lib/config.js,orig  2019-03-21 15:23:51.416136465 +0100
++++ b/usr/lib/node_modules/statsd/lib/config.js       2019-03-21 15:23:36.076131251 +0100
+@@ -28,7 +28,7 @@
+   });
+ };
+ 
+-util.inherits(Configurator, process.EventEmitter);
++util.inherits(Configurator, require('events').EventEmitter);
+ 
+ exports.Configurator = Configurator;
+ 
