@@ -2,7 +2,7 @@
   tasks:
     - import_tasks: tasks/sensu_silence.yaml
       vars:
-        mute_time: "30"
+        mute_time: "1800"
 - hosts: "{{ myhosts }}"
   tasks:
     - name: Reboot host
