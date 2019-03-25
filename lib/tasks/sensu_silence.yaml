@@ -1,0 +1,2 @@
+- name: "Silence {{myhosts}} in sensu"
+  command: bin/python manage_sensu.py silence -e {{ mute_time | default('10')}} -H {{myhosts}} chdir={{himlarcli_path}}

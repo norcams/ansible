@@ -1,5 +1,9 @@
+- hosts: "{{ myhosts.split('-')[0] }}-proxy-01"
+  tasks:
+    - import_tasks: tasks/sensu_silence.yaml
+      vars:
+        mute_time: "30"
 - hosts: "{{ myhosts }}"
-  user: iaas
   tasks:
     - name: Reboot host
       command: shutdown -r 1 "Ansible updates triggered"
