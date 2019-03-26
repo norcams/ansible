@@ -49,3 +49,5 @@
       when: '("login" not in inventory_hostname) and location != "vagrant"'
 #    - name: Run test/deploy.sh
 #      command: "{{himlarcli_path}}/tests/deploy.sh"
+    - name: Copy user whitelist from /opt/repo
+      copy: src=/opt/repo/secrets/common/whitelist_users.txt dest={{himlarcli_path}}/whitelist_users.txt
