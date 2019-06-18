@@ -25,6 +25,8 @@
       ignore_errors: yes
     - name: 'Yum update'
       yum: name=*calico* state=latest update_cache=yes
+    - name: 'Yum update'
+      yum: name=dnsmasq state=latest update_cache=yes
     - name: 'Puppet run'
       command: "puppet agent --onetime --no-daemonize"
       ignore_errors: yes
