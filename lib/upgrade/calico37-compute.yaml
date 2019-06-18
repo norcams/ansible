@@ -25,10 +25,16 @@
       ignore_errors: yes
     - name: 'Yum update'
       yum: name=*calico* state=latest update_cache=yes
-    - name: 'Yum update'
-      yum: name=dnsmasq state=latest update_cache=yes
-    - name: 'Yum update'
-      yum: name=*neutron* state=latest update_cache=yes
+    - name: 'Other packages'
+      yum:
+        name: "{{ packages }}"
+      vars:
+        packages:
+        - dnsmasq
+        - openstack-neutron
+        - openstack-neutron-common
+        - python-neutron
+        - python2-neutronclient
     - name: 'Puppet run'
       command: "puppet agent --onetime --no-daemonize"
       ignore_errors: yes
