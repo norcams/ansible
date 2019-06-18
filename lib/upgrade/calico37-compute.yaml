@@ -23,13 +23,15 @@
       environment:
         FACTER_RUNMODE: kickstart
       ignore_errors: yes
-    - name: 'Yum update'
-      yum: name=*calico* state=latest update_cache=yes
-    - name: 'Other packages'
+    - name: 'Update packages packages'
       yum:
         name: "{{ packages }}"
       vars:
         packages:
+        - calico-common
+        - calico-compute
+        - calico-dhcp-agent
+        - calico-felix
         - dnsmasq
         - openstack-neutron
         - openstack-neutron-common
