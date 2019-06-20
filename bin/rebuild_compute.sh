@@ -35,7 +35,7 @@ fi
 echo
 
 sudo ansible-playbook -e "myhosts=${host}" lib/check_for_running_instances.yaml || exit 1
-sudo ansible-playbook -e "myhosts=${location}-proxy-01 sensu_expire=3600 install_host=${host}" lib/reinstall.yaml
+sudo ansible-playbook -e "myhosts=${location}-proxy-01 sensu_expire=7200 install_host=${host}" lib/reinstall.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/reboot.yaml
 sleep 120
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
@@ -44,5 +44,7 @@ sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
 #sudo ansible-playbook -e "myhosts=${host} patchfile=${HOME}/ansible/files/patches/python-nova-newton-centos-7.3.0-discard.diff dest=/usr/lib/python2.7/site-packages/nova/virt/libvirt/driver.py" lib/patch.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-metadata-api.service" lib/systemd_restart.yaml
+sudo ansible-playbook -e "myhosts=${host} name=calico-dhcp-agent" lib/systemd_restart.yaml
+sudo ansible-playbook -e "myhosts=${host} name=calico-felix" lib/systemd_restart.yaml
 #sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
 #sudo ansible-playbook -e "myhosts=${host}" lib/downgrade_etcd.yaml
