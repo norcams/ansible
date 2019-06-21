@@ -26,11 +26,11 @@
       vars:
         runmode: 'kickstart'
     - name: 'Stop gnocchi metricd services'
-      systemd: name=openstack-gnocchi-metricd.service state=stopped
+      systemd: name=gnocchi-metricd.service state=stopped
     - name: 'Stop gnocchi statsd service'
-      systemd: name=openstack-gnocchi-statsd.service state=stopped
+      systemd: name=gnocchi-statsd.service state=stopped
     - name: 'Purge old package'
-      yum: name=openstack-gnocchi-common state=absent
+      yum: name=gnocchi-common state=absent
     - name: 'Remove /etc/gnocchi'
       file: name=/etc/gnocchi state=absent
     - name: 'Yum update'
@@ -38,6 +38,6 @@
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
     - name: 'Restart gnocchi metricd service'
-      systemd: name=openstack-gnocchi-metricd.service state=restarted
+      systemd: name=gnocchi-metricd.service state=restarted
     - name: 'Restart gnocchi statsd service'
-      systemd: name=openstack-gnocchi-statsd.service state=restarted
+      systemd: name=gnocchi-statsd.service state=restarted
