@@ -7,6 +7,7 @@ bgo-cephmon
 bgo-cephmon-object
 bgo-compute
 bgo-compute-alice
+bgo-compute-tape
 bgo-console
 bgo-controller
 bgo-dashboard
@@ -54,6 +55,7 @@ bgo-cephmon
 bgo-cephmon-object
 bgo-compute
 bgo-compute-alice
+bgo-compute-tape
 bgo-console
 bgo-controller
 bgo-dashboard
@@ -152,6 +154,7 @@ bgo-compute-alice-31
 bgo-compute-alice-32
 bgo-compute-alice-33
 bgo-compute-alice-34
+bgo-compute-tape-49
 
 [bgo-compute-alice]
 bgo-compute-alice-11
@@ -178,6 +181,9 @@ bgo-compute-alice-31
 bgo-compute-alice-32
 bgo-compute-alice-33
 bgo-compute-alice-34
+
+[bgo-compute-tape]
+bgo-compute-tape-49
 
 [bgo-console]
 bgo-console-01
@@ -219,6 +225,8 @@ bgo-image-02
 bgo-image-03
 
 [bgo-leaf]
+bgo-leaf-01
+bgo-leaf-02
 bgo-leaf-03
 bgo-leaf-04
 
@@ -311,6 +319,8 @@ bgo-storage-04
 bgo-storage-05
 bgo-storage-06
 bgo-storage-07
+bgo-storage-08
+bgo-storage-09
 bgo-storage-dcache-10
 bgo-storage-dcache-11
 bgo-storage-dcache-12
