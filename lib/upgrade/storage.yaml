@@ -8,20 +8,12 @@
 # Mandatory input variables:
 # * myhosts (str): ansible node(s)
 #
-# ATTENTION: Upgrade one storage node at a time, otherwise cluster will stop.
-# It's recommended to set
-#
-# ceph osd set noout
-#
-# Before upgrading. After upgrading node, the storage node will reboot. After
-# all storages nodes have been upgraded, unset the noout flag:
-#
-# ceph osd unset noout
+# After upgrading node, the storage node will reboot.
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-storage-01" lib/upgrade/cephmon.yaml
+# sudo ansible-playbook -e "myhosts=test01-storage" lib/upgrade/storage.yaml
 #
-# Last verified: 2017-09-19 (ansible version 2.3.1.0)
+# Last verified: 2019-06-26 (ansible version 2.7.8)
 #
 - hosts: "{{ myhosts }}"
   serial: 1
@@ -40,10 +32,10 @@
       with_items: "{{repo_files.stdout_lines | default([])}}"
     - name: 'Enable puppet'
       command: "puppet agent --enable"
-    - name: 'Puppet kickstart runmode'
+    - name: 'Puppet bootstrap runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
-        FACTER_RUNMODE: kickstart
+        FACTER_RUNMODE: bootstrap
       ignore_errors: yes
     - name: 'Upate all packages'
       yum: name=* state=latest update_cache=yes
@@ -57,6 +49,11 @@
       ignore_errors: true
     - name: waiting for server to come back
       local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
+    - name: Sleep while the nodes are shutting down
+      hosts: "{{ myhosts }}"
+      gather_facts: False
+      tasks:
+        - pause: minutes=1
     - name: 'Set OSD out'
       command: "ceph osd unset noout"
       ignore_errors: yes

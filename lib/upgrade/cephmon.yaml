@@ -27,7 +27,7 @@
       with_items: "{{repo_files.stdout_lines | default([])}}"
     - name: 'Enable puppet'
       command: "puppet agent --enable"
-    - name: 'Puppet kickstart runmode'
+    - name: 'Puppet bootstrap runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
         FACTER_RUNMODE: bootstrap
