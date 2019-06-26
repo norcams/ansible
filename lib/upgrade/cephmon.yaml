@@ -13,9 +13,8 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-cephmon-01" lib/upgrade/cephmon.yaml
 #
-# Last verified: 2017-09-15 (ansible version 2.3.1.0)
+# Last verified: 2019-06-26 (ansible version 2.7.8)
 #
-- import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ myhosts }}"
   gather_facts: no
   serial: 1
@@ -31,7 +30,7 @@
     - name: 'Puppet kickstart runmode'
       command: "puppet agent --onetime --no-daemonize"
       environment:
-        FACTER_RUNMODE: kickstart
+        FACTER_RUNMODE: bootstrap
       ignore_errors: yes
     - name: 'Upate all packages'
       yum: name=* state=latest update_cache=yes
