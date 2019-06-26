@@ -8,9 +8,12 @@ local2-identity
 local2-leaf
 local2-login
 local2-mq
+local2-network
 local2-novactrl
 local2-ns
 local2-proxy
+local2-torack
+local2-volume
 
 [local2-nodes:children]
 local2-admin
@@ -19,9 +22,11 @@ local2-db
 local2-dns
 local2-identity
 local2-mq
+local2-network
 local2-novactrl
 local2-ns
 local2-proxy
+local2-volume
 
 [local2-admin]
 local2-admin-01
@@ -52,6 +57,9 @@ local2-login-01
 [local2-mq]
 local2-mq-01
 
+[local2-network]
+local2-network-01
+
 [local2-novactrl]
 local2-novactrl-01
 
@@ -60,4 +68,10 @@ local2-ns-01
 
 [local2-proxy]
 local2-proxy-01
+
+[local2-torack]
+local2-torack-01
+
+[local2-volume]
+local2-volume-01
 
