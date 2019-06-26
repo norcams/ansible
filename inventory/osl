@@ -45,11 +45,7 @@ osl-admin
 osl-api
 osl-builder
 osl-cephmon
-osl-compute
-osl-compute-atlas
-osl-compute-vgpu
 osl-console
-osl-controller
 osl-dashboard
 osl-dashboard-mgmt
 osl-db
@@ -58,12 +54,8 @@ osl-db-regional
 osl-dns
 osl-identity
 osl-image
-osl-leaf
 osl-logger
-osl-login
 osl-metric
-osl-mgmt
-osl-mgmt-opx
 osl-monitor
 osl-mq
 osl-nat
@@ -75,9 +67,7 @@ osl-proxy
 osl-report
 osl-resolver
 osl-status
-osl-storage
 osl-telemetry
-osl-torack
 osl-volume
 
 [osl-access]
