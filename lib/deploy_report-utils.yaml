@@ -6,6 +6,9 @@
 #
 - hosts: "{{ myhosts }}"
   tasks:
+    - yum:
+        name: git
+        state: installed
     - name:       Create report-utils directory
       file:
         state:    directory
