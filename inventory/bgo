@@ -53,11 +53,7 @@ bgo-api
 bgo-builder
 bgo-cephmon
 bgo-cephmon-object
-bgo-compute
-bgo-compute-alice
-bgo-compute-tape
 bgo-console
-bgo-controller
 bgo-dashboard
 bgo-dashboard-mgmt
 bgo-db
@@ -66,12 +62,8 @@ bgo-db-regional
 bgo-dns
 bgo-identity
 bgo-image
-bgo-leaf
 bgo-logger
-bgo-login
 bgo-metric
-bgo-mgmt
-bgo-mgmt-opx
 bgo-monitor
 bgo-mq
 bgo-nat
@@ -79,19 +71,13 @@ bgo-nat-linux
 bgo-network
 bgo-novactrl
 bgo-ns
-bgo-object
-bgo-object-ceph
 bgo-proxy
 bgo-report
 bgo-resolver
 bgo-rgw
-bgo-spine
 bgo-status
-bgo-storage
-bgo-storage-dcache
 bgo-tape
 bgo-telemetry
-bgo-torack
 bgo-volume
 
 [bgo-access]
