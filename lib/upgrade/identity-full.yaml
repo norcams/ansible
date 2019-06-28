@@ -6,6 +6,10 @@
 # Vagrant example:
 # ansible-playbook -K -e location=vagrant lib/upgrade/identity-full.yaml
 #
+# In vagrant alos run this first:
+# vagrant rsync identity
+# sudo -i (once evry sudo-timeout to avoid 'sudo: a password is required')
+#
 # Variables:
 #   location: name of location (mandatory)
 #
@@ -65,8 +69,10 @@
     - import_tasks: ../tasks/puppetrun.yaml
     - name: Pull fernet keys from db
       command: "/usr/local/sbin/token_dist.sh fernet slave"
+      when: location != 'vagrant'
     - name: Pull credential keys from db
       command: "/usr/local/sbin/token_dist.sh credentials slave"
+      when: location != 'vagrant'
     - systemd: name=crond state=started
 
 # Step 5: enable all backends on api
