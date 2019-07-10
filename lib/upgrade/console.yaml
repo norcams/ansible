@@ -25,9 +25,6 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-    - name: 'Stop spice console'
-      systemd: name=openstack-nova-spicehtml5proxy state=stopped
-      ignore_errors: yes
     - name: Purge old package
       yum: name=openstack-nova-common state=absent
     - name: 'Remove /etc/nova/'
