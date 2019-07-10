@@ -1,0 +1,21 @@
+---
+# This is used to upgrade storage and object hosts to ceph nautilus
+
+# Step 0: stop puppet on all storage and object nodes
+- import_playbook: ../toggle_puppet.yaml
+  vars:
+    action:   disable
+  when: location != 'vagrant'
+
+- hosts: "{{ myhosts }}"
+  gather_facts: false
+  tasks:
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+
+    - name: 'Restart ceph-osd.target'
+      systemd: name=ceph-osd.target state=restarted
+
