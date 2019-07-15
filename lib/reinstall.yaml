@@ -6,6 +6,8 @@
 # Last verified: 2018-03-23 (ansible version 2.4.2.0)
 #
 - hosts: "{{ myhosts }}"
+  vars:
+    sensu_expire: 3600
   tasks:
     - name: Reinstalling node
       command: bin/python node.py reinstall -e {{ sensu_expire }} -n {{ install_host.split('-')[1:] | join("-") }} -y chdir={{himlarcli_path}}
