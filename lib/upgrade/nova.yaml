@@ -69,7 +69,7 @@
 
     - name: "db sync"
       when: '"novactrl" in inventory_hostname'
-      command: "nova-manage db_sync"
+      command: "nova-manage db sync"
 
     - name: "db cell_v2 simple_cell_setup"
       when: '"novactrl" in inventory_hostname'
