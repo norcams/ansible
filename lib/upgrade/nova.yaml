@@ -102,12 +102,12 @@
       vars:
         runmode: 'kickstart'
 
-    - name: 'Stop nova scheduler service'
-      systemd: name=openstack-nova-scheduler state=stopped
+    - name: 'Stop nova consoleauth service'
+      systemd: name=openstack-nova-consoleauth state=stopped
       ignore_errors: yes
 
-    - name: 'Stop nova conductor service'
-      systemd: name=openstack-nova-conductor state=stopped
+    - name: 'Stop nova novaproxy service'
+      systemd: name=openstack-nova-novncproxy state=stopped
       ignore_errors: yes
 
     - name: Purge old package
