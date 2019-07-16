@@ -26,11 +26,9 @@
     action:   disable
   when: location != 'vagrant'
 
-# Upgrade novactrl-01
+# Upgrade novactrl-0x
 - hosts: "{{ location }}-novactrl"
   gather_facts: false
-  vars:
-    multi_region: 'none'
   tasks:
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
@@ -46,8 +44,8 @@
         runmode: 'kickstart'
       ignore_errors: yes
 
-    - name: 'Stop nova API service'
-      systemd: name=openstack-nova-api state=stopped
+    - name: 'Stop httpd for nova API service'
+      systemd: name=httpd state=stopped
       ignore_errors: yes
     
     - name: 'Stop nova scheduler service'
@@ -88,11 +86,9 @@
     - import_tasks: ../tasks/puppetrun.yaml
 
 
-# Upgrade console-01
+# Upgrade console-0x
 - hosts: "{{ location }}-console"
   gather_facts: false
-  vars:
-    multi_region: 'none'
   tasks:
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
@@ -105,6 +101,14 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
+
+    - name: 'Stop nova scheduler service'
+      systemd: name=openstack-nova-scheduler state=stopped
+      ignore_errors: yes
+
+    - name: 'Stop nova conductor service'
+      systemd: name=openstack-nova-conductor state=stopped
+      ignore_errors: yes
 
     - name: Purge old package
       yum: name=openstack-nova-common state=absent
@@ -120,11 +124,9 @@
 - import_playbook: ../openstack-version.yaml
 
 
-# Upgrade console-01
-- hosts: "{{ location }}-console"
+# Upgrade compute-0x
+- hosts: "{{ location }}-compute"
   gather_facts: false
-  vars:
-    multi_region: 'none'
   tasks:
     - name: Get http_proxy ip for {{location}}
       local_action: shell getent hosts {{ location }}-proxy-01 | awk '{ print $1 }'
