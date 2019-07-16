@@ -11,11 +11,13 @@
       novactrl: 'nova-manage --version'
       compute:  'nova-manage --version'
       console:  'nova-manage --version'
+      image:    'glance-manage --version'
   tasks:
-  - name: Openstack version
+  - name: Find openstack version
     command: "{{ openstack_command[role] }}"
     when: role in openstack_command.keys()
     register: version
-  - debug:
+  - name: Print openstack version
+    debug:
       var: version.stderr
-    when: version is defined
+    when: "'stderr' in version"
