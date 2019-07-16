@@ -74,6 +74,7 @@
     - name: "db cell_v2 simple_cell_setup"
       when: '"novactrl" in inventory_hostname'
       command: "nova-manage cell_v2 simple_cell_setup"
+      ignore_errors: yes
 
     - name: "api db sync"
       when: '"novactrl" in inventory_hostname'
@@ -121,7 +122,6 @@
 
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
-- import_playbook: ../openstack-version.yaml
 
 
 # Upgrade compute-0x
