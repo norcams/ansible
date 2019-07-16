@@ -1,0 +1,178 @@
+# This will try to upgrade nova without downtime
+#
+# Example:
+# ansible-playbook -e location=test01 lib/upgrade/nova.yaml
+#
+# Vagrant example:
+# ansible-playbook -K -e location=vagrant lib/upgrade/nova.yaml
+#
+# In vagrant alos run this first:
+# vagrant rsync novactrl
+# sudo -i (once evry sudo-timeout to avoid 'sudo: a password is required')
+#
+# Variables:
+#   location: name of location (mandatory)
+#
+# For multi-region this is mandatory
+#   multi_region: default 'none', use 'first', 'middle' or 'last'
+#
+# Last verified: 2019-07-10 (ansible version 2.8)
+#
+
+# Stop puppet on all novactrl nodes
+- import_playbook: ../toggle_puppet.yaml
+  vars:
+    myhosts:  "{{ location }}-novactrl"
+    action:   disable
+  when: location != 'vagrant'
+
+# Upgrade novactrl-0x
+- hosts: "{{ location }}-novactrl"
+  gather_facts: false
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+
+    - systemd: name=crond state=stopped
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+      ignore_errors: yes
+
+    - name: 'Stop httpd for nova API service'
+      systemd: name=httpd state=stopped
+      ignore_errors: yes
+    
+    - name: 'Stop nova scheduler service'
+      systemd: name=openstack-nova-scheduler state=stopped
+      ignore_errors: yes
+    
+    - name: 'Stop nova conductor service'
+      systemd: name=openstack-nova-conductor state=stopped
+      ignore_errors: yes
+    
+    - name: Purge old package
+      yum: name=openstack-nova-common state=absent
+    
+    - name: 'Remove /etc/nova/'
+      file: name=/etc/nova state=absent
+
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+
+    - import_tasks: ../tasks/puppetrun.yaml
+
+    - name: "db sync"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage db sync"
+
+    - name: "db cell_v2 simple_cell_setup"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage cell_v2 simple_cell_setup"
+
+    - name: "api db sync"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage api_db sync"
+
+    - name: "db online_data_migrations"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage db online_data_migrations"
+
+    - import_tasks: ../tasks/puppetrun.yaml
+
+
+# Upgrade console-0x
+- hosts: "{{ location }}-console"
+  gather_facts: false
+  tasks:
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+
+    - name: 'Stop nova consoleauth service'
+      systemd: name=openstack-nova-consoleauth state=stopped
+      ignore_errors: yes
+
+    - name: 'Stop nova novaproxy service'
+      systemd: name=openstack-nova-novncproxy state=stopped
+      ignore_errors: yes
+
+    - name: Purge old package
+      yum: name=openstack-nova-common state=absent
+
+    - name: 'Remove /etc/nova/'
+      file: name=/etc/nova state=absent
+
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+
+    - import_tasks: ../tasks/puppetrun.yaml
+    - import_tasks: ../tasks/puppetrun.yaml
+- import_playbook: ../openstack-version.yaml
+
+
+# Upgrade compute-0x
+- hosts: "{{ location }}-compute"
+  gather_facts: false
+  tasks:
+    - name: Get http_proxy ip for {{location}}
+      local_action: shell getent hosts {{ location }}-proxy-01 | awk '{ print $1 }'
+      register: proxy_ip
+
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+
+    - name: 'Stop openstack-nova-compute'
+      systemd: name=openstack-nova-compute state=stopped
+      ignore_errors: yes
+
+    - name: 'Stop openstack-nova-metadata-api'
+      systemd: name=openstack-nova-metadata-api state=stopped
+      ignore_errors: yes
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+        http_proxy: "{{proxy_ip}}:8888"
+
+    # Do not do yum update on compute          
+#    - name: 'Yum update'
+#      yum: name=* state=latest update_cache=yes
+
+    - name: Purge old openstack-nova-common
+      yum: name=openstack-nova-common state=absent
+
+    - name: Purge old openstack-nova-api
+      yum: name=openstack-nova-api state=absent
+
+    - name: 'Remove /etc/nova/'
+      file: name=/etc/nova state=absent
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        http_proxy: "{{proxy_ip}}:8888"
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        http_proxy: "{{proxy_ip}}:8888"
+
+    - name: 'Restart metadata-api'
+      systemd: name=openstack-nova-metadata-api state=restarted
