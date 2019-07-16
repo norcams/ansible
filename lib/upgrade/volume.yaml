@@ -9,7 +9,7 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-volume-01" lib/upgrade/volume.yaml
 #
-# Last verified: 2018-11-13 (ansible version 2.6.1.0)
+# Last verified: 2019-07-16 (ansible version 2.8)
 #
 # Run this to purge epel packages
 - hosts: "{{ myhosts }}"
@@ -24,12 +24,6 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-    - name: 'Stop cinder API service'
-      systemd: name=openstack-cinder-api state=stopped
-      ignore_errors: yes
-    - name: 'Disable API service'
-      systemd: name=openstack-cinder-api enabled=no
-      ignore_errors: yes
     - name: 'Stop cinder scheduler service'
       systemd: name=openstack-cinder-scheduler state=stopped
       ignore_errors: yes
