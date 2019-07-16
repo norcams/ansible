@@ -38,3 +38,4 @@
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
+- import_playbook: ../openstack-version.yaml
