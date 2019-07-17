@@ -24,6 +24,8 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
+    - name: 'Stop httpd'
+      systemd: name=httpd state=stopped
     - name: 'Stop cinder scheduler service'
       systemd: name=openstack-cinder-scheduler state=stopped
       ignore_errors: yes
@@ -39,3 +41,5 @@
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
 - import_playbook: ../openstack-version.yaml
+    - name: 'Restart httpd'
+      systemd: name=httpd state=restarted
