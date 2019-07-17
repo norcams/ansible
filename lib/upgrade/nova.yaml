@@ -38,7 +38,6 @@
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
 
-    - systemd: name=crond state=stopped
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
