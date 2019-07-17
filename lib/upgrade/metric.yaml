@@ -16,27 +16,27 @@
 - hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
-#    - name: 'Repo files'
-#      command: 'ls -1 /etc/yum.repos.d/'
-#      register: repo_files
-#    - name: 'Remove all old yum repos'
-#      file: name="/etc/yum.repos.d/{{item}}" state=absent
-#      with_items: "{{repo_files.stdout_lines | default([])}}"
-#    - import_tasks: ../tasks/puppetrun.yaml
-#      vars:
-#        runmode: 'kickstart'
-#    - name: 'Stop gnocchi metricd services'
-#      systemd: name=gnocchi-metricd.service state=stopped
-#    - name: 'Stop gnocchi statsd service'
-#      systemd: name=gnocchi-statsd.service state=stopped
-#    - name: 'Purge old package'
-#      yum: name=gnocchi-common state=absent
-#    - name: 'Remove /etc/gnocchi'
-#      file: name=/etc/gnocchi state=absent
-#    - name: 'Yum update'
-#      yum: name=* state=latest update_cache=yes
-#    - import_tasks: ../tasks/puppetrun.yaml
-#    - import_tasks: ../tasks/puppetrun.yaml
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+    - name: 'Stop gnocchi metricd services'
+      systemd: name=gnocchi-metricd.service state=stopped
+    - name: 'Stop gnocchi statsd service'
+      systemd: name=gnocchi-statsd.service state=stopped
+    - name: 'Purge old package'
+      yum: name=gnocchi-common state=absent
+    - name: 'Remove /etc/gnocchi'
+      file: name=/etc/gnocchi state=absent
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+    - import_tasks: ../tasks/puppetrun.yaml
+    - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/patch.yaml
       vars:
         patchfile: ../../files/patches/metricd.py.diff 
