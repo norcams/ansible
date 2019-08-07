@@ -1,0 +1,7 @@
+- hosts: "{{ myhosts }}"
+  gather_facts: no
+  tasks:
+    - name: 'Yum update'
+      yum: name=puppet* state=latest update_cache=yes
+    - import_tasks: ../tasks/puppetrun.yaml
+    - import_tasks: ../tasks/puppetrun.yaml
