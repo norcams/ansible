@@ -29,6 +29,7 @@ osl-mq
 osl-nat
 osl-nat-linux
 osl-network
+osl-nfs
 osl-novactrl
 osl-ns
 osl-proxy
@@ -62,6 +63,7 @@ osl-mq
 osl-nat
 osl-nat-linux
 osl-network
+osl-nfs
 osl-novactrl
 osl-ns
 osl-proxy
@@ -212,6 +214,9 @@ osl-nat-linux-02
 osl-network-01
 osl-network-02
 osl-network-03
+
+[osl-nfs]
+osl-nfs-01
 
 [osl-novactrl]
 osl-novactrl-01
