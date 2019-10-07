@@ -1,0 +1,7 @@
+#
+# Toggle the Ceph OSD noout parameter
+#
+- hosts: "{{ myhosts }}"
+  tasks:
+    - name: "{{ action }} Ceph OSD noout parameter"
+      command: /bin/ceph osd {{ action }} noout
