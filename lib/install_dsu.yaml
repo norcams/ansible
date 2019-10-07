@@ -1,0 +1,36 @@
+#
+# Download GPG keys and install dsu
+#
+---
+- hosts: "{{ myhosts }}"
+  vars:
+    gpgkeys:
+      - 0x1285491434D8786F.asc
+      - 0x756ba70b1019ced6.asc
+      - 0xca77951d23b66a9d.asc
+    gpgsource: "https://linux.dell.com/repo/pgp_pubkeys/"
+
+  tasks:
+    - name: "Download GPG keys"
+      get_url:
+        url: "{{ gpgsource }}{{ item }}"
+        dest: /tmp/{{ item }}
+        mode: '0440'
+      with_items:
+        - "{{ gpgkeys }}"
+    - name: "RPM-import GPG keys"
+      rpm_key:
+        state: present
+        key: "/tmp/{{ item }}"
+      with_items:
+       - "{{ gpgkeys }}"
+    - name: "Install Dell system update package"
+      yum:
+        name: dell-system-update
+        state: present
+    - name: "Transfer Dell GPG keys import script"
+      copy: src={{ playbook_dir }}/../files/scripts/cp_dell_gpg_keys.sh dest=/root/cp_dell_gpg_keys.sh mode=0777
+    - name: "Execute Dell GPG keys import script"
+      command: sh /root/cp_dell_gpg_keys.sh
+    - name: "Import keys to dsu"
+      command: /sbin/dsu --import-public-key -i
