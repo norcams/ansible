@@ -3,7 +3,8 @@
 #
 
 - hosts: "{{ myhosts }}"
-    serial: 1
+  serial: 1
+  tasks:
     # ensure repo is present
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
