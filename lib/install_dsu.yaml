@@ -27,7 +27,7 @@
     - name: "Install Dell system update package"
       yum:
         name: dell-system-update
-        state: present
+        state: latest
     - name: "Transfer Dell GPG keys import script"
       copy: src={{ playbook_dir }}/../files/scripts/cp_dell_gpg_keys.sh dest=/root/cp_dell_gpg_keys.sh mode=0777
     - name: "Execute Dell GPG keys import script"
