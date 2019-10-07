@@ -1,0 +1,6 @@
+- hosts: "{{ myhosts }}"
+  tasks:
+    - name: Transfer OSD bluestore repair script
+      copy: src={{ playbook_dir }}/../files/scripts/repair_bluestore.sh dest=/root/repair_bluestore.sh mode=0777
+    - name: Execute OSD bluestore repair script
+      command: sh /root/repair_bluestore.sh
