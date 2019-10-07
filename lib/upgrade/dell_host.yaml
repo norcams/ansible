@@ -1,0 +1,46 @@
+#
+# Install Dell System Update and update firmware
+#
+
+- hosts: "{{ myhosts }}"
+    serial: 1
+    # ensure repo is present
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+    # Step 0: stop puppet
+    - import_playbook: ../toggle_puppet.yaml
+      vars:
+        action: disable
+      when: location != 'vagrant'
+    # Install DSU
+    - import_playbook: ../install_dsu.yaml
+    # Update firmware
+    - import_playbook: ../upgrade_dell_firmware.yaml
+    # Upgrade all packages
+    - name: Upgrade all packages excluding {{ exclude | default('none') }}
+      yum:
+        name: '*'
+        state: latest
+        update_cache: yes
+        exclude: "{{ exclude | default(omit) }}"
+    # Set ceph osd noout
+    - import_playbook: ../ceph_osd_noout.yaml
+      vars:
+        action: set
+    # FIXME - remove post nautilus 14.2.4
+    - import_playbook: ../osd_bluestorerepair.yaml
+    # Reboot host
+    - import_playbook: ../reboot.yaml
+    # Step 0: enable puppet
+    - import_playbook: ../toggle_puppet.yaml
+      vars:
+        action: enable
+      when: location != 'vagrant'
+    # Run puppet
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'default'
+    - import_playbook: ../ceph_osd_noout.yaml
+      vars:
+        action: unset
