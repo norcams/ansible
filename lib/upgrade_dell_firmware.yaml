@@ -7,3 +7,4 @@
   tasks:
     - name: Run dsu in non-interactive mode
       command: /sbin/dsu --non-interactive
+      ignore_errors: yes
