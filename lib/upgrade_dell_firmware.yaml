@@ -8,3 +8,12 @@
     - name: Run dsu in non-interactive mode
       command: /sbin/dsu --non-interactive
       ignore_errors: yes
+      when: "'compute' not in inventory_hostname"
+    - name: Run dsu in non-interactive mode
+      command: /sbin/dsu --non-interactive
+      ignore_errors: yes
+      environment:
+        http_proxy: "{{ http_proxy }}"
+        https_proxy: "{{ https_proxy }}"
+      when: "'compute' in inventory_hostname"
+
