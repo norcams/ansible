@@ -3,7 +3,44 @@
 #
 ---
 - hosts: "{{ myhosts }}"
+  vars:
+    gpgkeys:
+      - 0x1285491434D8786F.asc
+      - 0x756ba70b1019ced6.asc
+      - 0xca77951d23b66a9d.asc
+    gpgsource: "https://linux.dell.com/repo/pgp_pubkeys/"
   tasks:
+    - name: "Download GPG keys"
+      get_url:
+        url: "{{ gpgsource }}{{ item }}"
+        dest: /tmp/{{ item }}
+        mode: '0440'
+      with_items:
+        - "{{ gpgkeys }}"
+      when: "'compute' not in inventory_hostname"
+    - name: "Download GPG keys"
+      command: "curl -o /tmp/{{ item }} {{ gpgsource }}{{ item }}"
+      args:
+        warn: false
+      with_items:
+        - "{{ gpgkeys }}"
+      environment:
+        http_proxy: "{{ http_proxy }}"
+        https_proxy: "{{ https_proxy }}"
+      when: "'compute' in inventory_hostname"
+    - name: Chmod GPG keys
+      file:
+         path: "/tmp/{{ item }}"
+         mode: '0440'
+      with_items:
+        - "{{ gpgkeys }}"
+      when: "'compute' in inventory_hostname"
+    - name: "RPM-import GPG keys"
+      rpm_key:
+        state: present
+        key: "/tmp/{{ item }}"
+      with_items:
+       - "{{ gpgkeys }}"
     - name: "Install Dell system update package"
       yum:
         name: dell-system-update
@@ -19,5 +56,13 @@
         http_proxy: "{{ http_proxy }}"
         https_proxy: "{{ https_proxy }}"
       when: "'compute' in inventory_hostname"
-#    - name: "Import keys to dsu"
-#      command: /sbin/dsu --import-public-key -i
+    - name: "Import keys to dsu"
+      command: /sbin/dsu --import-public-key -i
+      when: "'compute' not in inventory_hostname"
+    - name: "Import keys to dsu"
+      command: /sbin/dsu --import-public-key -i
+      environment:
+        http_proxy: "{{ http_proxy }}"
+        https_proxy: "{{ https_proxy }}"
+      when: "'compute' in inventory_hostname"
+
