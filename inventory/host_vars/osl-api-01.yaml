@@ -15,3 +15,8 @@ secret_files:
     mode:  '0640'
     owner: 'root'
     group: 'root'
+  console:
+    path:  '/etc/pki/tls/certs/console.osl.uh-iaas.no.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
