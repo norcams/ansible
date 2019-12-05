@@ -7,6 +7,7 @@ osl-cephmon
 osl-compute
 osl-compute-atlas
 osl-compute-hpc
+osl-compute-gpu
 osl-compute-vgpu
 osl-console
 osl-controller
@@ -107,6 +108,7 @@ osl-compute-atlas-13
 osl-compute-atlas-14
 osl-compute-atlas-15
 osl-compute-atlas-16
+osl-compute-gpu-17
 osl-compute-atlas-21
 osl-compute-atlas-22
 osl-compute-atlas-23
@@ -137,6 +139,9 @@ osl-compute-hpc-28
 
 [osl-compute-vgpu]
 osl-compute-vgpu-42
+
+[osl-compute-gpu]
+osl-compute-gpu-17
 
 [osl-console]
 osl-console-01
