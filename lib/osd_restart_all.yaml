@@ -1,0 +1,6 @@
+- hosts: "{{ myhosts }}"
+  tasks:
+    - name: Transfer OSD restart script
+      copy: src={{ playbook_dir }}/../files/scripts/restart_osds.sh dest=/root/restart_osds.sh mode=0777
+    - name: Execute OSD restart script
+      command: sh /root/restart_osds.sh
