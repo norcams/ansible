@@ -1,6 +1,5 @@
 #
-# Pull latest repo configuration and update pointers for test and
-# production repositories accordingly
+# Pull latest repo configuration and update pointers accordingly
 #
 # This only makes sense on the uio repo server (and thus the 'uio'
 # environment).
@@ -15,3 +14,5 @@
       command: "{{kelda_path}}/repoadmin.sh -e prod setup_test"
     - name: Update production repo pointers
       command: "{{kelda_path}}/repoadmin.sh -e prod setup_prod"
+    - name: Update vgpu repo pointers
+      command: "{{kelda_path}}/repoadmin.sh -e prod setup_vgpu"
