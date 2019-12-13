@@ -1,0 +1,91 @@
+#
+# This will configure a host for vgpu consumption by
+# virtual instances running on the host.
+#
+# Last verified: 2019-12-13 (ansible version 2.8.0)
+#
+# sudo ansible-playbook  -e "myhosts=test01-compute-vgpu-01 nvidia_file=NVIDIA-GRID-Linux-KVM-418.109-426.26.zip" lib/setup_vgpu.yaml
+#
+
+- hosts: "{{ myhosts.split('-')[0] }}-proxy-01"
+  gather_facts: False
+  tasks:
+    - import_tasks: tasks/sensu_silence.yaml
+      vars:
+        mute_time: "1800"
+      when: "'vgpu' in myhosts"
+
+- hosts: "{{ myhosts }}"
+  user: iaas
+  gather_facts: False
+  vars:
+    sensu_expire: 3600
+    repo_url: 'https://download.iaas.uio.no/nonfree/nvidia-vgpu'
+    https_proxy: 'https://172.16.32.12:8888'
+    
+  tasks:
+    - name: set up nvidia vgpu host
+      block:
+        - name: blacklist nouveau module
+          lineinfile:
+            path: /etc/modprobe.d/blacklist.conf
+            state: present
+            line: 'blacklist nouveau'
+        - name: ensure nouveau is disabled
+          lineinfile:
+            path: /etc/modprobe.d/blacklist.conf
+            state: present
+            line: 'options nouveau modeset=0'
+        - name: create new ramdisk with correct nouveau related settings
+          command: dracut --force
+        - name: install required packages
+          yum:
+            name:
+              - wget
+              - unzip
+              - kernel-devel
+              - epel-release
+              - "@Development Tools"
+            state: present
+        - name: update all existing packages
+          yum:
+            name: '*'
+            state: latest
+            update_cache: yes
+            exclude: "{{ exclude | default(omit) }}"
+        - name: reboot
+          command: shutdown -r 1 "Ansible updates triggered"
+          async: 0
+          poll: 0
+          ignore_errors: true
+        - name: waiting for server to come back
+          local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
+        - name: create temp. for driver package
+          tempfile:
+            state: directory
+          register: unpack_dir
+        - name: download and unpack driver installation package
+          unarchive:
+            src: "{{ repo_url }}/{{ nvidia_file }}"
+            dest: "{{ unpack_dir.path }}"
+            remote_src: yes
+            validate_certs: false
+          environment:
+            https_proxy: "{{ https_proxy }}"
+        - name: nvidia driver installation
+          shell: sh *-vgpu-kvm.run -s
+          args:
+            chdir: "{{ unpack_dir.path }}"
+        - name: remove installation files and directories
+          file:
+            path: "{{ unpack_dir }}"
+            state: absent
+          when: unpack_dir.path is defined
+        - name: final reboot
+          command: shutdown -r 1 "Ansible nvidia updates triggered"
+          async: 0
+          poll: 0
+          ignore_errors: true
+        - name: waiting a final time for server to come back up
+          local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
+      when: "'vgpu' in myhosts"
