@@ -41,6 +41,11 @@
         key: "/tmp/{{ item }}"
       with_items:
        - "{{ gpgkeys }}"
+    # Workaround for problematic Dell repo
+    - name: "Install Dell inventory collector"
+      yum:
+        name: https://iaas-repo.uio.no/uh-iaas/repo/dell-system-update_independent/x86_64/invcol_FJ2R1_LN64_19_12_200_744_A00-19.12.200.744-FJ2R1.x86_64.rpm
+        state: present
     - name: "Install Dell system update package"
       yum:
         name: dell-system-update
