@@ -27,8 +27,10 @@
         src: /dev/mapper/vg_ext-lv_instances
         fstype: xfs
         state: mounted
-    - name: Move instances to new disk
-      command: "mv /mnt/* /var/lib/nova/instances/."
+    - name: Copy instances to new disk
+      synchronize:
+        src: /mnt
+        dest: /var/lib/nova/instances
     - name: Unmount old instance LV
       mount:
         path: /mnt
