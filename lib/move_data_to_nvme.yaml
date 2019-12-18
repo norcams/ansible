@@ -1,0 +1,22 @@
+- hosts: "{{ myhosts }}"
+  tasks:
+    - name: 'Stop openstack-nova-compute'
+      systemd: name=openstack-nova-compute state=stopped
+    - name: 'Stop openstack-nova-metadata-api'
+      systemd: name=openstack-nova-metadata-api state=stopped
+    - name: "Check for instances on {{ myhosts }}"
+      virt: command=list_vms
+      register: instances
+    - fail:
+        msg: "{{ myhosts }} has running instances!!!"
+      when: instances.list_vms | length > 0
+    - name: Move instances to temporary location
+      command: "mv /var/lib/nova/instances /root/."
+    - import_tasks: tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+    - import_playbook: toggle_puppet.yaml
+      vars:
+        action: disable
+    - name: Move instances to new disk
+      command: "mv /root/instances/* /var/lib/nova/instances/."
