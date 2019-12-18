@@ -21,9 +21,11 @@
   vars:
     sensu_expire: 3600
     repo_url: 'https://download.iaas.uio.no/nonfree/nvidia-vgpu'
-    https_proxy: 'https://172.16.32.12:8888'
     
   tasks:
+    - name: Get http_proxy ip for {{location}}
+      local_action: shell getent hosts {{ myhosts.split('-')[0] }}-proxy-01 | awk '{ print $1 }'
+      register: proxy_ip
     - name: set up nvidia vgpu host
       block:
         - name: blacklist nouveau module
@@ -71,7 +73,7 @@
             remote_src: yes
             validate_certs: false
           environment:
-            https_proxy: "{{ https_proxy }}"
+            https_proxy: "https://{{proxy_ip.stdout}}:8888"
         - name: nvidia driver installation
           shell: sh *-vgpu-kvm.run -s
           args:
