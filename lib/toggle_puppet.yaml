@@ -2,5 +2,6 @@
   gather_facts: yes
   user: iaas
   tasks:
-    - name: "{{ action }} puppet agent"
-      command: /opt/puppetlabs/bin/puppet agent --{{ action }}
+    - import_tasks: tasks/toggle_puppet.yaml
+#    - name: "{{ action }} puppet agent"
+#      command: /opt/puppetlabs/bin/puppet agent --{{ action }}
