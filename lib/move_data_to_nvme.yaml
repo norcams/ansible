@@ -50,6 +50,8 @@
       synchronize:
         src: /mnt/instances
         dest: /var/lib/nova
+        rsync_opts:
+          - "--sparse"
       delegate_to: "{{ inventory_hostname }}"
     - name: Unmount old instance LV
       mount:
