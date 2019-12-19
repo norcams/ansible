@@ -7,12 +7,24 @@
     - name: "Check for instances on {{ myhosts }}"
       virt: command=list_vms
       register: instances
+    - name: Get node info
+      virt: command=info
+      register: virt_info
     - fail:
         msg: "{{ myhosts }} has running instances!!!"
-      when: instances.list_vms | length > 0
+      when:
+        - instances.list_vms is defined
+        - (virt_info[item]['state'] == 'running')
+      with_items: "{{instances.list_vms}}"
+    - name: Turn off swap
+      command: swapoff -a
+    - name: Remove swap file
+      file:
+        path: /var/lib/nova/instances/swapfile
+        state: absent
     - name: Unmount old instance LV
       mount:
-        path: /mnt
+        path: /var/lib/nova/instances
         src: /dev/mapper/vg_ext-lv_instances
         state: unmounted
     - name: Remove old mount point from fstab
@@ -23,21 +35,25 @@
     - import_tasks: tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-    - import_playbook: toggle_puppet.yaml
+        http_proxy:  'http://172.16.0.12:8888'
+        https_proxy: 'https://172.16.0.12:8888'
+    - import_tasks: tasks/toggle_puppet.yaml
       vars:
         action: disable
     - name: Mount old instance LV
       mount:
-        path: /mnt
+        path: /mnt/instances
         src: /dev/mapper/vg_ext-lv_instances
         fstype: xfs
         state: mounted
     - name: Copy instances to new disk
       synchronize:
-        src: /mnt
-        dest: /var/lib/nova/instances
+        src: /mnt/instances
+        dest: /var/lib/nova
+      delegate_to: "{{ inventory_hostname }}"
     - name: Unmount old instance LV
       mount:
-        path: /mnt
+        path: /mnt/instances
         src: /dev/mapper/vg_ext-lv_instances
-        state: unmounted
+        state: absent
+

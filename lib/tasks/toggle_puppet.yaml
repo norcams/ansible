@@ -1,0 +1,4 @@
+# Simple task to enable or disable puppet
+
+- name: "{{ action | default('enable')}} puppet agent"
+  command: /opt/puppetlabs/bin/puppet agent --{{ action | default('enable') }}
