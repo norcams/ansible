@@ -10,6 +10,11 @@
     - fail:
         msg: "{{ myhosts }} has running instances!!!"
       when: instances.list_vms | length > 0
+    - name: Unmount old instance LV
+      mount:
+        path: /mnt
+        src: /dev/mapper/vg_ext-lv_instances
+        state: unmounted
     - name: Remove old mount point from fstab
       mount:
         path: /var/lib/nova/instances
@@ -35,5 +40,4 @@
       mount:
         path: /mnt
         src: /dev/mapper/vg_ext-lv_instances
-        fstype: xfs
         state: unmounted
