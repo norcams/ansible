@@ -1,0 +1,15 @@
+- hosts: "{{ myhosts }}"
+  serial: 1
+  tasks:
+    - name: Transfer db dev script
+      copy: src={{ playbook_dir }}/../files/scripts/retrofit_dbdev.sh dest=/root/retrofit_dbdev.sh mode=0777
+    - name: 'Enable puppet'
+      command: "puppet agent --enable"
+    - name: 'Puppet kickstart runmode'
+      command: "puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+    - name: 'Disable puppet'
+      command: "puppet agent --disable"
+    - name: Execute db retrofit script
+      command: sh /root/retrofit_dbdev.sh
