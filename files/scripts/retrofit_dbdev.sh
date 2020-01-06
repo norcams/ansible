@@ -38,3 +38,4 @@ while ! /bin/ceph status | grep "485 up"; do
   echo "true"
   /bin/sleep 2
 done
+/bin/sleep 10
