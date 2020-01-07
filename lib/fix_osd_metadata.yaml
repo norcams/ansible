@@ -1,0 +1,7 @@
+- hosts: "{{ myhosts }}"
+  serial: 1
+  tasks:
+    - name: Transfer OSD metadata fix script
+      copy: src={{ playbook_dir }}/../files/scripts/fix_osd_metadata.sh dest=/root/fix_osd_metadata.sh mode=0777
+    - name: Execute OSD metadata fix script
+      command: sh /root/fix_osd_metadata.sh
