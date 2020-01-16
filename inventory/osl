@@ -9,6 +9,7 @@ osl-compute-atlas
 osl-compute-hpc
 osl-compute-gpu
 osl-compute-vgpu
+osl-compute-robin
 osl-console
 osl-controller
 osl-dashboard
