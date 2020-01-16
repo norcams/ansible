@@ -110,6 +110,7 @@ osl-compute-atlas-14
 osl-compute-atlas-15
 osl-compute-atlas-16
 osl-compute-gpu-17
+osl-compute-robin-18
 osl-compute-atlas-21
 osl-compute-atlas-22
 osl-compute-atlas-23
@@ -143,6 +144,9 @@ osl-compute-vgpu-42
 
 [osl-compute-gpu]
 osl-compute-gpu-17
+
+[osl-compute-robin]
+osl-compute-robin-18
 
 [osl-console]
 osl-console-01
