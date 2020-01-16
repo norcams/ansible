@@ -75,7 +75,6 @@ test02-cephmon-03
 test02-compute-01
 test02-compute-02
 test02-compute-03
-test02-compute-242
 
 [test02-console]
 test02-console-01
