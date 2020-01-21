@@ -1,6 +1,5 @@
 - name:  autostart all nodes on controller with libvirt
   hosts: "{{ myhosts }}"
-  user: iaas
   tasks:
     - name: find nodes on controller
       virt: command=list_vms
@@ -19,4 +18,5 @@
 #      with_items: "{{nodes.list_vms}}"
     - name: autostart node
       shell: virsh autostart "{{item}}"
-      with_items: "{{nodes.list_vms}}" 
+      with_items: "{{nodes.list_vms}}"
+      when: nodes.list_vms is defined
