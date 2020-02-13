@@ -1,5 +1,5 @@
 #
-# This can be used to upgrade calico from version 2.6.x to 3.1.x on compute hosts
+# This can be used to upgrade calico from version 3.7+ to 3.12 on compute hosts
 #
 # Before you start you need to stop puppet and deploy latest version of himlar, including modules.
 #
@@ -32,20 +32,11 @@
         - calico-compute
         - calico-dhcp-agent
         - calico-felix
-        - dnsmasq
-        - openstack-neutron
-        - openstack-neutron-common
-        - python-neutron
-        - python2-neutronclient
-    - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
-    - name: 'Run puppet again'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
+        - networking-calico
+        - python2-etcd3gw
+    - name: 'Restart Openstack Nova Compute'
+      systemd: name=openstack-nova-compute state=restarted
     - name: 'Restart felix agent'
       systemd: name=calico-felix state=restarted
     - name: 'Restart calico dhcp agent'
       systemd: name=calico-dhcp-agent state=restarted
-    - name: 'Restart Openstack Nova Compute'
-      systemd: name=openstack-nova-compute state=restarted
