@@ -41,6 +41,8 @@ sleep 120
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/push_secrets.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
+# FIXME: ip6tables issue must be solved in puppet code
+sudo ansible -u iaas -a 'ip6tables -I INPUT 10 -p udp -m multiport --dports 3784,3785,4784,4785 -m comment --comment "912 bird allow bfd ipv6" -m state --state NEW -j ACCEPT' -m shell ${host}
 #sudo ansible-playbook -e "myhosts=${host} patchfile=${HOME}/ansible/files/patches/python-nova-newton-centos-7.3.0-discard.diff dest=/usr/lib/python2.7/site-packages/nova/virt/libvirt/driver.py" lib/patch.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-metadata-api.service" lib/systemd_restart.yaml
