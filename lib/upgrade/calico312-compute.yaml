@@ -26,6 +26,8 @@
     - name: 'Update packages packages'
       yum:
         name: "{{ packages }}"
+        state: latest
+        update_cache: yes
       vars:
         packages:
         - calico-common
