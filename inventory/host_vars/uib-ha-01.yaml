@@ -1,4 +1,9 @@
 secret_files:
+  ca-cert:
+    path:  '/etc/pki/tls/certs/cachain.pem'
+    mode:  '0644'
+    owner: 'root'
+    group: 'root'
   cert:
     path:  '/etc/pki/tls/certs/ha01.uib.uhdc.no.cert.pem'
     mode:  '0640'
@@ -6,6 +11,11 @@ secret_files:
     group: 'root'
   key:
     path:  '/etc/pki/tls/private/ha01.uib.uhdc.no.key.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
+  app-cert:
+    path:  '/etc/pki/tls/certs/appstest.uib.no.pem'
     mode:  '0640'
     owner: 'root'
     group: 'root'
