@@ -2,10 +2,7 @@
 location: uib.no
 domain: iaas.uib.no
 himlar_update_secrets: false
-secret_files:
-  ca-cert:
-    path:  '/etc/pki/tls/certs/cachain.pem'
-    mode:  '0644'
-    owner: 'root'
-    group: 'root'
+
+# Secrets to sync
+secret_files: {}
 
