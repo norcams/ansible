@@ -36,6 +36,7 @@
         - calico-felix
         - networking-calico
         - python2-etcd3gw
+        - openstack-neutron
     - name: 'Restart Openstack Nova Compute'
       systemd: name=openstack-nova-compute state=restarted
     - name: 'Restart felix agent'
