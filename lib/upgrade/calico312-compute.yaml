@@ -12,10 +12,6 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
-    - name: 'Stop calico dhcp agent'
-      systemd: name=calico-dhcp-agent state=stopped
-    - name: 'Stop calico felix'
-      systemd: name=calico-felix state=stopped
     - name: 'Make sure puppet are enabled'
       command: "puppet agent --enable"
     - name: 'Puppet kickstart runmode'
@@ -23,6 +19,10 @@
       environment:
         FACTER_RUNMODE: kickstart
       ignore_errors: yes
+    - name: 'Stop calico dhcp agent'
+      systemd: name=calico-dhcp-agent state=stopped
+    - name: 'Stop calico felix'
+      systemd: name=calico-felix state=stopped
     - name: 'Update packages packages'
       yum:
         name: "{{ packages }}"
