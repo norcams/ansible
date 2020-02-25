@@ -39,6 +39,6 @@
     - name: 'Restart Openstack Nova Compute'
       systemd: name=openstack-nova-compute state=restarted
     - name: 'Restart felix agent'
-      systemd: name=calico-felix state=restarted
+      systemd: name=calico-felix state=restarted daemon_reload=yes
     - name: 'Restart calico dhcp agent'
-      systemd: name=calico-dhcp-agent state=restarted
+      systemd: name=calico-dhcp-agent state=restarted daemon_reload=yes
