@@ -32,6 +32,7 @@
     - import_tasks: ../tasks/block_backend.yaml
       vars:
         node: "{{location}}-identity-01"
+      when: location != 'vagrant'
 
 # Step 2: run backup on login
 - hosts: "{{ location }}-login-01"
