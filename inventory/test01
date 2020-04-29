@@ -130,6 +130,7 @@ test01-network-03
 
 [test01-novactrl]
 test01-novactrl-01
+test01-novactrl-02
 
 [test01-ns]
 test01-ns-01
@@ -159,4 +160,5 @@ test01-torack-01
 
 [test01-volume]
 test01-volume-01
+test01-volume-02
 
