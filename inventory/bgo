@@ -7,6 +7,8 @@ bgo-cephmon
 bgo-cephmon-object
 bgo-compute
 bgo-compute-alice
+bgo-compute-clarino
+bgo-compute-hpc
 bgo-compute-tape
 bgo-console
 bgo-controller
@@ -41,6 +43,7 @@ bgo-spine
 bgo-status
 bgo-storage
 bgo-storage-dcache
+bgo-storage-v2d
 bgo-tape
 bgo-telemetry
 bgo-torack
@@ -116,6 +119,9 @@ bgo-compute-07
 bgo-compute-08
 bgo-compute-09
 bgo-compute-10
+bgo-compute-38
+bgo-compute-39
+bgo-compute-40
 bgo-compute-alice-11
 bgo-compute-alice-12
 bgo-compute-alice-13
@@ -140,6 +146,19 @@ bgo-compute-alice-31
 bgo-compute-alice-32
 bgo-compute-alice-33
 bgo-compute-alice-34
+bgo-compute-clarino-36
+bgo-compute-clarino-37
+bgo-compute-hpc-41
+bgo-compute-hpc-42
+bgo-compute-hpc-43
+bgo-compute-hpc-44
+bgo-compute-hpc-45
+bgo-compute-hpc-46
+bgo-compute-hpc-47
+bgo-compute-hpc-48
+bgo-compute-hpc-49
+bgo-compute-hpc-50
+bgo-compute-hpc-51
 bgo-compute-tape-49
 
 [bgo-compute-alice]
@@ -168,6 +187,23 @@ bgo-compute-alice-32
 bgo-compute-alice-33
 bgo-compute-alice-34
 
+[bgo-compute-clarino]
+bgo-compute-clarino-36
+bgo-compute-clarino-37
+
+[bgo-compute-hpc]
+bgo-compute-hpc-41
+bgo-compute-hpc-42
+bgo-compute-hpc-43
+bgo-compute-hpc-44
+bgo-compute-hpc-45
+bgo-compute-hpc-46
+bgo-compute-hpc-47
+bgo-compute-hpc-48
+bgo-compute-hpc-49
+bgo-compute-hpc-50
+bgo-compute-hpc-51
+
 [bgo-compute-tape]
 bgo-compute-tape-49
 
@@ -179,6 +215,9 @@ bgo-controller-01
 bgo-controller-02
 bgo-controller-03
 bgo-controller-04
+bgo-controller-05
+bgo-controller-06
+bgo-controller-07
 
 [bgo-dashboard]
 bgo-dashboard-01
@@ -226,15 +265,20 @@ bgo-login-01
 bgo-metric-01
 
 [bgo-mgmt]
-bgo-mgmt-01
 bgo-mgmt-opx-01
 bgo-mgmt-opx-02
 bgo-mgmt-opx-03
+bgo-mgmt-opx-04
+bgo-mgmt-opx-05
+bgo-mgmt-opx-06
 
 [bgo-mgmt-opx]
 bgo-mgmt-opx-01
 bgo-mgmt-opx-02
 bgo-mgmt-opx-03
+bgo-mgmt-opx-04
+bgo-mgmt-opx-05
+bgo-mgmt-opx-06
 
 [bgo-monitor]
 bgo-monitor-01
@@ -303,10 +347,6 @@ bgo-storage-02
 bgo-storage-03
 bgo-storage-04
 bgo-storage-05
-bgo-storage-06
-bgo-storage-07
-bgo-storage-08
-bgo-storage-09
 bgo-storage-dcache-10
 bgo-storage-dcache-11
 bgo-storage-dcache-12
@@ -332,6 +372,11 @@ bgo-storage-dcache-31
 bgo-storage-dcache-32
 bgo-storage-dcache-33
 bgo-storage-dcache-34
+bgo-storage-v2d-35
+bgo-storage-v2d-36
+bgo-storage-v2d-37
+bgo-storage-v2d-38
+bgo-storage-v2d-39
 
 [bgo-storage-dcache]
 bgo-storage-dcache-10
@@ -359,6 +404,13 @@ bgo-storage-dcache-31
 bgo-storage-dcache-32
 bgo-storage-dcache-33
 bgo-storage-dcache-34
+
+[bgo-storage-v2d]
+bgo-storage-v2d-35
+bgo-storage-v2d-36
+bgo-storage-v2d-37
+bgo-storage-v2d-38
+bgo-storage-v2d-39
 
 [bgo-tape]
 bgo-tape-01
