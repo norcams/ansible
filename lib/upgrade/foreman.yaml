@@ -36,7 +36,6 @@
         file: foreman
         baseurl: "http://yum.theforeman.org/releases/{{foreman_version}}/el7/x86_64"
         gpgcheck: yes
-        key: "http://yum.theforeman.org/releases/{{foreman_version}}/RPM-GPG-KEY-foreman"
     - name: Add Foreman plugins repository
       yum_repository:
         name: foreman-plugins
