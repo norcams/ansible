@@ -44,13 +44,13 @@
         baseurl: "http://yum.theforeman.org/plugins/{{foreman_version}}/el7/x86_64"
         gpgcheck: no
     # remove the foreman-rails repo when every installation is 2.0
-#    - name: Add Foreman rails repository
-#      yum_repository:
-#        name: foreman-rails
-#        description: Foreman rails repo
-#        file: foreman-rails
-#        baseurl: "http://yum.theforeman.org/rails/foreman-{{foreman_version}}/el7/x86_64"
-#        gpgcheck: no
+    - name: Add Foreman rails repository
+      yum_repository:
+        name: foreman-rails
+        description: Foreman rails repo
+        file: foreman-rails
+        baseurl: "http://yum.theforeman.org/rails/foreman-{{foreman_version}}/el7/x86_64"
+        gpgcheck: no
 #    - name: 'Install CentOS SCL packages'
 #      yum: name={{ item }} state=present update_cache=yes
 #      with_items:
@@ -61,7 +61,6 @@
     - name: 'Yum clean'
       command: 'yum clean all'
     - name: 'Yum update'
-#      yum: name="tfm*,ruby*,foreman*" state=latest update_cache=yes
       command: 'yum upgrade -y tfm\* ruby\* foreman\*'
     - name: 'Migrate database'
       command: "foreman-rake db:migrate"
