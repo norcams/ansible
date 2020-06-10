@@ -18,11 +18,11 @@
       rpm_key:
         state: present
         key: "http://yum.theforeman.org/releases/{{foreman_version}}/RPM-GPG-KEY-foreman"
-    - name: 'Remove CentOS SCL packages'
-      yum: name={{ item }} state=absent
-      with_items:
-        - centos-release-scl
-        - centos-release-scl-rh
+#    - name: 'Remove CentOS SCL packages'
+#      yum: name={{ item }} state=absent
+#      with_items:
+#        - centos-release-scl
+#        - centos-release-scl-rh
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -49,17 +49,19 @@
         name: foreman-rails
         description: Foreman rails repo
         file: foreman-rails
-        baseurl: "http://yum.theforeman.org/rails/{{foreman_version}}/el7/x86_64"
+        baseurl: "http://yum.theforeman.org/rails/foreman-{{foreman_version}}/el7/x86_64"
         gpgcheck: no
-    - name: 'Install CentOS SCL packages'
-      yum: name={{ item }} state=present update_cache=yes
-      with_items:
-        - centos-release-scl
-        - centos-release-scl-rh
+#    - name: 'Install CentOS SCL packages'
+#      yum: name={{ item }} state=present update_cache=yes
+#      with_items:
+#        - centos-release-scl
+#        - centos-release-scl-rh
     - name: 'Stop httpd'
       systemd: name=httpd state=stopped
+    - name: 'Yum clean'
+      command: 'yum clean all'
     - name: 'Yum update'
-      yum: name="tfm\* ruby\* foreman\*" state=latest update_cache=yes
+      command: 'yum upgrade -y tfm\* ruby\* foreman\*'
     - name: 'Migrate database'
       command: "foreman-rake db:migrate"
     - name: 'Update database'
