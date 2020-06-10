@@ -12,6 +12,8 @@
 - hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
+    - name: 'Disable Puppet Agent'
+      command: "puppet agent --disable"
     - name: 'Import gpg key for repo'
       rpm_key:
         state: present
@@ -19,7 +21,7 @@
     - name: 'Remove CentOS SCL packages'
       yum: name={{ item }} state=absent
       with_items:
-        - centos-release-scl 
+        - centos-release-scl
         - centos-release-scl-rh
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
@@ -27,10 +29,28 @@
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
-    - import_tasks: ../tasks/puppetrun.yaml
-      vars:
-        runmode: 'kickstart'
-
+    - name: Add Foreman repository
+      yum_repository:
+        name: foreman
+        description: Foreman repo
+        file: foreman
+        baseurl: "http://yum.theforeman.org/releases/{{foreman_version}}/el7/x86_64"
+        gpgcheck: yes
+    - name: Add Foreman plugins repository
+      yum_repository:
+        name: foreman-plugins
+        description: Foreman plugin repo
+        file: foreman-plugins
+        baseurl: "http://yum.theforeman.org/plugins/{{foreman_version}}/el7/x86_64"
+        gpgcheck: no
+    # remove the foreman-rails repo when every installation is 2.0
+    - name: Add Foreman rails repository
+      yum_repository:
+        name: foreman-rails
+        description: Foreman rails repo
+        file: foreman-rails
+        baseurl: "http://yum.theforeman.org/rails/{{foreman_version}}/el7/x86_64"
+        gpgcheck: no
     - name: 'Install CentOS SCL packages'
       yum: name={{ item }} state=present update_cache=yes
       with_items:
@@ -38,10 +58,8 @@
         - centos-release-scl-rh
     - name: 'Stop httpd'
       systemd: name=httpd state=stopped
-    - name: 'Disable Puppet Agent'
-      command: "puppet agent --disable"
     - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
+      yum: name="tfm\* ruby\* foreman\*" state=latest update_cache=yes
     - name: 'Migrate database'
       command: "foreman-rake db:migrate"
     - name: 'Update database'
@@ -50,6 +68,5 @@
       command: "foreman-rake tmp:cache:clear"
     - name: 'Clear sessions'
       command: "foreman-rake db:sessions:clear"
-    - import_tasks: ../tasks/puppetrun.yaml
-    # Do we need both runs?
-    - import_tasks: ../tasks/puppetrun.yaml
+    # Run puppet manually after
+    # - import_tasks: ../tasks/puppetrun.yaml
