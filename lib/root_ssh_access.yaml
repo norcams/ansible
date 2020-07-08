@@ -1,0 +1,58 @@
+#
+# This can be used to give temporary root ssh access to a set of machines
+# Will be useful when we need to copy data between controllers or compute
+# hosts and preserve file owners and modes
+#
+# You will need to run this on all hosts involved both target and source
+# for ssh connections. This playbook will grant access and remove it
+# based on the variable filestate.
+#
+# Options:
+#  -e filestate=present|absent (grant or revoke ssh access)
+#  
+# Testet with ansible 2.7.5 (2020-07-08)
+#
+- hosts: "{{ myhosts }}"
+  vars:
+     filestate: absent
+  tasks:
+    - import_tasks: tasks/toggle_puppet.yaml
+      vars:
+        action: disable
+      when: filestate == 'present'
+    - name: "Create ssh directory"
+      file: path=/root/.ssh owner=root group=root state=directory
+    - name: "Copy ssh key"
+      copy:
+        src: /root/.ssh/id_rsa
+        dest: /root/.ssh/id_rsa
+        owner: root
+        group: root
+        mode: '0600'
+      when: filestate == 'present'
+    - name: "Remove ssh key"
+      file:
+         state: "{{ filestate }}"
+         path: /root/.ssh/id_rsa
+      when: filestate == 'absent'
+    - name: "Updated authorized keys"
+      authorized_key:
+        user: root
+        state: "{{ filestate }}"
+        key: "{{ lookup('file', '/root/.ssh/id_rsa.pub') }}"
+    - name: Update the /etc/ssh/sshd_config file
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "^PermitRootLogin"
+        line: "PermitRootLogin yes"
+        insertafter: EOF
+        state: present
+      register: ssh_config
+      when: filestate == 'present'
+    - name: Restart ssh
+      service:
+        name: sshd
+        state: restarted
+      when: ssh_config.changed
+    - import_tasks: tasks/puppetrun.yaml
+      when: filestate == 'absent'
