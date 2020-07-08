@@ -19,7 +19,7 @@
           - openssl-devel
           - PyYAML
           - libffi-devel
-    - name: Update norcams/himlarcli git repo
+    - name: "Update {{himlarcli_repo}} with version {{himlarcli_ref}}"
       git:
         repo:     "{{himlarcli_repo}}"
         version:  "{{himlarcli_ref}}"
