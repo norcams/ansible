@@ -6,10 +6,10 @@ osl-builder
 osl-cephmon
 osl-compute
 osl-compute-atlas
-osl-compute-hpc
 osl-compute-gpu
-osl-compute-vgpu
+osl-compute-hpc
 osl-compute-robin
+osl-compute-vgpu
 osl-console
 osl-controller
 osl-dashboard
@@ -37,8 +37,10 @@ osl-ns
 osl-proxy
 osl-report
 osl-resolver
+osl-spine
 osl-status
 osl-storage
+osl-storage-arccache
 osl-telemetry
 osl-torack
 osl-volume
@@ -103,35 +105,6 @@ osl-compute-07
 osl-compute-08
 osl-compute-09
 osl-compute-10
-osl-compute-atlas-11
-osl-compute-atlas-12
-osl-compute-atlas-13
-osl-compute-atlas-14
-osl-compute-atlas-15
-osl-compute-atlas-16
-osl-compute-gpu-17
-osl-compute-robin-18
-osl-compute-atlas-21
-osl-compute-atlas-22
-osl-compute-atlas-23
-osl-compute-atlas-24
-osl-compute-hpc-25
-osl-compute-hpc-26
-osl-compute-hpc-27
-osl-compute-hpc-28
-osl-compute-atlas-29
-osl-compute-atlas-30
-osl-compute-atlas-31
-osl-compute-atlas-32
-osl-compute-atlas-33
-osl-compute-atlas-34
-osl-compute-atlas-35
-osl-compute-atlas-36
-osl-compute-atlas-37
-osl-compute-atlas-38
-osl-compute-atlas-39
-osl-compute-atlas-40
-osl-compute-vgpu-42
 osl-compute-43
 osl-compute-44
 osl-compute-45
@@ -140,6 +113,43 @@ osl-compute-47
 osl-compute-48
 osl-compute-49
 osl-compute-50
+osl-compute-atlas-11
+osl-compute-atlas-12
+osl-compute-atlas-13
+osl-compute-atlas-14
+osl-compute-atlas-15
+osl-compute-atlas-16
+osl-compute-atlas-17
+osl-compute-atlas-18
+osl-compute-atlas-19
+osl-compute-atlas-20
+osl-compute-atlas-21
+osl-compute-atlas-22
+osl-compute-atlas-23
+osl-compute-atlas-24
+osl-compute-atlas-29
+osl-compute-atlas-30
+osl-compute-atlas-31
+osl-compute-atlas-32
+osl-compute-atlas-33
+osl-compute-atlas-34
+osl-compute-atlas-35
+osl-compute-atlas-36
+osl-compute-atlas-37
+osl-compute-atlas-38
+osl-compute-atlas-39
+osl-compute-atlas-40
+osl-compute-gpu-17
+osl-compute-hpc-17
+osl-compute-hpc-18
+osl-compute-hpc-19
+osl-compute-hpc-20
+osl-compute-hpc-25
+osl-compute-hpc-26
+osl-compute-hpc-27
+osl-compute-hpc-28
+osl-compute-robin-18
+osl-compute-vgpu-42
 
 [osl-compute-atlas]
 osl-compute-atlas-11
@@ -148,6 +158,10 @@ osl-compute-atlas-13
 osl-compute-atlas-14
 osl-compute-atlas-15
 osl-compute-atlas-16
+osl-compute-atlas-17
+osl-compute-atlas-18
+osl-compute-atlas-19
+osl-compute-atlas-20
 osl-compute-atlas-21
 osl-compute-atlas-22
 osl-compute-atlas-23
@@ -165,20 +179,24 @@ osl-compute-atlas-38
 osl-compute-atlas-39
 osl-compute-atlas-40
 
+[osl-compute-gpu]
+osl-compute-gpu-17
+
 [osl-compute-hpc]
+osl-compute-hpc-17
+osl-compute-hpc-18
+osl-compute-hpc-19
+osl-compute-hpc-20
 osl-compute-hpc-25
 osl-compute-hpc-26
 osl-compute-hpc-27
 osl-compute-hpc-28
 
-[osl-compute-vgpu]
-osl-compute-vgpu-42
-
-[osl-compute-gpu]
-osl-compute-gpu-17
-
 [osl-compute-robin]
 osl-compute-robin-18
+
+[osl-compute-vgpu]
+osl-compute-vgpu-42
 
 [osl-console]
 osl-console-01
@@ -234,9 +252,11 @@ osl-metric-01
 
 [osl-mgmt]
 osl-mgmt-opx-01
+osl-mgmt-opx-02
 
 [osl-mgmt-opx]
 osl-mgmt-opx-01
+osl-mgmt-opx-02
 
 [osl-monitor]
 osl-monitor-01
@@ -278,6 +298,10 @@ osl-report-01
 osl-resolver-01
 osl-resolver-02
 
+[osl-spine]
+osl-spine-01
+osl-spine-02
+
 [osl-status]
 osl-status-01
 
@@ -289,6 +313,18 @@ osl-storage-04
 osl-storage-05
 osl-storage-06
 osl-storage-07
+osl-storage-arccache-08
+osl-storage-arccache-09
+osl-storage-arccache-10
+osl-storage-arccache-11
+osl-storage-arccache-12
+
+[osl-storage-arccache]
+osl-storage-arccache-08
+osl-storage-arccache-09
+osl-storage-arccache-10
+osl-storage-arccache-11
+osl-storage-arccache-12
 
 [osl-telemetry]
 osl-telemetry-01
@@ -300,4 +336,3 @@ osl-torack-02
 [osl-volume]
 osl-volume-01
 osl-volume-02
-
