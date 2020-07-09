@@ -1,4 +1,3 @@
-[bgo:children]
 bgo-access
 bgo-admin
 bgo-api
@@ -10,6 +9,7 @@ bgo-compute-alice
 bgo-compute-clarino
 bgo-compute-hpc
 bgo-compute-tape
+bgo-compute-vgpu
 bgo-console
 bgo-controller
 bgo-dashboard
@@ -44,7 +44,6 @@ bgo-status
 bgo-storage
 bgo-storage-dcache
 bgo-storage-v2d
-bgo-tape
 bgo-telemetry
 bgo-torack
 bgo-volume
@@ -79,7 +78,6 @@ bgo-report
 bgo-resolver
 bgo-rgw
 bgo-status
-bgo-tape
 bgo-telemetry
 bgo-volume
 
@@ -160,6 +158,7 @@ bgo-compute-hpc-49
 bgo-compute-hpc-50
 bgo-compute-hpc-51
 bgo-compute-tape-49
+bgo-compute-vgpu-35
 
 [bgo-compute-alice]
 bgo-compute-alice-11
@@ -206,6 +205,9 @@ bgo-compute-hpc-51
 
 [bgo-compute-tape]
 bgo-compute-tape-49
+
+[bgo-compute-vgpu]
+bgo-compute-vgpu-35
 
 [bgo-console]
 bgo-console-01
@@ -323,6 +325,7 @@ bgo-object-ceph-05
 
 [bgo-proxy]
 bgo-proxy-01
+bgo-proxy-02
 
 [bgo-report]
 bgo-report-01
@@ -372,6 +375,10 @@ bgo-storage-dcache-31
 bgo-storage-dcache-32
 bgo-storage-dcache-33
 bgo-storage-dcache-34
+bgo-storage-v2d-06
+bgo-storage-v2d-07
+bgo-storage-v2d-08
+bgo-storage-v2d-09
 bgo-storage-v2d-35
 bgo-storage-v2d-36
 bgo-storage-v2d-37
@@ -406,14 +413,15 @@ bgo-storage-dcache-33
 bgo-storage-dcache-34
 
 [bgo-storage-v2d]
+bgo-storage-v2d-06
+bgo-storage-v2d-07
+bgo-storage-v2d-08
+bgo-storage-v2d-09
 bgo-storage-v2d-35
 bgo-storage-v2d-36
 bgo-storage-v2d-37
 bgo-storage-v2d-38
 bgo-storage-v2d-39
-
-[bgo-tape]
-bgo-tape-01
 
 [bgo-telemetry]
 bgo-telemetry-01
@@ -425,4 +433,3 @@ bgo-torack-02
 [bgo-volume]
 bgo-volume-01
 bgo-volume-02
-
