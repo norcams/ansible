@@ -6,9 +6,9 @@
 # Vagrant example:
 # ansible-playbook -K -e location=vagrant lib/upgrade/keystone.yaml
 #
-# In vagrant alos run this first:
+# In vagrant also run this first:
 # vagrant rsync identity
-# sudo -i (once evry sudo-timeout to avoid 'sudo: a password is required')
+# sudo -v (once evry sudo-timeout to avoid 'sudo: a password is required')
 #
 # Variables:
 #   location: name of location (mandatory)
@@ -16,7 +16,7 @@
 # For multi-region this is mandatory
 #   multi_region: default 'none', use 'first', 'middle' or 'last'
 #
-# Last verified: 2020-02-27 (ansible version 2.9.2)
+# Last verified: 2020-08-06 (ansible version 2.9.10)
 #
 
 # Step 0: stop puppet on all identity nodes
