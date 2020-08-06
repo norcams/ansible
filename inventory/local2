@@ -3,9 +3,11 @@ local2-admin
 local2-api
 local2-controller
 local2-db
+local2-db-global
+local2-db-regional
 local2-dns
 local2-identity
-local2-leaf
+local2-image
 local2-login
 local2-mq
 local2-network
@@ -19,8 +21,11 @@ local2-volume
 local2-admin
 local2-api
 local2-db
+local2-db-global
+local2-db-regional
 local2-dns
 local2-identity
+local2-image
 local2-mq
 local2-network
 local2-novactrl
@@ -41,6 +46,12 @@ local2-controller-01
 local2-db-global-01
 local2-db-regional-01
 
+[local2-db-global]
+local2-db-global-01
+
+[local2-db-regional]
+local2-db-regional-01
+
 [local2-dns]
 local2-dns-01
 
@@ -48,8 +59,8 @@ local2-dns-01
 local2-identity-01
 local2-identity-02
 
-[local2-leaf]
-local2-leaf-01
+[local2-image]
+local2-image-01
 
 [local2-login]
 local2-login-01
