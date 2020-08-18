@@ -6,17 +6,14 @@
 # Vagrant example:
 # ansible-playbook -K -e location=vagrant lib/upgrade/nova.yaml
 #
-# In vagrant alos run this first:
-# vagrant rsync novactrl
-# sudo -i (once evry sudo-timeout to avoid 'sudo: a password is required')
+# In vagrant also run this first:
+# vagrant rsync identity
+# sudo -v (once every sudo-timeout to avoid 'sudo: a password is required')
 #
 # Variables:
 #   location: name of location (mandatory)
 #
-# For multi-region this is mandatory
-#   multi_region: default 'none', use 'first', 'middle' or 'last'
-#
-# Last verified: 2019-07-10 (ansible version 2.8)
+# Last verified: 2020-08-18 (ansible version 2.9.10)
 #
 
 # Stop puppet on all novactrl nodes
@@ -46,18 +43,18 @@
     - name: 'Stop httpd for nova API service'
       systemd: name=httpd state=stopped
       ignore_errors: yes
-    
+
     - name: 'Stop nova scheduler service'
       systemd: name=openstack-nova-scheduler state=stopped
       ignore_errors: yes
-    
+
     - name: 'Stop nova conductor service'
       systemd: name=openstack-nova-conductor state=stopped
       ignore_errors: yes
-    
+
     - name: Purge old package
       yum: name=openstack-nova-common state=absent
-    
+
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
 
@@ -152,7 +149,7 @@
         runmode: 'kickstart'
         http_proxy: "{{proxy_ip}}:8888"
 
-    # Do not do yum update on compute          
+    # Do not do yum update on compute
 #    - name: 'Yum update'
 #      yum: name=* state=latest update_cache=yes
 
