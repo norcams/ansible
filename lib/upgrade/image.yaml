@@ -1,9 +1,5 @@
 #
-# This can be used to upgrade console to new version of openstack
-#
-# Before you start you need to stop puppet and deploy latest version of himlar.
-#
-# *** Disable puppet on computes ***
+# This can be used to upgrade image to new version of openstack
 #
 # Mandatory input variables:
 # * myhosts (str): ansible node(s)
@@ -11,7 +7,7 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-image-01" lib/upgrade/image.yaml
 #
-# Last verified: 2018-11-13 (ansible version 2.6.1.0)
+# Last verified: 2020-08-17 (ansible version 2.9.10)
 #
 - hosts: "{{ myhosts }}"
   gather_facts: no
