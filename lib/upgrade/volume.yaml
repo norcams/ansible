@@ -9,7 +9,7 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-volume-01" lib/upgrade/volume.yaml
 #
-# Last verified: 2019-07-16 (ansible version 2.8)
+# Last verified: 2020-08-17 (ansible version 2.9.10)
 #
 # Run this to purge epel packages
 - hosts: "{{ myhosts }}"
@@ -40,6 +40,11 @@
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
+
 - import_playbook: ../openstack-version.yaml
+
+- hosts: "{{ myhosts }}"
+  gather_facts: no
+  tasks:
     - name: 'Restart httpd'
       systemd: name=httpd state=restarted
