@@ -37,13 +37,13 @@
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
-    - import_tasks: ../tasks/patch.yaml
-      vars:
-        patchfile: ../../files/patches/horizon-flavor-sort-fix-pike.diff
-        basedir: /usr/share/openstack-dashboard
-    - import_tasks: ../tasks/patch.yaml
-      vars:
-        patchfile: ../../files/patches/horizon-tables-size.diff
-        basedir: /usr/share/openstack-dashboard
+#    - import_tasks: ../tasks/patch.yaml
+#      vars:
+#        patchfile: ../../files/patches/horizon-flavor-sort-fix-pike.diff
+#        basedir: /usr/share/openstack-dashboard
+#    - import_tasks: ../tasks/patch.yaml
+#      vars:
+#        patchfile: ../../files/patches/horizon-tables-size.diff
+#        basedir: /usr/share/openstack-dashboard
     - name: 'Restart httpd'
       systemd: name=httpd state=restarted
