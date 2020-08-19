@@ -170,5 +170,20 @@
       vars:
         http_proxy: "{{proxy_ip}}:8888"
 
-    - name: 'Restart metadata-api'
-      systemd: name=openstack-nova-metadata-api state=restarted
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        http_proxy: "{{proxy_ip}}:8888"
+
+    # restart services
+    - systemd: name=etcd state=restarted
+    - pause: seconds=10
+    - systemd: name=etcd-grpc-proxy state=restarted
+    - pause: seconds=10
+    - systemd: name=calico-dhcp-agent state=restarted
+    - pause: seconds=10
+    - systemd: name=calico-felix state=restarted
+    - pause: seconds=10
+    - systemd: name=openstack-nova-compute state=restarted
+    - pause: seconds=10
+    - systemd: name=openstack-nova-metadata-api state=restarted
+    - pause: seconds=10
