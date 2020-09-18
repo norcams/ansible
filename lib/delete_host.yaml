@@ -1,0 +1,33 @@
+#
+# This will use himlarcli to delete a host.
+# {{ myhosts }} should be a host with himlarcli installed
+# {{ install_host }} should be the host you're reinstalling.
+#
+# Last verified: 2018-03-23 (ansible version 2.4.2.0)
+#
+- hosts: "{{ myhosts }}"
+  vars:
+    sensu_expire: 3600
+  tasks:
+    - name: Reinstalling node
+      command: bin/python node.py delete -n {{ install_host.split('-')[1:] | join("-") }} -y chdir={{himlarcli_path}}
+      when: location != 'vagrant'
+    - name: Delete node from foreman
+      local_action: wait_for port=22 host={{ install_host }} timeout=3600 delay=75 state=present
+# This will fix SSH host keys on login
+- hosts: "{{ myhosts.split('-')[0] }}-login-01"
+  tasks:
+    - name: find ip
+      shell: getent hosts {{install_host}} | awk '{ print $1 }'
+      register: host_ip
+      ignore_errors: yes
+    - name: remove host fqdn in /root/.ssh/known_hosts
+      shell: ssh-keygen -R {{install_host}}.{{domain}}
+    - name: remove host name in /root/.ssh/known_hosts
+      shell: ssh-keygen -R {{install_host}}
+    - name: Remove host ip in /root/.ssh/known_hosts
+      shell: ssh-keygen -R {{host_ip.stdout}}
+      when: host_ip.rc == 0
+- hosts: "{{ myhosts }}"
+  tasks:
+
