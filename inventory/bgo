@@ -9,7 +9,6 @@ bgo-compute
 bgo-compute-alice
 bgo-compute-clarino
 bgo-compute-hpc
-bgo-compute-tape
 bgo-compute-vgpu
 bgo-console
 bgo-controller
@@ -158,8 +157,8 @@ bgo-compute-hpc-48
 bgo-compute-hpc-49
 bgo-compute-hpc-50
 bgo-compute-hpc-51
-bgo-compute-tape-49
 bgo-compute-vgpu-35
+bgo-compute-vgpu-52
 
 [bgo-compute-alice]
 bgo-compute-alice-11
@@ -204,11 +203,9 @@ bgo-compute-hpc-49
 bgo-compute-hpc-50
 bgo-compute-hpc-51
 
-[bgo-compute-tape]
-bgo-compute-tape-49
-
 [bgo-compute-vgpu]
 bgo-compute-vgpu-35
+bgo-compute-vgpu-52
 
 [bgo-console]
 bgo-console-01
@@ -326,7 +323,6 @@ bgo-object-ceph-05
 
 [bgo-proxy]
 bgo-proxy-01
-bgo-proxy-02
 
 [bgo-report]
 bgo-report-01
