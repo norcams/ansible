@@ -16,8 +16,8 @@ DSU_INSTALL_PATH='/usr/libexec/dell_dup/'
 GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0x756ba70b1019ced6.asc'
 GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0x1285491434D8786F.asc'
 GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0xca77951d23b66a9d.asc'
+GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0x3CA66B4946770C59.asc'
                                      
-
 ##############################################################################
 #  Should not need to edit anything below this point
 ##############################################################################
