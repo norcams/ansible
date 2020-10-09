@@ -11,8 +11,6 @@
     - name: Update git.iaas.uio.no:repo-admin git repo
       git: repo={{repoadmin_repo}} version={{repoadmin_ref}} dest={{repoadmin_path}} force={{repoadmin_force_update}} accept_hostkey=yes clone=no key_file=/home/iaas/.ssh/id_rsa
     - name: Update test repo pointers
-      command: "{{kelda_path}}/repoadmin.sh -e prod setup_test"
+      command: "{{kelda_path}}/repoadmin.sh -e prod setup test"
     - name: Update production repo pointers
-      command: "{{kelda_path}}/repoadmin.sh -e prod setup_prod"
-    - name: Update vgpu repo pointers
-      command: "{{kelda_path}}/repoadmin.sh -e prod setup_vgpu"
+      command: "{{kelda_path}}/repoadmin.sh -e prod setup prod"
