@@ -33,4 +33,11 @@ sudo ansible-playbook -e "myhosts=${location}-proxy-01 install_host=${host}" lib
 sleep 120
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
+
+# Temporary until we have a Calico version with the following patch included:
+# https://github.com/projectcalico/networking-calico/pull/5
+# -trond, 2020-10-09
+sudo ansible-playbook -e "myhosts=${host} patchfile=${HOME}/ansible/files/patches/calico_ipv6_icmp.diff dest=/usr/lib/python2.7/site-packages/networking_calico/plugins/ml2/drivers/calico/policy.py" lib/patch.yaml
+sudo ansible-playbook -e "myhosts=${host} name=neutron-server.service" lib/systemd_restart.yaml
+
 sudo ansible-playbook -e "member=${host} manage_from=${manage_from}" lib/reconfigure_etcd_cluster.yaml
