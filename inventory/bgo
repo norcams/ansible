@@ -211,10 +211,6 @@ bgo-compute-vgpu-52
 bgo-console-01
 
 [bgo-controller]
-bgo-controller-01
-bgo-controller-02
-bgo-controller-03
-bgo-controller-04
 bgo-controller-05
 bgo-controller-06
 bgo-controller-07
