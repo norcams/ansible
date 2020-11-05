@@ -34,23 +34,23 @@
         name: foreman
         description: Foreman repo
         file: foreman
-        baseurl: "http://yum.theforeman.org/releases/{{foreman_version}}/el7/x86_64"
+        baseurl: "https://iaas-repo.uio.no/uh-iaas/repo/foreman-{{foreman_version}}/"
         gpgcheck: yes
     - name: Add Foreman plugins repository
       yum_repository:
         name: foreman-plugins
         description: Foreman plugin repo
         file: foreman-plugins
-        baseurl: "http://yum.theforeman.org/plugins/{{foreman_version}}/el7/x86_64"
+        baseurl: "https://iaas-repo.uio.no/uh-iaas/repo/foreman-plugins-{{foreman_version}}/"
         gpgcheck: no
-    # remove the foreman-rails repo when every installation is 2.0
-    - name: Add Foreman rails repository
-      yum_repository:
-        name: foreman-rails
-        description: Foreman rails repo
-        file: foreman-rails
-        baseurl: "http://yum.theforeman.org/rails/foreman-{{foreman_version}}/el7/x86_64"
-        gpgcheck: no
+#    # remove the foreman-rails repo when every installation is 2.0
+#    - name: Add Foreman rails repository
+#      yum_repository:
+#        name: foreman-rails
+#        description: Foreman rails repo
+#        file: foreman-rails
+#        baseurl: "http://yum.theforeman.org/rails/foreman-{{foreman_version}}/el7/x86_64"
+#        gpgcheck: no
 #    - name: 'Install CentOS SCL packages'
 #      yum: name={{ item }} state=present update_cache=yes
 #      with_items:
