@@ -134,6 +134,7 @@
 - import_playbook: manage_nodes.yaml
   vars:
      action: stop
+  when: not no_reboot | default(false)
 
 # Sleep 
 - name: Sleep while the nodes are shutting down
@@ -141,6 +142,7 @@
   gather_facts: False
   tasks:
     - pause: minutes=1
+      when: not no_reboot | default(false)
 
 # Boot controller
 - name: Reboot controller
