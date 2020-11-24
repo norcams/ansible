@@ -11,7 +11,7 @@ secret_files:
     owner: 'root'
     group: 'root'
   frontend:
-    path:  '/etc/pki/tls/certs/star.test.iaas.uio.no.cert.pem'
+    path:  '/etc/pki/tls/certs/star.test.iaas.uio.no.pem'
     mode:  '0640'
     owner: 'root'
     group: 'root'
