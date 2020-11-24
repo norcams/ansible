@@ -34,14 +34,14 @@
         name: foreman
         description: Foreman repo
         file: foreman
-        baseurl: "https://iaas-repo.uio.no/uh-iaas/repo/foreman-{{foreman_version}}/"
+        baseurl: "https://iaas-repo.uio.no/uh-iaas/prod/foreman-{{foreman_version}}/"
         gpgcheck: yes
     - name: Add Foreman plugins repository
       yum_repository:
         name: foreman-plugins
         description: Foreman plugin repo
         file: foreman-plugins
-        baseurl: "https://iaas-repo.uio.no/uh-iaas/repo/foreman-plugins-{{foreman_version}}/"
+        baseurl: "https://iaas-repo.uio.no/uh-iaas/prod/foreman-plugins-{{foreman_version}}/"
         gpgcheck: no
 #    # remove the foreman-rails repo when every installation is 2.0
 #    - name: Add Foreman rails repository
