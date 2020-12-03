@@ -45,7 +45,7 @@
     # Workaround for problematic Dell repo
     - name: "Install Dell inventory collector"
       yum:
-        name: https://download.iaas.uio.no/uh-iaas/repo/dell-system-update_independent/x86_64/invcol_TJG15_LN64_20_12_200_989_A00-20.12.00-TJG15.x86_64.rpm
+        name: https://download.iaas.uio.no/uh-iaas/repo/dell-system-update_independent/x86_64/invcol_00T4M_LN64_20_12_200_993_A00-20.12.00-00T4M.x86_64.rpm
         state: present
     - name: "Install Dell system update package"
       yum:
