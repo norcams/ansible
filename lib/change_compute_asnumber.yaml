@@ -1,0 +1,30 @@
+# replace BGP AS number for bird(6) and restart services
+#
+# Example:
+# sudo ansible-playbook -e "myhosts=osl-compute-01 old_as=65502 new_as=65500" lib/change_compute_asnumber.yaml
+#
+- hosts: "{{ myhosts }}"
+  gather_facts: False
+  tasks:
+  - find:
+      paths: /etc/bird
+      recurse: yes
+      patterns:
+        - "rr*"
+    register: birdcfg
+  - name: replace AS number for bird
+    replace:
+      path: "{{ item.path }}"
+      regexp: "{{ old_as }}"
+      replace: "{{ new_as }}"
+    with_items: "{{ birdcfg.files }}"
+  - name: restart bird
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: bird
+  - name: restart bird6
+    systemd:
+      state: restarted
+      daemon_reload: yes
+      name: bird6
