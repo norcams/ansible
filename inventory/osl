@@ -237,10 +237,12 @@ osl-metric-01
 [osl-mgmt]
 osl-mgmt-opx-01
 osl-mgmt-opx-02
+osl-mgmt-opx-03
 
 [osl-mgmt-opx]
 osl-mgmt-opx-01
 osl-mgmt-opx-02
+osl-mgmt-opx-03
 
 [osl-monitor]
 osl-monitor-01
@@ -320,4 +322,3 @@ osl-torack-02
 [osl-volume]
 osl-volume-01
 osl-volume-02
-osl-volume-03
