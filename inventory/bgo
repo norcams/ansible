@@ -146,11 +146,11 @@ bgo-compute-alice-33
 bgo-compute-alice-34
 bgo-compute-clarino-36
 bgo-compute-clarino-37
-bgo-compute-hpc-41
-bgo-compute-hpc-42
-bgo-compute-hpc-43
-bgo-compute-hpc-44
-bgo-compute-hpc-45
+bgo-compute-epyc-41
+bgo-compute-epyc-42
+bgo-compute-epyc-43
+bgo-compute-epyc-44
+bgo-compute-epyc-45
 bgo-compute-hpc-46
 bgo-compute-hpc-47
 bgo-compute-hpc-48
@@ -190,12 +190,14 @@ bgo-compute-alice-34
 bgo-compute-clarino-36
 bgo-compute-clarino-37
 
+[bgo-compute-epyc]
+bgo-compute-epyc-41
+bgo-compute-epyc-42
+bgo-compute-epyc-43
+bgo-compute-epyc-44
+bgo-compute-epyc-45
+
 [bgo-compute-hpc]
-bgo-compute-hpc-41
-bgo-compute-hpc-42
-bgo-compute-hpc-43
-bgo-compute-hpc-44
-bgo-compute-hpc-45
 bgo-compute-hpc-46
 bgo-compute-hpc-47
 bgo-compute-hpc-48
