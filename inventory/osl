@@ -6,7 +6,6 @@ osl-builder
 osl-cephmon
 osl-compute
 osl-compute-atlas
-osl-compute-gpu
 osl-compute-hpc
 osl-compute-robin
 osl-compute-vgpu
