@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Set all OSDs for a storage host to "down"
+# Stop all OSDs on storage host
 #
 for osd in `ceph-volume lvm list |grep ===== | cut -d' ' -f2 | cut -c 5-` ; do
   while ! /bin/ceph osd ok-to-stop $osd &>/dev/null ; do
@@ -8,7 +8,7 @@ for osd in `ceph-volume lvm list |grep ===== | cut -d' ' -f2 | cut -c 5-` ; do
     sleep 30
   done
   echo "OK to stop OSD $osd now. Set OSD down..."
-  /bin/ceph osd down $osd
+  /bin/systemctl stop ceph-osd@$osd.service
   /bin/sleep 5
 #  echo "$osd"
 done
