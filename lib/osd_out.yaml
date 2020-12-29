@@ -1,0 +1,6 @@
+- hosts: "{{ myhosts }}"
+  tasks:
+    - name: Transfer OSD destroy script
+      copy: src={{ playbook_dir }}/../files/scripts/osds_out.sh dest=/root/osds_out.sh mode=0777
+    - name: Set all OSDs out of cluster
+      command: sh /root/osds_out.sh
