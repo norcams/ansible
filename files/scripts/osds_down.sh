@@ -8,8 +8,8 @@ for osd in `ceph-volume lvm list |grep ===== | cut -d' ' -f2 | cut -c 5-` ; do
     sleep 30
   done
   echo "OK to stop OSD $osd now. Set OSD down..."
-  /bin/systemctl stop ceph-osd@$osd.service
   /bin/systemctl disable ceph-osd@$osd.service
+  /bin/systemctl stop ceph-osd@$osd.service
   /bin/sleep 5
 #  echo "$osd"
 done
