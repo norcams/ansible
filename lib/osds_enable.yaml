@@ -1,0 +1,6 @@
+- hosts: "{{ myhosts }}"
+  tasks:
+    - name: Transfer OSD enable script
+      copy: src={{ playbook_dir }}/../files/scripts/osds_enable.sh dest=/root/osds_enable.sh mode=0777
+    - name: Enabling all OSDs on storage host
+      command: sh /root/osds_enable.sh
