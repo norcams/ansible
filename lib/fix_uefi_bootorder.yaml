@@ -4,3 +4,5 @@
       copy: src={{ playbook_dir }}/../files/scripts/fix_uefi_bootorder.sh dest=/root/fix_uefi_bootorder.sh mode=0777
     - name: Set correct boot order for Dell 14G Servers
       command: sh /root/fix_uefi_bootorder.sh
+      register: output
+    - debug: msg="{{ output.stdout }}"
