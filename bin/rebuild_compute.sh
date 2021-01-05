@@ -38,6 +38,7 @@ sudo ansible-playbook -e "myhosts=${host}" lib/check_for_running_instances.yaml 
 sudo ansible-playbook -e "myhosts=${location}-proxy-01 sensu_expire=7200 install_host=${host}" lib/reinstall.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/reboot.yaml
 sleep 120
+sudo ansible-playbook -e "myhosts=${host}" lib/fix_uefi_bootorder.yaml # FIXME
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/push_secrets.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
