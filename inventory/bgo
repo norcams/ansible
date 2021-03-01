@@ -151,10 +151,10 @@ bgo-compute-epyc-42
 bgo-compute-epyc-43
 bgo-compute-epyc-44
 bgo-compute-epyc-45
-bgo-compute-hpc-46
-bgo-compute-hpc-47
-bgo-compute-hpc-48
-bgo-compute-hpc-49
+bgo-compute-epyc-46
+bgo-compute-epyc-47
+bgo-compute-epyc-48
+bgo-compute-epyc-49
 bgo-compute-hpc-50
 bgo-compute-hpc-51
 bgo-compute-vgpu-35
@@ -196,12 +196,12 @@ bgo-compute-epyc-42
 bgo-compute-epyc-43
 bgo-compute-epyc-44
 bgo-compute-epyc-45
+bgo-compute-epyc-46
+bgo-compute-epyc-47
+bgo-compute-epyc-48
+bgo-compute-epyc-49
 
 [bgo-compute-hpc]
-bgo-compute-hpc-46
-bgo-compute-hpc-47
-bgo-compute-hpc-48
-bgo-compute-hpc-49
 bgo-compute-hpc-50
 bgo-compute-hpc-51
 
