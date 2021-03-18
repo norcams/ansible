@@ -8,26 +8,31 @@ test01-compute
 test01-console
 test01-controller
 test01-dashboard
+test01-dashboard-mgmt
 test01-db
+test01-db-global
+test01-db-regional
 test01-dns
 test01-identity
 test01-image
-test01-leaf
 test01-logger
+test01-login
 test01-metric
 test01-monitor
 test01-mq
 test01-nat
+test01-nat-linux
 test01-network
 test01-novactrl
 test01-ns
 test01-proxy
 test01-resolver
+test01-spine
 test01-status
 test01-storage
 test01-telemetry
-test01-torack
 test01-volume
+test01-workflow
 
 [test01-nodes:children]
 test01-access
@@ -37,7 +42,10 @@ test01-builder
 test01-cephmon
 test01-console
 test01-dashboard
+test01-dashboard-mgmt
 test01-db
+test01-db-global
+test01-db-regional
 test01-dns
 test01-identity
 test01-image
@@ -46,6 +54,7 @@ test01-metric
 test01-monitor
 test01-mq
 test01-nat
+test01-nat-linux
 test01-network
 test01-novactrl
 test01-ns
@@ -54,6 +63,7 @@ test01-resolver
 test01-status
 test01-telemetry
 test01-volume
+test01-workflow
 
 [test01-access]
 test01-access-01
@@ -76,7 +86,6 @@ test01-cephmon-03
 test01-compute-01
 test01-compute-02
 test01-compute-03
-test01-compute-04
 
 [test01-console]
 test01-console-01
@@ -90,8 +99,17 @@ test01-controller-03
 test01-dashboard-01
 test01-dashboard-mgmt-01
 
+[test01-dashboard-mgmt]
+test01-dashboard-mgmt-01
+
 [test01-db]
 test01-db-global-01
+test01-db-regional-01
+
+[test01-db-global]
+test01-db-global-01
+
+[test01-db-regional]
 test01-db-regional-01
 
 [test01-dns]
@@ -105,11 +123,11 @@ test01-identity-02
 test01-image-01
 test01-image-02
 
-[test01-leaf]
-test01-leaf-01
-
 [test01-logger]
 test01-logger-01
+
+[test01-login]
+test01-login-01
 
 [test01-metric]
 test01-metric-01
@@ -121,6 +139,9 @@ test01-monitor-01
 test01-mq-01
 
 [test01-nat]
+test01-nat-linux-01
+
+[test01-nat-linux]
 test01-nat-linux-01
 
 [test01-network]
@@ -142,6 +163,10 @@ test01-proxy-01
 test01-resolver-01
 test01-resolver-02
 
+[test01-spine]
+test01-spine-01
+test01-spine-02
+
 [test01-status]
 test01-status-01
 
@@ -155,10 +180,9 @@ test01-storage-05
 [test01-telemetry]
 test01-telemetry-01
 
-[test01-torack]
-test01-torack-01
-
 [test01-volume]
 test01-volume-01
 test01-volume-02
 
+[test01-workflow]
+test01-workflow-01
