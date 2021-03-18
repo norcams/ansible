@@ -8,7 +8,8 @@ bgo-cephmon-object
 bgo-compute
 bgo-compute-alice
 bgo-compute-clarino
-bgo-compute-hpc
+bgo-compute-epyc
+bgo-compute-gpu1
 bgo-compute-vgpu
 bgo-console
 bgo-controller
@@ -45,7 +46,6 @@ bgo-storage
 bgo-storage-dcache
 bgo-storage-v2d
 bgo-telemetry
-bgo-torack
 bgo-volume
 
 [bgo-nodes:children]
@@ -120,6 +120,9 @@ bgo-compute-10
 bgo-compute-38
 bgo-compute-39
 bgo-compute-40
+bgo-compute-58
+bgo-compute-59
+bgo-compute-60
 bgo-compute-alice-11
 bgo-compute-alice-12
 bgo-compute-alice-13
@@ -155,10 +158,15 @@ bgo-compute-epyc-46
 bgo-compute-epyc-47
 bgo-compute-epyc-48
 bgo-compute-epyc-49
-bgo-compute-hpc-50
-bgo-compute-hpc-51
+bgo-compute-epyc-50
+bgo-compute-epyc-51
+bgo-compute-epyc-55
+bgo-compute-epyc-56
+bgo-compute-epyc-57
+bgo-compute-gpu1-54
 bgo-compute-vgpu-35
 bgo-compute-vgpu-52
+bgo-compute-vgpu-53
 
 [bgo-compute-alice]
 bgo-compute-alice-11
@@ -200,14 +208,19 @@ bgo-compute-epyc-46
 bgo-compute-epyc-47
 bgo-compute-epyc-48
 bgo-compute-epyc-49
+bgo-compute-epyc-50
+bgo-compute-epyc-51
+bgo-compute-epyc-55
+bgo-compute-epyc-56
+bgo-compute-epyc-57
 
-[bgo-compute-hpc]
-bgo-compute-hpc-50
-bgo-compute-hpc-51
+[bgo-compute-gpu1]
+bgo-compute-gpu1-54
 
 [bgo-compute-vgpu]
 bgo-compute-vgpu-35
 bgo-compute-vgpu-52
+bgo-compute-vgpu-53
 
 [bgo-console]
 bgo-console-01
@@ -288,10 +301,12 @@ bgo-mq-01
 [bgo-nat]
 bgo-nat-linux-01
 bgo-nat-linux-02
+bgo-nat-linux-03
 
 [bgo-nat-linux]
 bgo-nat-linux-01
 bgo-nat-linux-02
+bgo-nat-linux-03
 
 [bgo-network]
 bgo-network-01
@@ -380,6 +395,10 @@ bgo-storage-v2d-36
 bgo-storage-v2d-37
 bgo-storage-v2d-38
 bgo-storage-v2d-39
+bgo-storage-v2d-40
+bgo-storage-v2d-41
+bgo-storage-v2d-42
+bgo-storage-v2d-43
 
 [bgo-storage-dcache]
 bgo-storage-dcache-10
@@ -418,13 +437,13 @@ bgo-storage-v2d-36
 bgo-storage-v2d-37
 bgo-storage-v2d-38
 bgo-storage-v2d-39
+bgo-storage-v2d-40
+bgo-storage-v2d-41
+bgo-storage-v2d-42
+bgo-storage-v2d-43
 
 [bgo-telemetry]
 bgo-telemetry-01
-
-[bgo-torack]
-bgo-torack-01
-bgo-torack-02
 
 [bgo-volume]
 bgo-volume-01
