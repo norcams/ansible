@@ -10,7 +10,12 @@ uib-ha-test-02
 uib-ha-grid-01
 uib-ha-grid-02
 
+[uib-ha-iamtest]
+uib-ha-iamtest-01
+uib-ha-iamtest-02
+
 [uib:children]
 uib-ha
 uib-ha-grid
 uib-ha-test
+uib-ha-iamtest

@@ -1,0 +1,21 @@
+secret_files:
+  ca-cert:
+    path:  '/etc/pki/tls/certs/cachain.pem'
+    mode:  '0644'
+    owner: 'root'
+    group: 'root'
+  core:
+    path:  '/etc/pki/tls/certs/iam-test.uninett.no.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
+  connect:
+    path:  '/etc/pki/tls/certs/connect.iam-test.uninett.no.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
+  uib:
+    path:  '/etc/pki/tls/certs/tilgang.test.uib.no.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'root'
