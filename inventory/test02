@@ -4,6 +4,7 @@ test02-admin
 test02-api
 test02-builder
 test02-cephmon
+test02-cephmon-object
 test02-compute
 test02-console
 test02-controller
@@ -25,8 +26,11 @@ test02-network
 test02-nfs
 test02-novactrl
 test02-ns
+test02-object
+test02-object-ceph
 test02-proxy
 test02-resolver
+test02-rgw
 test02-status
 test02-storage
 test02-telemetry
@@ -39,6 +43,7 @@ test02-admin
 test02-api
 test02-builder
 test02-cephmon
+test02-cephmon-object
 test02-console
 test02-dashboard
 test02-dashboard-mgmt
@@ -60,6 +65,7 @@ test02-novactrl
 test02-ns
 test02-proxy
 test02-resolver
+test02-rgw
 test02-status
 test02-telemetry
 test02-volume
@@ -80,13 +86,15 @@ test02-builder-01
 test02-cephmon-01
 test02-cephmon-02
 test02-cephmon-03
+test02-cephmon-object-01
+
+[test02-cephmon-object]
+test02-cephmon-object-01
 
 [test02-compute]
 test02-compute-01
 test02-compute-02
 test02-compute-03
-test02-compute-242
-test02-compute-42
 
 [test02-console]
 test02-console-01
@@ -158,12 +166,25 @@ test02-novactrl-02
 [test02-ns]
 test02-ns-01
 
+[test02-object]
+test02-object-ceph-01
+test02-object-ceph-02
+test02-object-ceph-03
+
+[test02-object-ceph]
+test02-object-ceph-01
+test02-object-ceph-02
+test02-object-ceph-03
+
 [test02-proxy]
 test02-proxy-01
 
 [test02-resolver]
 test02-resolver-01
 test02-resolver-02
+
+[test02-rgw]
+test02-rgw-01
 
 [test02-status]
 test02-status-01
