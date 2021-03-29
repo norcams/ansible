@@ -19,6 +19,14 @@
   gather_facts: no
   serial: 1
   tasks:
+    - name: 'Remove ceph dashboard' # FIXME - Dashboard is not supported on Centos 7 from Octopus onwards
+      yum:
+        name: "{{ packages }}"
+        state: absent
+        update_cache: yes
+      vars:
+        packages:
+        - ceph-mgr-dashboard
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
