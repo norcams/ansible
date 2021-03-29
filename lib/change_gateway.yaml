@@ -1,0 +1,11 @@
+---
+# old_gw: ip for current gw
+# new_gw: ip for new gw
+
+- hosts: "{{ myhosts }}"
+  tasks:
+  - name: "change gw from {{old_gw}} to {{new_gw}}"
+    shell: ip route del default && ip route add default via {{new_gw}}
+    args:
+      executable: /bin/bash
+    when: ansible_facts['default_ipv4']['gateway'] == old_gw
