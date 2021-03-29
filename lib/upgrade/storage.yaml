@@ -24,6 +24,14 @@
     - name: 'Set OSD noout'
       command: "ceph osd set noout"
       ignore_errors: yes
+    - name: 'Remove ceph mgr' # Should not be present
+      yum:
+        name: "{{ packages }}"
+        state: absent
+        update_cache: yes
+      vars:
+        packages:
+        - ceph-mgr
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
