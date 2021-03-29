@@ -32,3 +32,7 @@ sudo ansible-playbook -e "myhosts=download" lib/update_repo.yaml
 
 # Run a custom command (this will check etcd version on compute hosts)
 sudo ansible -u iaas -a 'rpm -qa | grep etcd' -m shell test01-compute
+
+# Reinstall node
+sudo ansible-playbook -e "myhosts=test01-proxy-01 install_host=test01-image-01" lib/reinstall.yaml
+
