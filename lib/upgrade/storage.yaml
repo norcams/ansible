@@ -47,21 +47,26 @@
       ignore_errors: yes
     - name: 'Upate all packages'
       yum: name=* state=latest update_cache=yes
+    - name: Restart all OSDs
+      ansible.builtin.systemd:
+        state: restarted
+        daemon_reload: yes
+        name: ceph-osd.target
     - name: 'Puppet run'
       command: "puppet agent --onetime --no-daemonize"
       ignore_errors: yes
-    - name: 'Reboot host'
-      command: shutdown -r 1 "Ansible updates triggered"
-      async: 0
-      poll: 0
-      ignore_errors: true
-    - name: waiting for server to come back
-      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
-    - name: Sleep while the nodes are shutting down
-      hosts: "{{ myhosts }}"
-      gather_facts: False
-      tasks:
-        - pause: minutes=1
+#    - name: 'Reboot host'
+#      command: shutdown -r 1 "Ansible updates triggered"
+#      async: 0
+#      poll: 0
+#      ignore_errors: true
+#    - name: waiting for server to come back
+#      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
+#    - name: Sleep while the nodes are shutting down
+#      hosts: "{{ myhosts }}"
+#      gather_facts: False
+#      tasks:
+#        - pause: minutes=1
     - name: 'Set OSD out'
       command: "ceph osd unset noout"
       ignore_errors: yes
