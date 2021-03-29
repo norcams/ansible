@@ -26,6 +26,7 @@
     when:
     - '"admin" not in inventory_hostname'
     - location != "vagrant"
+    - location != "uib"
     - exclude is not defined
 
   - name: Run Puppet via himlar/provision/puppetrun.sh
@@ -33,4 +34,5 @@
     when:
     - '"admin" in inventory_hostname'
     - location != "vagrant"
+    - location == "uib"
     - exclude is not defined
