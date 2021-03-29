@@ -4,6 +4,7 @@
 # Last verified: 2018-04-16 (ansible version 2.4.2.0)
 #
 - hosts: "{{ myhosts }}"
+  serial: "100%"
   tasks:
     - name: Run dsu in non-interactive mode
       command: /sbin/dsu --non-interactive
