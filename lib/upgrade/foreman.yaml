@@ -14,15 +14,16 @@
   tasks:
     - name: 'Disable Puppet Agent'
       command: "puppet agent --disable"
+    - name: "Upgrade all packages excluding {{ exclude | default('none') }}"
+      yum:
+        name: '*'
+        state: latest
+        update_cache: yes
+        exclude: "{{ exclude | default(omit) }}"
     - name: 'Import gpg key for repo'
       rpm_key:
         state: present
         key: "http://yum.theforeman.org/releases/{{foreman_version}}/RPM-GPG-KEY-foreman"
-#    - name: 'Remove CentOS SCL packages'
-#      yum: name={{ item }} state=absent
-#      with_items:
-#        - centos-release-scl
-#        - centos-release-scl-rh
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -43,27 +44,22 @@
         file: foreman-plugins
         baseurl: "https://iaas-repo.uio.no/uh-iaas/prod/foreman-plugins-{{foreman_version}}/"
         gpgcheck: no
-#    # remove the foreman-rails repo when every installation is 2.0
-#    - name: Add Foreman rails repository
-#      yum_repository:
-#        name: foreman-rails
-#        description: Foreman rails repo
-#        file: foreman-rails
-#        baseurl: "http://yum.theforeman.org/rails/foreman-{{foreman_version}}/el7/x86_64"
-#        gpgcheck: no
-#    - name: 'Install CentOS SCL packages'
-#      yum: name={{ item }} state=present update_cache=yes
-#      with_items:
-#        - centos-release-scl
-#        - centos-release-scl-rh
     - name: 'Stop httpd'
       systemd: name=httpd state=stopped
+    - name: 'Stop foreman'
+      systemd: name=foreman state=stopped
+    - name: 'Stop foreman.socket'
+      systemd: name=foreman.socket state=stopped
+    - name: 'Stop foreman-proxy'
+      systemd: name=foreman-proxy state=stopped
     - name: 'Yum clean'
       command: 'yum clean all'
     - name: 'Yum update'
       command: 'yum upgrade -y tfm\* ruby\* foreman\*'
     - name: 'Migrate database'
       command: "foreman-rake db:migrate"
+    - name: 'Regenerate cache'
+      command: "foreman-rake apipie:cache"
     - name: 'Update database'
       command: "foreman-rake db:seed"
     - name: 'Clear cache'
