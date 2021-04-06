@@ -1,7 +1,9 @@
 ---
+# This will temporary (until changed back or rebooted) change the gateway of a node
+# 
 # old_gw: ip for current gw
 # new_gw: ip for new gw
-
+#
 - hosts: "{{ myhosts }}"
   tasks:
   - name: "change gw from {{old_gw}} to {{new_gw}}"
