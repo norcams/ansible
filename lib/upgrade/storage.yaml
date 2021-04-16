@@ -67,7 +67,8 @@
 #      gather_facts: False
 #      tasks:
 #        - pause: minutes=1
-    - name: 'Set OSD out'
+    - name: 'Unset OSD out'
       command: "ceph osd unset noout"
       ignore_errors: yes
-
+    - name: 'Start crond'
+      systemd: name=crond state=running
