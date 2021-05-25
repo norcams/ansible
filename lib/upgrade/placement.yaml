@@ -11,7 +11,7 @@
 # block all novactrl backend
 - hosts: "{{ location }}-api-01"
   tasks:
-    - import_tasks: tasks/toggle_puppet.yaml
+    - import_tasks: ../tasks/toggle_puppet.yaml
       vars:
         action: disable
     - import_tasks: ../tasks/block_backend.yaml
@@ -66,14 +66,14 @@
       args:
         chdir: /root
 
-# run puppet on the rest of novactrl
-- hosts: "{{ location }}-novactrl,!{{ location }}-novactrl-01"
-  gather_facts: false
-  tasks:
-    - import_tasks: ../tasks/puppetrun.yaml
-
 # enable all backends on api
 - hosts: "{{ location }}-api-01"
   gather_facts: false
   tasks:
      - import_tasks: ../tasks/puppetrun.yaml
+
+# run puppet on the rest of novactrl
+- hosts: "{{ location }}-novactrl,!{{ location }}-novactrl-01"
+  gather_facts: false
+  tasks:
+    - import_tasks: ../tasks/puppetrun.yaml
