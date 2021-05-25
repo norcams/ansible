@@ -24,16 +24,10 @@
         node: "{{location}}-novactrl-03"
       when: "location+'-novactrl-03' in groups[location+'-novactrl']"
 
-# Upgrade db
-- hosts: "{{ location }}-novactrl-01"
+# run puppet on db-regional
+- hosts: "{{ location }}-novactrl"
   gather_facts: false
   tasks:
-    - name: Download migrate script
-      get_url:
-        url: https://raw.githubusercontent.com/openstack/placement/stable/train/placement_db_tools/mysql-migrate-db.sh
-        dest: /root/mysql-migrate-db.sh
-        mode: 755
-
     - name: 'Stop httpd for nova API service'
       systemd: name=httpd state=stopped
       ignore_errors: yes
@@ -51,6 +45,16 @@
 
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
+
+# Upgrade db
+- hosts: "{{ location }}-novactrl-01"
+  gather_facts: false
+  tasks:
+    - name: Download migrate script
+      get_url:
+        url: https://raw.githubusercontent.com/openstack/placement/stable/train/placement_db_tools/mysql-migrate-db.sh
+        dest: /root/mysql-migrate-db.sh
+        mode: 755
 
     - import_tasks: ../tasks/puppetrun.yaml
 
