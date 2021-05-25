@@ -1,14 +1,13 @@
-# This is only used for on time upgrade in stein
+# This is only used for one time upgrade in stein
+#
+# Remember to stop puppet on all novactrl before deployment!
 
-# Optional: should be run before this playbook and before deployment!
-# Stop puppet on all novactrl nodes ()
-- import_playbook: ../toggle_puppet.yaml
-  vars:
-    myhosts:  "{{ location }}-novactrl"
-    action:   disable
-  when: location != 'vagrant'
+# run puppet on db-regional
+- hosts: "{{ location }}-db-regional"
+  gather_facts: false
+  tasks:
+    - import_tasks: ../tasks/puppetrun.yaml
 
-# Optional: will need testing
 # block all novactrl backend
 - hosts: "{{ location }}-api-01"
   tasks:
