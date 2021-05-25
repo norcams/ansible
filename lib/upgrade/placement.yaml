@@ -11,6 +11,9 @@
 # block all novactrl backend
 - hosts: "{{ location }}-api-01"
   tasks:
+    - import_tasks: tasks/toggle_puppet.yaml
+      vars:
+        action: disable
     - import_tasks: ../tasks/block_backend.yaml
       vars:
         node: "{{location}}-novactrl-01"
