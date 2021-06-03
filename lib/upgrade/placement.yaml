@@ -46,6 +46,9 @@
     - name: Purge old nova package
       yum: name=*nova* state=absent
 
+    - name: Purge old mariadb package
+      yum: name=mariadb* state=absent
+
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
 
