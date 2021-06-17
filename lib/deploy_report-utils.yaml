@@ -6,20 +6,21 @@
 #
 - hosts: "{{ myhosts }}"
   tasks:
-    - yum:
-        name: git
-        state: installed
-    - name:       Create report-utils directory
-      file:
-        state:    directory
-        path:     /opt/report-utils
-        mode:     0755
-    - name:       Deploy git repo
-      git:
-        repo:     https://github.com/norcams/report-utils
-        version:  master
-        dest:     /opt/report-utils
-        force:    yes
-    - name:       Run Makefile
-      make:
-        chdir:    /opt/report-utils
+     - debug: msg="report-utils/report script serving is handled by Puppet/Hieradata"
+#    - yum:
+#        name: git
+#        state: installed
+#    - name:       Create report-utils directory
+#      file:
+#        state:    directory
+#        path:     /opt/report-utils
+#        mode:     0755
+#    - name:       Deploy git repo
+#      git:
+#        repo:     https://github.com/norcams/report-utils
+#        version:  master
+#        dest:     /opt/report-utils
+#        force:    yes
+#    - name:       Run Makefile
+#      make:
+#        chdir:    /opt/report-utils
