@@ -53,10 +53,16 @@
       ignore_errors: yes
 
     - name: Purge old package
-      yum: name=openstack-nova-common state=absent
+      yum: name=*nova* state=absent
+
+    - name: Purge old package
+      yum: name=*placement* state=absent
 
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
+
+    - name: 'Remove /etc/placement/'
+      file: name=/etc/placement state=absent
 
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
