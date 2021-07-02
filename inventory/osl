@@ -139,6 +139,9 @@ osl-compute-hpc-26
 osl-compute-hpc-27
 osl-compute-hpc-28
 osl-compute-robin-18
+osl-compute-vgpu-17
+osl-compute-vgpu-19
+osl-compute-vgpu-20
 osl-compute-vgpu-42
 
 [osl-compute-atlas]
@@ -175,6 +178,9 @@ osl-compute-hpc-28
 osl-compute-robin-18
 
 [osl-compute-vgpu]
+osl-compute-vgpu-17
+osl-compute-vgpu-19
+osl-compute-vgpu-20
 osl-compute-vgpu-42
 
 [osl-console]
