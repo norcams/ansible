@@ -2,15 +2,15 @@
 - hosts: "{{ myhosts }}"
   gather_facts: False
   tasks:
-    - systemd: name=etcd state=restarted
-    - pause: seconds=10
-    - systemd: name=etcd-grpc-proxy state=restarted
-    - pause: seconds=10
-    - systemd: name=calico-dhcp-agent state=restarted
-    - pause: seconds=10
-    - systemd: name=calico-felix state=restarted
-    - pause: seconds=10
-    - systemd: name=openstack-nova-compute state=restarted
-    - pause: seconds=10
-    - systemd: name=openstack-nova-metadata-api state=restarted
-    - pause: seconds=10
+    - name: restart compute services
+      systemd:
+        name: "{{ item }}"
+        state: restarted
+        no_block: false
+      with_items:
+        - etcd
+        - etcd-grpc-proxy
+        - calico-dhcp-agent
+        - calico-felix
+        - openstack-nova-compute
+        - openstack-nova-metadata-api
