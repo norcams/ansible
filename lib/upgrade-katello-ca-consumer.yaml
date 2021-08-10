@@ -1,0 +1,40 @@
+#
+# Upgrade katello-ca-consumer RPM to latest release
+#
+# Author: Trond
+#
+- hosts: "{{ myhosts }}"
+  gather_facts: False
+
+  vars:
+    latest: 15
+
+  tasks:
+    - name: get http_proxy
+      shell: grep http_proxy /root/proxy.sh | cut -d= -f2
+      register: http_proxy
+    - name: get https_proxy
+      shell: grep https_proxy /root/proxy.sh | cut -d= -f2
+      register: https_proxy
+    - name: Check if katello-ca-consumer is installed
+      shell: rpm -q --quiet katello-ca-consumer-rhsat-prod01.uio.no
+      args:
+        warn: false
+    - name: Get release of katello-ca-consumer
+      shell: rpm -q --queryformat '%{RELEASE}' katello-ca-consumer-rhsat-prod01.uio.no
+      args:
+        warn: false
+      register: release
+    - name: Remove katello-ca-consumer
+      yum:
+        name: katello-ca-consumer-rhsat-prod01.uio.no
+        state: absent
+      when: release.stdout | int < latest
+    - name: Install latest katello-ca-consumer
+      yum:
+        name: https://rhsat-prod01.uio.no/pub/katello-ca-consumer-latest.noarch.rpm
+        state: present
+      environment:
+        http_proxy: "{{ http_proxy }}"
+        https_proxy: "{{ https_proxy }}"
+      when: release.stdout | int < latest
