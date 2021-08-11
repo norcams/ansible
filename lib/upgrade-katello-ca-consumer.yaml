@@ -9,13 +9,36 @@
   vars:
     latest: 15
 
+  pre_tasks:
+    - name: check for proxy.sh
+      stat:
+        path: /root/proxy.sh
+      register: _check_proxy_sh
+
+    - block:
+        - name: get proxy settings
+          slurp:
+            path: /root/proxy.sh
+          register: _proxy_sh
+
+        # In with_items we decode, trim, split, and filter (`select`) the slurped contents of proxy.sh
+        # down to a list of lines matching the regular expression `proxy_line` defined in the `vars:` section
+        # We add (`combine`) the lines to the `proxy_env` dict as a `{key: value}` by
+        # stripping the line (item) down to a key (\\1) and value (\\2) with the `regex_replace` function using `proxy_line`
+
+        - name: create proxy_env fact
+          set_fact:
+            proxy_env: "{{ proxy_env | default({}) |
+              combine( { item | regex_replace(proxy_line, '\\1') : item | regex_replace(proxy_line, '\\2') } ) }}"
+          with_items: "{{ (_proxy_sh.content | b64decode | trim).split('\n') | select('match', proxy_line) | list }}"
+          vars:
+            proxy_line: 'export (https?_proxy)=(.*)'
+      when: _check_proxy_sh.stat.exists == true
+
+#    - debug:
+#        msg: "{{ proxy_env }}"
+
   tasks:
-    - name: get http_proxy
-      shell: grep http_proxy /root/proxy.sh | cut -d= -f2
-      register: http_proxy
-    - name: get https_proxy
-      shell: grep https_proxy /root/proxy.sh | cut -d= -f2
-      register: https_proxy
     - name: Check if katello-ca-consumer is installed
       shell: rpm -q --quiet katello-ca-consumer-rhsat-prod01.uio.no
       args:
@@ -34,7 +57,5 @@
       yum:
         name: https://rhsat-prod01.uio.no/pub/katello-ca-consumer-latest.noarch.rpm
         state: present
-      environment:
-        http_proxy: "{{ http_proxy }}"
-        https_proxy: "{{ https_proxy }}"
+      environment: "{{ proxy_env | default({}) }}"
       when: release.stdout | int < latest
