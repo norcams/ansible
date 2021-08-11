@@ -1,6 +1,3 @@
 ---
 location: test02
 domain: mgmt.test02.uhdc.no
-
-himlar_repo: https://github.com/norcams/himlar.git
-himlar_ref: train/master
