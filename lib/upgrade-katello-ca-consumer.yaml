@@ -10,6 +10,12 @@
     latest: 15
 
   pre_tasks:
+    - name: gather packages
+      ansible.builtin.package_facts:
+
+#    - debug:
+#        var: ansible_facts['packages']['katello-ca-consumer-rhsat-prod01.uio.no']
+
     - name: check for proxy.sh
       stat:
         path: /root/proxy.sh
@@ -39,23 +45,18 @@
 #        msg: "{{ proxy_env }}"
 
   tasks:
-    - name: Check if katello-ca-consumer is installed
-      shell: rpm -q --quiet katello-ca-consumer-rhsat-prod01.uio.no
-      args:
-        warn: false
-    - name: Get release of katello-ca-consumer
-      shell: rpm -q --queryformat '%{RELEASE}' katello-ca-consumer-rhsat-prod01.uio.no
-      args:
-        warn: false
-      register: release
-    - name: Remove katello-ca-consumer
-      yum:
-        name: katello-ca-consumer-rhsat-prod01.uio.no
-        state: absent
-      when: release.stdout | int < latest
-    - name: Install latest katello-ca-consumer
-      yum:
-        name: https://rhsat-prod01.uio.no/pub/katello-ca-consumer-latest.noarch.rpm
-        state: present
-      environment: "{{ proxy_env | default({}) }}"
-      when: release.stdout | int < latest
+    - name: bug in katello package requires removing, then installing
+      block:
+        - name: Remove katello-ca-consumer
+          yum:
+            name: katello-ca-consumer-rhsat-prod01.uio.no
+            state: absent
+
+        - name: Install latest katello-ca-consumer
+          yum:
+            name: https://rhsat-prod01.uio.no/pub/katello-ca-consumer-latest.noarch.rpm
+            state: present
+          environment: "{{ proxy_env | default({}) }}"
+      when:
+        - ansible_facts['packages']['katello-ca-consumer-rhsat-prod01.uio.no'] is defined
+        - ansible_facts['packages']['katello-ca-consumer-rhsat-prod01.uio.no'][0]['release'] is version(latest, '<')
