@@ -27,7 +27,6 @@ test02-novactrl
 test02-ns
 test02-proxy
 test02-resolver
-test02-rgw
 test02-status
 test02-storage
 test02-telemetry
@@ -61,7 +60,6 @@ test02-novactrl
 test02-ns
 test02-proxy
 test02-resolver
-test02-rgw
 test02-status
 test02-telemetry
 test02-volume
