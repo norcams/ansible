@@ -8,7 +8,7 @@
 #       runmode: kickstart
 #
 - name: Enable puppet
-  command: puppet agent --enable
+  command: /opt/puppetlabs/bin/puppet agent --enable
   when: enable_puppet | default(true)
 
 - name: Run puppetmodules in Vagrant
@@ -25,7 +25,7 @@
   register: puppet_debug
 
 - name: Run puppet agent with runmode {{ runmode | default('default')}} and http proxy
-  command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
+  command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
     http_proxy: "{{ http_proxy }}"
@@ -36,7 +36,7 @@
   failed_when: puppet_debug.rc != 0 and puppet_debug.rc != 2
 
 - name: Run puppet agent with runmode {{ runmode | default('default')}}
-  command: "puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
+  command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
   ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
