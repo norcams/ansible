@@ -23,13 +23,13 @@
   tasks:
     - name: Install and versionlock
       block:
-        - name: Install yum-plugin-versionlock
+        - name: Install yum-plugin-versionlock (el7)
           yum:
             name: yum-plugin-versionlock
             state: present
           when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
 
-        - name: Install python3-dnf-plugin-versionlock
+        - name: Install python3-dnf-plugin-versionlock (el8)
           yum:
             name: python3-dnf-plugin-versionlock
             state: present
