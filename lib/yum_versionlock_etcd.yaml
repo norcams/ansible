@@ -1,7 +1,6 @@
 #---------------------------------------------------------------------
-# Add versionlock of package "etcd". Will not do anything except
-# installing the yum versionlock plugin if the wrong version of etcd
-# is installed.
+# Add versionlock of package "etcd". Does nothing unless the correct
+# version of etcd is already installed.
 #
 # Author: Trond
 #---------------------------------------------------------------------
