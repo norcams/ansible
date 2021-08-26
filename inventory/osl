@@ -6,6 +6,7 @@ osl-builder
 osl-cephmon
 osl-compute
 osl-compute-atlas
+osl-compute-gpu
 osl-compute-hpc
 osl-compute-robin
 osl-compute-vgpu
@@ -40,6 +41,7 @@ osl-spine
 osl-status
 osl-storage
 osl-storage-arccache
+osl-storage-v2h
 osl-telemetry
 osl-torack
 osl-volume
@@ -134,6 +136,7 @@ osl-compute-atlas-37
 osl-compute-atlas-38
 osl-compute-atlas-39
 osl-compute-atlas-40
+osl-compute-gpu-17
 osl-compute-hpc-25
 osl-compute-hpc-26
 osl-compute-hpc-27
@@ -168,6 +171,9 @@ osl-compute-atlas-38
 osl-compute-atlas-39
 osl-compute-atlas-40
 
+[osl-compute-gpu]
+osl-compute-gpu-17
+
 [osl-compute-hpc]
 osl-compute-hpc-25
 osl-compute-hpc-26
@@ -191,6 +197,10 @@ osl-controller-01
 osl-controller-02
 osl-controller-03
 osl-controller-04
+osl-controller-05
+osl-controller-06
+osl-controller-07
+osl-controller-08
 
 [osl-dashboard]
 osl-dashboard-01
@@ -305,6 +315,19 @@ osl-storage-arccache-09
 osl-storage-arccache-10
 osl-storage-arccache-11
 osl-storage-arccache-12
+osl-storage-v2h-13
+osl-storage-v2h-14
+osl-storage-v2h-15
+osl-storage-v2h-16
+osl-storage-v2h-17
+osl-storage-v2h-18
+osl-storage-v2h-19
+osl-storage-v2h-20
+osl-storage-v2h-21
+osl-storage-v2h-22
+osl-storage-v2h-23
+osl-storage-v2h-24
+osl-storage-v2h-25
 
 [osl-storage-arccache]
 osl-storage-arccache-08
@@ -312,6 +335,21 @@ osl-storage-arccache-09
 osl-storage-arccache-10
 osl-storage-arccache-11
 osl-storage-arccache-12
+
+[osl-storage-v2h]
+osl-storage-v2h-13
+osl-storage-v2h-14
+osl-storage-v2h-15
+osl-storage-v2h-16
+osl-storage-v2h-17
+osl-storage-v2h-18
+osl-storage-v2h-19
+osl-storage-v2h-20
+osl-storage-v2h-21
+osl-storage-v2h-22
+osl-storage-v2h-23
+osl-storage-v2h-24
+osl-storage-v2h-25
 
 [osl-telemetry]
 osl-telemetry-01
@@ -323,3 +361,4 @@ osl-torack-02
 [osl-volume]
 osl-volume-01
 osl-volume-02
+
