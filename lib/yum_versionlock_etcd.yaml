@@ -10,8 +10,8 @@
 
   vars:
     package_name:    'etcd'
-    package_version: '3.2.28'
-    package_release: '1.el7_8'
+    package_version: '3.2.32'
+    package_release: '1.el7_9'
 
   pre_tasks:
     - name: gather packages
