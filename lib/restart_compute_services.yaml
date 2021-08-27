@@ -6,11 +6,11 @@
     - pause: seconds=10
     - systemd: name=etcd-grpc-proxy state=restarted
     - pause: seconds=10
-    - systemd: name=calico-dhcp-agent state=restarted
+    - systemd: name=openstack-nova-compute state=restarted
     - pause: seconds=10
     - systemd: name=calico-felix state=restarted
     - pause: seconds=10
-    - systemd: name=openstack-nova-compute state=restarted
-    - pause: seconds=10
+    - systemd: name=calico-dhcp-agent state=restarted
+    - pause: seconds=5
     - systemd: name=openstack-nova-metadata-api state=restarted
     - pause: seconds=10
