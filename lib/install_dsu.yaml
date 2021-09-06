@@ -62,11 +62,13 @@
       yum:
         name: dell-system-update
         state: latest
+        update_cache: yes
       when: ansible_distribution_major_version == '7'
     - name: "Install Dell system update package for el8"
       dnf:
         name: dell-system-update
         state: latest
+        update_cache: yes
       when: ansible_distribution_major_version == '8'
     - name: "Transfer Dell GPG keys import script"
       copy: src={{ playbook_dir }}/../files/scripts/cp_dell_gpg_keys.sh dest=/root/cp_dell_gpg_keys.sh mode=0777
