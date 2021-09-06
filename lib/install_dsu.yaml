@@ -10,6 +10,7 @@
       - 0xca77951d23b66a9d.asc
       - 0x3CA66B4946770C59.asc
     gpgsource: "https://linux.dell.com/repo/pgp_pubkeys/"
+    invcol_url: "https://download.iaas.uio.no/nrec/repo/generic/dell-system-update_independent/x86_64/invcol_DKVCN_LN64_21_09_200_1155_A00-21.09.00-DKVCN.x86_64.rpm"
   tasks:
     - name: "Download GPG keys"
       get_url:
@@ -43,14 +44,30 @@
       with_items:
        - "{{ gpgkeys }}"
     # Workaround for problematic Dell repo
-    - name: "Install Dell inventory collector"
+    - name: "Install Dell inventory collector for el7"
       yum:
-        name: https://download.iaas.uio.no/nrec/repo/generic/dell-system-update_independent/x86_64/invcol_DKVCN_LN64_21_09_200_1155_A00-21.09.00-DKVCN.x86_64.rpm
+        name: "{{ invcol_url }}"
         state: present
-    - name: "Install Dell system update package"
+      when: ansible_distribution_major_version == '7'
+    - name: "Install Dell inventory collector for el8"
+      dnf:
+        name: "{{ invcol_url }}"
+        state: present
+      environment:
+        http_proxy: "{{ http_proxy }}"
+        https_proxy: "{{ https_proxy }}"
+        when: "'compute' in inventory_hostname"
+      when: ansible_distribution_major_version == '8'
+    - name: "Install Dell system update package for el7"
       yum:
         name: dell-system-update
         state: latest
+      when: ansible_distribution_major_version == '7'
+    - name: "Install Dell system update package for el8"
+      dnf:
+        name: dell-system-update
+        state: latest
+      when: ansible_distribution_major_version == '8'
     - name: "Transfer Dell GPG keys import script"
       copy: src={{ playbook_dir }}/../files/scripts/cp_dell_gpg_keys.sh dest=/root/cp_dell_gpg_keys.sh mode=0777
     - name: "Execute Dell GPG keys import script"
