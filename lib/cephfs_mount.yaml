@@ -1,0 +1,28 @@
+#
+# Mount or unmount a cephfs filesystem on host
+#
+---
+- hosts: "{{ myhosts }}"
+  vars:
+    cephfs_endpoint:   ':/ecdata/'
+    cephfs_mountpoint: '/cephfs/'
+    cephfs_user:       'admin'     # Client keys must exist in /etc/ceph
+    operation:         "mount"     # Either mount or unmount
+
+  tasks:
+  - name: mount cephfs filesystem
+    mount:
+      boot:   no
+      fstype: ceph
+      opts:   "name={{ cephfs_user }},_netdev"
+      path:   "{{ cephfs_mountpoint }}"
+      src:    "{{ cephfs_endpoint }}"
+      state:  mounted
+    when: operation == "mount"
+
+  - name: mount cephfs filesystem
+    mount:
+      path:   "{{ cephfs_mountpoint }}"
+      src:    "{{ cephfs_endpoint }}"
+      state:  absent
+    when: operation == "unmount"
