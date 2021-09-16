@@ -27,6 +27,7 @@
 - hosts: "{{ location }}-novactrl"
   gather_facts: false
   tasks:
+    - systemd: name=crond state=stopped
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -86,6 +87,8 @@
       when: '"novactrl" in inventory_hostname'
       command: "nova-manage db online_data_migrations"
 
+    - systemd: name=crond state=started
+
     - import_tasks: ../tasks/puppetrun.yaml
 
 
@@ -93,6 +96,7 @@
 - hosts: "{{ location }}-console"
   gather_facts: false
   tasks:
+    - systemd: name=crond state=stopped
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -122,6 +126,8 @@
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
 
+    - systemd: name=crond state=started
+
     - import_tasks: ../tasks/puppetrun.yaml
     - import_tasks: ../tasks/puppetrun.yaml
 
@@ -130,6 +136,7 @@
 - hosts: "{{ location }}-compute"
   gather_facts: false
   tasks:
+    - systemd: name=crond state=stopped
     - name: Get http_proxy ip for {{location}}
       local_action: shell getent hosts {{ location }}-proxy-01 | awk '{ print $1 }'
       register: proxy_ip
@@ -167,6 +174,8 @@
 
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
+
+    - systemd: name=crond state=started
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
