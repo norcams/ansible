@@ -47,5 +47,6 @@
             warn: false
       when:
         - ansible_facts['packages'][package_name] is defined
-        - ansible_facts['packages'][package_name][0]['version'] == package_version
-        - ansible_facts['packages'][package_name][0]['release'] == package_release
+        - (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
+#        - ansible_facts['packages'][package_name][0]['version'] == package_version
+#        - ansible_facts['packages'][package_name][0]['release'] == package_release
