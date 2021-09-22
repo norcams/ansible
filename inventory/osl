@@ -10,6 +10,7 @@ osl-compute-gpu
 osl-compute-hpc
 osl-compute-robin
 osl-compute-vgpu
+osl-compute-numascale
 osl-console
 osl-controller
 osl-dashboard
@@ -146,6 +147,7 @@ osl-compute-vgpu-17
 osl-compute-vgpu-19
 osl-compute-vgpu-20
 osl-compute-vgpu-42
+osl-compute-numascale-51
 
 [osl-compute-atlas]
 osl-compute-atlas-11
@@ -188,6 +190,9 @@ osl-compute-vgpu-17
 osl-compute-vgpu-19
 osl-compute-vgpu-20
 osl-compute-vgpu-42
+
+[osl-compute-numascale]
+osl-compute-numascale-51
 
 [osl-console]
 osl-console-01
