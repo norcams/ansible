@@ -1,0 +1,52 @@
+#---------------------------------------------------------------------
+# Add versionlock of package "openstack-selinux". Will install (or
+# upgrade or downgrade) before locking
+#
+# Author: Trond
+#---------------------------------------------------------------------
+
+- hosts: "{{ myhosts }}"
+  gather_facts: True
+
+  vars:
+    package_name:    'openstack-selinux'
+    package_version: '0.8.24'
+    package_release: '1.el7'
+
+  pre_tasks:
+    - name: gather packages
+      ansible.builtin.package_facts:
+
+#    - debug:
+#        var: ansible_facts['packages']['{{ package_name }}']
+
+  tasks:
+    - name: Install and versionlock
+      block:
+        - name: Install yum-plugin-versionlock (el7)
+          yum:
+            name: yum-plugin-versionlock
+            state: present
+          when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
+
+        - name: Install python3-dnf-plugin-versionlock (el8)
+          yum:
+            name: python3-dnf-plugin-versionlock
+            state: present
+          when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "8")
+
+        - name: Ensure correct version of "{{ package_name }}"
+          yum:
+            name: "{{ package_name }}-{{ package_version }}-{{ package_release }}"
+            state: present
+            allow_downgrade: True
+
+        - name: Versionlock "{{ package_name }}-{{ package_version }}-{{ package_release }}"
+          command: yum versionlock add '{{ package_name }}*'
+          args:
+            warn: false
+      when:
+        - ansible_facts['packages'][package_name] is defined
+        - (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
+#        - ansible_facts['packages'][package_name][0]['version'] == package_version
+#        - ansible_facts['packages'][package_name][0]['release'] == package_release
