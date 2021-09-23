@@ -1,0 +1,13 @@
+#
+# Flush all iptables chains for ipv6 or ipv4
+#
+---
+- hosts: "{{ myhosts }}"
+  vars:
+    ip_version: 'ipv6'
+
+  tasks:
+  - name: flush
+    ansible.builtin.iptables:
+      flush: yes
+      ip_version: "{{ ip_version }}"
