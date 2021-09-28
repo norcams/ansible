@@ -1,0 +1,34 @@
+---
+#
+# build el8 cloud images on a controller node - WIP
+#
+
+- hosts: "{{ myhosts }}"
+  vars:
+    distro:         "AlmaLinux"
+    distro_version: "8"
+    build_repo:     "https://github.com/TorLdre/cloud-images.git"
+    repo_ref:       "uefi_boot"
+    build_path:     "/opt/packerbuild"
+
+  tasks:
+  - name: "Install dependencies"
+    yum:
+    name: "OVMF,qemu,ansible,git,packer"
+      state: present
+      when: ansible_distribution_major_version == '7'
+  - name: "Install dependencies"
+    dnf:
+    name: "edk2-ovmf,qemu,ansible,git,packer"
+      state: present
+      when: ansible_distribution_major_version == '8'
+  - name: "Deploy build repo for {{ distro }} version {{ distro_version }}"
+    git: repo={{build_repo}} version={{repo_ref}} dest={{build_path}} force=true
+  - name: "Initialize packer environment"
+    command:
+      cmd:   "/usr/bin/packer init ."
+      chdir: "{{ build_path }}"
+  - name: "Build image"
+    command:
+      cmd:   "/usr/bin/packer build -only=qemu.almalinux-8-gencloud-x86_64 ."
+      chdir: "{{ build_path }}"
