@@ -50,7 +50,10 @@
         virtualenv: "{{ himlarcli_path }}"
 
     - name: Run setup.py if himlarcli package is not setup
-      command: bin/python setup.py develop chdir={{himlarcli_path}} creates={{himlarcli_path}}/himlarcli.egg-info
+      command: bin/python setup.py develop
+      args:
+        chdir: "{{ himlarcli_path }}"
+        creates: "{{ himlarcli_path }}/himlarcli.egg-info"
 
     - name: Copy config.ini from remote host
       fetch: src=/etc/himlarcli/config.ini dest={{himlarcli_path}}/config.ini.{{location}} flat=yes
