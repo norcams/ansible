@@ -44,14 +44,12 @@
         name: setuptools
         virtualenv:               "{{himlarcli_path}}"
         chdir:                    "{{himlarcli_path}}"
-        virtualenv_site_packages: "no"
 
     - name: Install python modules with pip
       pip:
         virtualenv:               "{{himlarcli_path}}"
         requirements:             "requirements.txt"
         chdir:                    "{{himlarcli_path}}"
-        virtualenv_site_packages: "no"
 
     - name: Run setup.py if himlarcli package is not setup
       command: bin/python setup.py develop chdir={{himlarcli_path}} creates={{himlarcli_path}}/himlarcli.egg-info
