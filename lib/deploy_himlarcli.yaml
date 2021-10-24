@@ -70,3 +70,4 @@
       copy:
         src: /opt/repo/secrets/common/whitelist_users.txt
         dest: "{{ himlarcli_path }}/whitelist_users.txt"
+        mode: '644'
