@@ -1,3 +1,4 @@
+---
 #
 # Deploy himlarcli to hosts under himlarcli_path
 # Verified: This will run under ansible 2.1
@@ -20,12 +21,12 @@
           - PyYAML
           - libffi-devel
 
-    - name: "Update {{himlarcli_repo}} with version {{himlarcli_ref}}"
+    - name: "Update {{ himlarcli_repo }} with version {{ himlarcli_ref }}"
       git:
-        repo:     "{{himlarcli_repo}}"
-        version:  "{{himlarcli_ref}}"
-        dest:     "{{himlarcli_path}}"
-        force:    "{{himlarcli_force_update}}"
+        repo: "{{ himlarcli_repo }}"
+        version: "{{ himlarcli_ref }}"
+        dest: "{{ himlarcli_path }}"
+        force: "{{ himlarcli_force_update }}"
 
     - name: Manually create the initial virtualenv for himlarcli
       command: "virtualenv --clear {{ himlarcli_path }}"
@@ -56,11 +57,11 @@
         creates: "{{ himlarcli_path }}/himlarcli.egg-info"
 
     - name: Copy config.ini from remote host
-      fetch: src=/etc/himlarcli/config.ini dest={{himlarcli_path}}/config.ini.{{location}} flat=yes
+      fetch: src=/etc/himlarcli/config.ini dest={{ himlarcli_path }}/config.ini.{{ location }} flat=yes
       when: '("login" not in inventory_hostname) and location != "vagrant"'
 
-#    - name: Run test/deploy.sh
-#      command: "{{himlarcli_path}}/tests/deploy.sh"
+    # - name: Run test/deploy.sh
+    #   command: "{{himlarcli_path}}/tests/deploy.sh"
 
     - name: Copy user whitelist from /opt/repo
-      copy: src=/opt/repo/secrets/common/whitelist_users.txt dest={{himlarcli_path}}/whitelist_users.txt
+      copy: src=/opt/repo/secrets/common/whitelist_users.txt dest={{ himlarcli_path }}/whitelist_users.txt
