@@ -46,9 +46,8 @@
 
     - name: Install python modules with pip
       pip:
-        virtualenv:               "{{himlarcli_path}}"
-        requirements:             "requirements.txt"
-        chdir:                    "{{himlarcli_path}}"
+        requirements: "{{ himlarcli_path }}/requirements.txt"
+        virtualenv: "{{ himlarcli_path }}"
 
     - name: Run setup.py if himlarcli package is not setup
       command: bin/python setup.py develop chdir={{himlarcli_path}} creates={{himlarcli_path}}/himlarcli.egg-info
