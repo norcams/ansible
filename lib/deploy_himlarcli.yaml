@@ -32,6 +32,12 @@
       args:
         creates: "{{ himlarcli_path }}/bin/activate"
 
+    - name: Upgrade pip
+      pip:
+        name: pip
+        state: latest
+        virtualenv: "{{ himlarcli_path }}"
+
     - name: Update setuptools
       pip:
         state: latest
@@ -39,12 +45,6 @@
         virtualenv:               "{{himlarcli_path}}"
         chdir:                    "{{himlarcli_path}}"
         virtualenv_site_packages: "no"
-
-    - name: Upgrade pip
-      pip:
-        name: pip
-        state: latest
-        virtualenv: "{{ himlarcli_path }}"
 
     - name: Install python modules with pip
       pip:
