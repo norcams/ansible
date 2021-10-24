@@ -19,14 +19,17 @@
           - openssl-devel
           - PyYAML
           - libffi-devel
+
     - name: "Update {{himlarcli_repo}} with version {{himlarcli_ref}}"
       git:
         repo:     "{{himlarcli_repo}}"
         version:  "{{himlarcli_ref}}"
         dest:     "{{himlarcli_path}}"
         force:    "{{himlarcli_force_update}}"
+
     - name: Manually create the initial virtualenv for himlarcli
       command: virtualenv --clear "{{himlarcli_path}}" creates="{{himlarcli_path}}/bin/activate"
+
     - name: Update setuptools
       pip:
         state: latest
@@ -34,20 +37,26 @@
         virtualenv:               "{{himlarcli_path}}"
         chdir:                    "{{himlarcli_path}}"
         virtualenv_site_packages: "no"
+
     - name: Upgrade pip
       command: bin/pip install --upgrade pip chdir={{himlarcli_path}}
+
     - name: Install python modules with pip
       pip:
         virtualenv:               "{{himlarcli_path}}"
         requirements:             "requirements.txt"
         chdir:                    "{{himlarcli_path}}"
         virtualenv_site_packages: "no"
+
     - name: Run setup.py if himlarcli package is not setup
       command: bin/python setup.py develop chdir={{himlarcli_path}} creates={{himlarcli_path}}/himlarcli.egg-info
+
     - name: Copy config.ini from remote host
       fetch: src=/etc/himlarcli/config.ini dest={{himlarcli_path}}/config.ini.{{location}} flat=yes
       when: '("login" not in inventory_hostname) and location != "vagrant"'
+
 #    - name: Run test/deploy.sh
 #      command: "{{himlarcli_path}}/tests/deploy.sh"
+
     - name: Copy user whitelist from /opt/repo
       copy: src=/opt/repo/secrets/common/whitelist_users.txt dest={{himlarcli_path}}/whitelist_users.txt
