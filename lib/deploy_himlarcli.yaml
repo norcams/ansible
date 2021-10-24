@@ -40,10 +40,9 @@
 
     - name: Update setuptools
       pip:
-        state: latest
         name: setuptools
-        virtualenv:               "{{himlarcli_path}}"
-        chdir:                    "{{himlarcli_path}}"
+        state: latest
+        virtualenv: "{{ himlarcli_path }}"
 
     - name: Install python modules with pip
       pip:
