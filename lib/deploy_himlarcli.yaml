@@ -39,7 +39,10 @@
         virtualenv_site_packages: "no"
 
     - name: Upgrade pip
-      command: bin/pip install --upgrade pip chdir={{himlarcli_path}}
+      pip:
+        name: pip
+        state: latest
+        virtualenv: "{{ himlarcli_path }}"
 
     - name: Install python modules with pip
       pip:
