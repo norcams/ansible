@@ -1,0 +1,55 @@
+---
+# 1 GB = 1073741824
+# 2 GB = 2147483648
+# 3 GB = 3221225472
+# 4 GB = 4294967296
+# 6 GB = 6442450944
+# 8 GB = 8589934592
+# 12 GB = 12884901888
+# 16 GB = 17179869184
+
+_common_nics: &common_nics
+  provisioning:
+    type: bridge
+    bridge: "{{ provisioning_bridge | default('br0') }}"
+    model: virtio
+  openstack:
+    type: bridge
+    bridge: "{{ openstack_bridge | default('br1') }}"
+    model: virtio
+
+_common_volumes: &common_volumes
+  0:
+    allocation:   '0G'
+    pool_name:    'dirpool'
+    capacity:     '10G'
+    format_type:  'qcow2'
+
+_common_options: &common_options
+  display: spice
+  nics_attributes:
+    <<: *common_nics
+  volumes_attributes:
+    <<: *common_volumes
+
+compute_profiles:
+  small:
+    vm_attrs:
+      cpus:   '1'
+      memory: '2147483648'
+      <<: *common_options
+  medium:
+    vm_attrs:
+      cpus: '1'
+      memory: '4294967296'
+      <<: *common_options
+  large:
+    vm_attrs:
+      cpus:   '2'
+      memory: '4294967296'
+      <<: *common_options
+  xlarge:
+    vm_attrs:
+      cpus:   '2'
+      memory: '8589934592'
+      <<: *common_options

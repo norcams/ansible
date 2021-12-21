@@ -1,0 +1,612 @@
+---
+- hosts:
+#    - localhost
+#    - local4-login-01
+    - local4-admin-01
+
+  vars:
+    foreman_auth: &foreman_auth
+      username: admin
+      password: changeme
+      server_url: https://foreman.mgmt.local4.iaas.intern
+      validate_certs: false
+
+    foreman_organization: Default Organization
+    foreman_location: Default Location
+    foreman_domain: "{{ ansible_facts['domain'] }}" #mgmt.local4.iaas.intern
+    foreman_smart_proxy: "local4-admin-01.{{ foreman_domain }}"
+    himlar_location: local4
+    #mgmt_interface: maas
+
+  pre_tasks:
+    - name: install pip
+      package:
+        name:
+          - python-pip
+          #- libselinux-python
+
+    - name: install pips
+      pip:
+        extra_args: '--user'
+        name:
+          - jmespath
+          - netaddr
+          - requests
+          #- selinux
+
+  tasks:
+    #- name: get settings
+    #  theforeman.foreman.resource_info:
+    #    <<: *foreman_auth
+    #    resource: settings
+    #  register: _settings
+    #- copy:
+    #    content: "{{ _settings.resources | to_nice_json }}"
+    #    dest: settings.json
+
+    - theforeman.foreman.setting:
+        <<: *foreman_auth
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+      with_items:
+        # Auth
+        #- { name: idle_timeout, value: 180 }
+        #- { name: trusted_hosts,  value: ["foreman."] }
+        # General
+        #- { name: entries_per_page, value: 100 }
+        #- { name: foreman_url,    value: "https://foreman." }
+        # TemplateSync
+        #- { name: template_sync_repo, value: "https://github.com/norcams/foreman-templates.git" }
+        #- { name: template_sync_branch, value: master }
+        #- { name: template_sync_dirname, value: "/norcams/" }
+        #- { name: template_sync_prefix, value: "norcams-" }
+        # Provisioning
+        #- { name: default_pxe_item_global, value: discovery }
+        #- { name: destroy_vm_on_host_delete, value: true }
+        #- { name: root_pass, value: "$1$16W5j9.P$wrGl0KophqmJwfADuUOIM/" } # changeme
+        - { name: root_pass, value: "$5$FebJX7W.NxM88NU5$PJ8wMfPl9i0SrE7LHQ6MSBliS5dGs4fVBc1z6fMLum." } # changeme
+        #- { name: root_pass, value: "$6$pfvLFeXeh5sokNMC$Z5GaeZJeuZeXpym7LEyAsLB0sRjpQYB.u1COsZ7uWaQseP0xxb9rQ3FlD6p3OlHd0AFX9QMV280BLRTaNlyrh." } # 123456789hest
+        #- { name: unattended_url, value: "http://foreman." }
+        #- { name: update_ip_from_built_request, value: true }
+        - { name: use_shortname_for_vms, value: true }
+        # Discovered
+        #- { name: discovery_fact_column, value: ipmi_address }
+        # Puppet
+        #- { name: create_new_host_when_facts_are_uploaded, value: false }
+      register: _settings
+
+    - name: Get smartproxies
+      theforeman.foreman.resource_info:
+        <<: *foreman_auth
+        resource: smart_proxies
+        full_details: true
+      register: _smart_proxies
+
+    # No module for this, so we use the rest api
+    - name: "foreman api: list all autosign entries"
+      uri:
+        force_basic_auth: true
+        url_username: "{{ foreman_auth.username }}"
+        url_password: "{{ foreman_auth.password }}"
+        validate_certs: "{{ foreman_auth.validate_certs | default(omit) }}"
+        url: "{{ foreman_auth.server_url }}/api/smart_proxies/{{ _smart_proxies.resources | json_query(proxy_id) }}/autosign"
+        return_content: true
+      vars:
+        proxy_name: "local4-admin-01.{{ foreman_domain }}"
+        proxy_id: "[?name=='{{ proxy_name }}'].id | [0]"
+      register: _autosign
+    - debug:
+        var: _autosign.json
+
+    - name: "foreman api: create autosign entry"
+      uri:
+        force_basic_auth: true
+        url_username: "{{ foreman_auth.username }}"
+        url_password: "{{ foreman_auth.password }}"
+        validate_certs: "{{ foreman_auth.validate_certs | default(omit) }}"
+        url: "{{ foreman_auth.server_url }}/api/smart_proxies/{{ _smart_proxies.resources | json_query(proxy_id) }}/autosign"
+        method: POST
+        body_format: json
+        body:
+          id: "*.{{ foreman_domain }}"
+        return_content: true
+      vars:
+        proxy_name: "local4-admin-01.{{ foreman_domain }}"
+        proxy_id: "[?name=='{{ proxy_name }}'].id | [0]"
+      changed_when: true
+      when: not "*." ~ foreman_domain in _autosign.json.results
+
+    - name: Create location
+      theforeman.foreman.location:
+        <<: *foreman_auth
+        name: "{{ foreman_location }}"
+        organizations:
+          - "{{ foreman_organization }}"
+        parameters:
+          # Enable clocksync in Kickstart
+          - { name: ntp-server, value: no.pool.ntp.org }
+          - { name: time-zone,  value: Europe/Oslo }
+
+    - name: Create and update domains
+      theforeman.foreman.domain:
+        <<: *foreman_auth
+        name: "{{ item }}"
+      with_items:
+        - "{{ foreman_domain }}"
+
+    - name: Create puppet environment
+      theforeman.foreman.puppet_environment:
+        <<: *foreman_auth
+        name: production
+        organizations:
+          - "{{ foreman_organization }}"
+        locations:
+          - "{{ foreman_location }}"
+
+      # What we have here is a proof of concept, the idea is to get the current parameters,
+      # filter them down to the three settings we care about (so union will work),
+      # then union current_params it with wanted_params.
+      #
+      # This way, if an existing param is not in wanted_params, we can set its state absent
+      #
+      # There is another catch, all entries in the wanted_params must contain
+      # name/parameter_type/value for the union to work properly. As it's quite common
+      # to omit parameter_type when we're setting it to the default('string').
+
+#    - name: Get global parameters
+#      theforeman.foreman.resource_info:
+#        <<: *foreman_auth
+#        resource: common_parameters
+#      register: _current_parameters
+#    - name: cleanup _current_parameters not in wanted_params
+#      debug:
+#        msg: "name: {{ item.name }}, state: {{ (item in wanted_params) | ternary('present', 'absent') }}"
+#      with_items: "{{ _current_parameters.resources | json_query(trim) | union(wanted_params) }}"
+#      vars:
+#        trim: "[].{ name: name, parameter_type: parameter_type, value: value }"
+
+    - name: Set global parameters
+      theforeman.foreman.global_parameter:
+        <<: *foreman_auth
+        name: "{{ item.name }}"
+        parameter_type: "{{ item.parameter_type | default(omit) }}"
+        value: "{{ item.value }}"
+      with_items: []
+        # Disable upstream epel and use norcams mirror
+        #- { name: enable-epel,                parameter_type: boolean, value: false }
+        #- { name: enable-norcams-epel,        parameter_type: boolean, value: true }
+        # Enable norcam's mirror of puppet 5 and disable others
+        #- { name: enable-puppetlabs-repo,     parameter_type: boolean, value: false }
+        #- { name: enable-puppetlabs-pc1-repo, parameter_type: boolean, value: false }
+        #- { name: enable-puppet5,             parameter_type: boolean, value: true }
+        #- { name: enable-norcams-repo,        parameter_type: boolean, value: true }
+        #- { name: run-puppet-in-installer,    parameter_type: boolean, value: true }
+        # Run puppet at first boot after install
+        #- { name: puppet_systemd_firstboot,   parameter_type: boolean, value: true }
+
+    - name: Create and update subnets
+      theforeman.foreman.subnet:
+        <<: *foreman_auth
+        name: "{{ item.name }}"
+        network: "{{ item.network }}"
+        mask: "{{ item.mask }}"
+        gateway: "{{ item.gateway | default(omit) }}"
+        vlanid: "{{ item.vlanid | default(omit) }}"
+        domains: "{{ item.domains | default(omit) }}"
+        ipam: "{{ item.ipam | default(omit) }}"
+        from_ip: "{{ item.from_ip | default(omit) }}"
+        to_ip: "{{ item.to_ip | default(omit) }}"
+        parameters: "{{ item.parameters | default(omit) }}"
+        dhcp_proxy: "{{ item.dhcp_proxy | default(omit) }}"
+        tftp_proxy: "{{ item.tftp_proxy | default(omit) }}"
+        bmc_proxy: "{{ item.bmc_proxy | default(omit) }}"
+      with_items:
+        - name: provision
+          domains:
+            - "{{ foreman_domain }}"
+          vlanid: 3
+          network: "{{ _ipv4.network }}"
+          mask: "{{ _ipv4.netmask }}"
+          gateway: "{{ _ipv4.gateway | default(_ipv4.network | ansible.netcommon.ipmath(1)) }}"
+          #ipam: DHCP
+          from_ip: 192.168.3.200
+          to_ip: 192.168.3.220
+          parameters:
+            - { name: http-proxy, value: "192.168.3.1" }
+            - { name: http-proxy-port, value: "8000" }
+          dhcp_proxy: "{{ foreman_smart_proxy }}"
+          tftp_proxy: "{{ foreman_smart_proxy }}"
+        - name: oob
+          vlanid: 4
+          network: 192.168.4.0
+          mask: 255.255.255.0
+          gateway: 192.168.4.254
+          ipam: None
+          bmc_proxy: "{{ foreman_smart_proxy }}"
+        - name: openstack
+          vlanid: 10
+          network: 172.29.236.0
+          mask: 255.255.252.0
+        - name: storage
+          vlanid: 20
+          network: 172.29.244.0
+          mask: 255.255.252.0
+        - name: tunnel
+          vlanid: 30
+          network: 172.29.240.0
+          mask: 255.255.252.0
+      vars:
+        _ipv4: "{{ ansible_facts[mgmt_interface | default('eth0')].ipv4 }}"
+
+    - name: Configure installation mediums
+      theforeman.foreman.installation_medium:
+        <<: *foreman_auth
+        organizations:
+          - "{{ foreman_organization }}"
+        locations:
+          - "{{ foreman_location }}"
+        name: "{{ item.name }}"
+        os_family: "{{ item.os_family }}"
+        path: "{{ item.path }}"
+      with_items:
+        - name: AlmaLinux 8 UiB
+          os_family: Redhat
+          path: http://almalinux.uib.no/$major.$minor/BaseOS/$arch/kickstart
+        - name: CentOS download.iaas.uio.no
+          os_family: Redhat
+          path: https://download.iaas.uio.no/uh-iaas/test/el$major/centos-base
+#    # norcams_provision_id: norcams-Kickstart default
+#    # norcams_pxelinux_id: norcams-Kickstart default PXELinux
+#    # norcams_pxegrub2_id: norcams-Kickstart default PXEGrub2
+#    # norcams_ptable_id: norcams-Kickstart default
+#    # norcams_ptable_uefi_id: norcams-Kickstart default uefi
+
+    - name: Enable discovery
+      theforeman.foreman.setting:
+        <<: *foreman_auth
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+      with_items:
+        - { name: default_pxe_item_global, value: discovery }
+      register: _settings
+
+    - name: "Press the \"Build PXE Default\" button"
+      uri:
+        force_basic_auth: true
+        url_username: "{{ foreman_auth.username }}"
+        url_password: "{{ foreman_auth.password }}"
+        validate_certs: "{{ foreman_auth.validate_certs | default(omit) }}"
+        url: "{{ foreman_auth.server_url }}/api/provisioning_templates/build_pxe_default"
+        method: POST
+        body_format: json
+        body:
+          provisioning_template: {}
+      when: _settings.results | json_query(need_build_pxe_default)
+      vars:
+        need_build_pxe_default: "[?item.name=='default_pxe_item_global'].changed | [0]"
+      changed_when: true
+
+    - name: Create and update operatingsystems
+      theforeman.foreman.operatingsystem:
+        <<: *foreman_auth
+        name: "{{ item.name }}"
+        major: "{{ item.major }}"
+        minor: "{{ item.minor }}"
+        os_family: "{{ item.os_family }}"
+        architectures:
+          - x86_64
+        media: "{{ item.media }}"
+        password_hash: "{{ item.password_hash | default(omit) }}"
+        ptables: "{{ item.ptables }}"
+        provisioning_templates: "{{ item.provisioning_templates }}"
+      with_items:
+        - name: AlmaLinux
+          major: "8"
+          minor: "5"
+          os_family: Redhat
+          media:
+            - AlmaLinux 8 UiB
+          password_hash: SHA256
+          ptables:
+            - Kickstart default
+          provisioning_templates:
+            - Kickstart default
+            - Kickstart default PXELinux
+          #parameters: "{{ item.parameters }}"
+          #  - { name: root_pass, value: "$5$FebJX7W.NxM88NU5$PJ8wMfPl9i0SrE7LHQ6MSBliS5dGs4fVBc1z6fMLum." } # changeme
+        - name: CentOS
+          major: "7"
+          minor: "9.2009"
+          os_family: Redhat
+          media:
+            - CentOS 7 mirror
+            #- CentOS download.iaas.uio.no
+          password_hash: SHA256
+          ptables:
+            - Kickstart default
+          provisioning_templates:
+            - Kickstart default
+            - Kickstart default PXELinux
+        - name: CentOS
+          major: "8"
+          minor: "5.2111"
+          os_family: Redhat
+          media:
+            - CentOS 8 mirror
+            #- CentOS download.iaas.uio.no
+          password_hash: SHA256
+          ptables:
+            - Kickstart default
+          provisioning_templates:
+            - Kickstart default
+            - Kickstart default PXELinux
+          #parameters: "{{ item.parameters }}"
+          #  - { name: root_pass, value: "$5$FebJX7W.NxM88NU5$PJ8wMfPl9i0SrE7LHQ6MSBliS5dGs4fVBc1z6fMLum." } # changeme
+
+    - name: Assign default templates to operatingsystems
+      theforeman.foreman.os_default_template:
+        <<: *foreman_auth
+        operatingsystem: "{{ item.operatingsystem }}"
+        template_kind: "{{ item.template_kind }}"
+        provisioning_template: "{{ item.provisioning_template }}"
+      with_items:
+        - { operatingsystem: AlmaLinux 8, template_kind: provision, provisioning_template: Kickstart default }
+        - { operatingsystem: AlmaLinux 8, template_kind: PXELinux,  provisioning_template: Kickstart default PXELinux }
+        - { operatingsystem: CentOS 7, template_kind: provision, provisioning_template: Kickstart default }
+        - { operatingsystem: CentOS 7, template_kind: PXELinux,  provisioning_template: Kickstart default PXELinux }
+        - { operatingsystem: CentOS 8, template_kind: provision, provisioning_template: Kickstart default }
+        - { operatingsystem: CentOS 8, template_kind: PXELinux,  provisioning_template: Kickstart default PXELinux }
+
+    - name: Create and update hostgroups
+      theforeman.foreman.hostgroup:
+        <<: *foreman_auth
+        organizations:
+          - "{{ foreman_organization }}"
+        locations:
+          - "{{ foreman_location }}"
+        environment: production
+        parent: "{{ item.parent | default(omit) }}"
+        name: "{{ item.name }}"
+        architecture: "{{ item.architecture | default(omit) }}"
+        pxe_loader: "{{ item.pxe_loader | default(omit) }}"
+        medium: "{{ item.medium | default(omit) }}"
+        operatingsystem: "{{ item.operatingsystem | default(omit) }}"
+        #provision_method: build
+        ptable: "{{ item.ptable | default(omit) }}"
+        parameters: "{{ item.parameters | default(omit) }}"
+        subnet: provision
+        puppet_ca_proxy: "{{ foreman_smart_proxy }}"
+        puppet_proxy: "{{ foreman_smart_proxy }}"
+      with_items:
+        - name: dl380gen8
+          architecture: x86_64
+          pxe_loader: PXELinux BIOS
+          medium: CentOS 7 mirror
+          operatingsystem: CentOS 7.9.2009
+          ptable: Kickstart default
+          parameters:
+            - { name: enable-puppetlabs-puppet5-repo, parameter_type: boolean, value: true }
+            - { name: kernelcmd, value: "console=tty1 console=ttyS0,115200n8" }
+        - name: r720xd
+          architecture: x86_64
+          pxe_loader: PXELinux UEFI
+          medium: CentOS 8 mirror
+          operatingsystem: CentOS 8.5.2111
+          ptable: Kickstart default
+          parameters:
+            - { name: enable-puppetlabs-puppet6-repo, parameter_type: boolean, value: true }
+            - { name: kernelcmd, value: "console=tty1 console=ttyS0,115200n8" }
+
+#    - name: get hosts
+#      theforeman.foreman.host_info:
+#        <<: *foreman_auth
+#        name: "{{ item }}"
+#      with_items:
+#        - local4-controller-01.mgmt.local4.iaas.intern
+#        - local4-controller-02.mgmt.local4.iaas.intern
+#        - local4-controller-03.mgmt.local4.iaas.intern
+#      register: _res
+#    - debug:
+#        var: _res
+#    - fail:
+
+    - name: Create and update hosts
+      theforeman.foreman.host:
+        <<: *foreman_auth
+        organization: "{{ foreman_organization }}"
+        location: "{{ foreman_location }}"
+        hostgroup: "{{ item.hostgroup | default(omit) }}"
+        name: "{{ item.name }}"
+        architecture: "{{ item.architecture | default(omit) }}"
+        operatingsystem: "{{ item.operatingsystem | default(omit) }}"
+        medium: "{{ item.medium | default(omit) }}"
+        pxe_loader: "{{ item.pxe_loader | default(omit) }}"
+        #provision_method: build
+        #ptable: Kickstart default
+        interfaces_attributes: "{{ item.interfaces_attributes }}"
+        mac: "{{ item.interfaces_attributes | json_query('[?provision||primary].mac | [0]') }}"
+        ip: "{{ item.ip }}"
+        parameters: "{{ item.parameters | default(omit) }}"
+      with_items:
+        - name: "local4-controller-01.{{ foreman_domain }}"
+          hostgroup: dl380gen8
+          ip: 192.168.3.100
+          interfaces_attributes:
+            - { type: interface, identifier: eno1, mac: "c4:34:6b:b5:ad:80", subnet: provision, primary: true }
+            - { type: interface, identifier: eno2, mac: "c4:34:6b:b5:ad:81" }
+            - { type: interface, identifier: eno3, mac: "c4:34:6b:b5:ad:82" }
+            - { type: interface, identifier: eno4, mac: "c4:34:6b:b5:ad:83" }
+            - { type: bmc,       identifier: ilo4, mac: "c4:34:6b:bc:4f:2a", subnet: oob, provider: IPMI, username: maas, password: HnmbyJQq7zPgL, ip: 192.168.4.2, managed: false }
+            #- { type: interface, identifier: ens3f0, mac: "a0:36:9f:93:86:78" }
+            #- { type: interface, identifier: ens3f1, mac: "a0:36:9f:93:86:7a" }
+            #- { type: bond, identifier: bond0, mode: 802.3ad, attached_devices: [ eno1, eno2, eno3, eno4 ] }
+        - name: "local4-controller-02.{{ foreman_domain }}"
+          hostgroup: dl380gen8
+          ip: 192.168.3.101
+          interfaces_attributes:
+            - { type: interface, identifier: eno1, mac: "c4:34:6b:b5:ad:4c", subnet: provision, primary: true }
+            - { type: interface, identifier: eno2, mac: "c4:34:6b:b5:ad:4d" }
+            - { type: interface, identifier: eno3, mac: "c4:34:6b:b5:ad:4e" }
+            - { type: interface, identifier: eno4, mac: "c4:34:6b:b5:ad:4f" }
+            - { type: bmc,       identifier: ilo4, mac: "c4:34:6b:bc:4f:64", subnet: oob, provider: IPMI, username: maas, password: y3Yvw2TaFB5Oe7, ip: 192.168.4.3, managed: false }
+            #- { type: interface, identifier: ens3f0, mac: "a0:36:9f:93:85:40" }
+            #- { type: interface, identifier: ens3f1, mac: "a0:36:9f:93:85:42" }
+            # Bonds
+            - { type: bond, identifier: bond0, mode: 802.3ad, attached_devices: [ eno1, eno2, eno3, eno4 ] }
+            # Vlans
+            - { type: interface, identifier: bond0.10, virtual: true, tag: "10", attached_to: bond0 }
+            ## Bridges
+            - { type: bridge,    identifier: br-provision, attached_devices: bond0, subnet: provision, primary: true }
+            - { type: bridge,    identifier: br-openstack, attached_devices: bond0.10 }
+        - name: "local4-controller-03.{{ foreman_domain }}"
+          hostgroup: dl380gen8
+          ip: 192.168.3.102
+          interfaces_attributes:
+            - { type: interface, identifier: eno1, mac: "c4:34:6b:b6:a1:e0", subnet: provision, provision: true } #, ip: 192.168.3.102
+            - { type: interface, identifier: eno2, mac: "c4:34:6b:b6:a1:e1" }
+            - { type: interface, identifier: eno3, mac: "c4:34:6b:b6:a1:e2" }
+            - { type: interface, identifier: eno4, mac: "c4:34:6b:b6:a1:e3" }
+            - { type: bmc,       identifier: ilo4, mac: "c4:34:6b:bd:b2:3e", subnet: oob, provider: IPMI, username: maas, password: KCfNavFC6VfLul, ip: 192.168.4.4, managed: false }
+            #- { type: interface, identifier: ens3f0, mac: "00:1b:21:bc:f6:8c" }
+            #- { type: interface, identifier: ens3f1, mac: "00:1b:21:bc:f6:8d" }
+            # Bonds
+            - { type: bond, identifier: bond0, mode: 802.3ad, attached_devices: [ eno1, eno2, eno3, eno4 ] }
+            # Vlans
+            - { type: interface, identifier: bond0.10, virtual: true, tag: "10", attached_to: bond0 }
+            ## Bridges
+            - { type: bridge,    identifier: br-provision, attached_devices: bond0, subnet: provision, primary: true }
+            - { type: bridge,    identifier: br-openstack, attached_devices: bond0.10 }
+      register: _hosts
+
+    - name: create compute resources
+      theforeman.foreman.compute_resource:
+        <<: *foreman_auth
+        name: "{{ item.name }}"
+        provider: libvirt
+        provider_params:
+          url: "qemu+tcp://{{ item.name }}.{{ foreman_domain }}:16509/system"
+          display_type: spice
+          set_console_password: false
+      with_items:
+        - name: "{{ himlar_location }}-controller-01"
+        - name: "{{ himlar_location }}-controller-02"
+        - name: "{{ himlar_location }}-controller-03"
+
+    # We should trigger builds or something similar on this inventory, then
+    # wait for them to come online. So we can add 
+    - fail:
+
+
+    - include_vars: foreman/compute_profiles.yaml
+
+    #- set_fact:
+    #    mydata:
+    #      - name: small
+    #        compute_attributes: |-
+    #          {% set _list = [] %}
+    #          {% for host in groups['local4-controller'] %}
+    #          {%   set _ = _list.append({ 'compute_resource': host }) %}
+    #          {% endfor %}
+    #          {{ _list }}
+      #with_items:
+      #  - "{{ compute_profiles }}"
+      #  #- "{{ groups['local4-controller'] }}"
+    #- debug:
+    #    var: mydata
+
+#    - set_fact:
+#        _compute_attributes: "{{ _compute_attributes | default([]) +
+#          [{
+#             'compute_resource': item,
+#             'vm_attrs': {}
+#           }]
+#        }}"
+#      with_items:
+#        - "{{ groups['local4-controller'] }}"
+          
+    - debug:
+        msg: "{{ item }}"
+      with_items: "{{ compute_profiles }}"
+
+    # Maybe this can work
+    - name: create compute profiles
+      theforeman.foreman.compute_profile:
+        <<: *foreman_auth
+        name: "{{ item.0  }}"
+        compute_attributes:
+          - compute_resource: "{{ item.1 }}"
+            vm_attrs: "{{ compute_profiles[item.0].vm_attrs }}"
+      with_nested:
+        - "{{ compute_profiles }}"
+        - "{{ groups['local4-controller'] }}"
+    - fail:
+
+    # If the above doesn't then we can complicate things with this.
+    - name: create compute profiles
+      theforeman.foreman.compute_profile:
+        <<: *foreman_auth
+        name: "{{ item  }}"
+        compute_attributes: |-
+          {% set _compute_attributes = [] %}
+          {% for host in groups['local4-controller'] %}
+          {%   set _ = _compute_attributes.append({ 'compute_resource': host, 'vm_attrs': compute_profiles[item].vm_attrs }) %}
+          {% endfor %}
+          {{ _compute_attributes }}
+      with_items: "{{ compute_profiles }}"
+        #- "{{ groups['local4-controller'] }}"
+        #- name: small
+        #  compute_attributes:
+        #    - compute_resource: "{{ himlar_location }}-controller-01"
+        #      vm_attrs: "{{ compute_profiles.small.vm_attrs }}"
+        #    - compute_resource: "{{ himlar_location }}-controller-02"
+        #      vm_attrs:
+        #        cpus: 2
+        #    - compute_resource: "{{ himlar_location }}-controller-03"
+        #- name: medium
+        #  compute_attributes:
+        #    - compute_resource: "{{ himlar_location }}-controller-01"
+        #    - compute_resource: "{{ himlar_location }}-controller-02"
+        #    - compute_resource: "{{ himlar_location }}-controller-03"
+        #- name: large
+        #  compute_attributes:
+        #    - compute_resource: "{{ himlar_location }}-controller-01"
+        #    - compute_resource: "{{ himlar_location }}-controller-02"
+        #    - compute_resource: "{{ himlar_location }}-controller-03"
+        #- name: xlarge
+        #- name: 2xlarge
+
+    - name: create nodes
+      theforeman.foreman.host:
+        <<: *foreman_auth
+        organization: "{{ foreman_organization }}"
+        location: "{{ foreman_location }}"
+        name: "{{ item.name }}"
+        hostgroup: base/vm
+        architecture: x86_64
+        operatingsystem: CentOS 7.9.2009
+        medium: "{{ item.medium | default(omit) }}"
+        pxe_loader: "{{ item.pxe_loader | default('PXELinux BIOS') }}"
+        compute_resource: "{{ item.compute_resource }}"
+        compute_profile: small
+        compute_attributes:
+          start: true
+        environment: production
+        provision_method: build
+        build: true
+        subnet: provision
+        #interfaces_attributes:
+        #  - type: interface
+        #    primary: true
+        #    attached_to: directnet
+        #    #compute_attributes:
+        #    #  interface: virtio
+      with_items:
+        #- name: "{{ himlar_location }}-api-01.mgmt.local4.iaas.intern"
+        #  compute_resource: "{{ himlar_location }}-controller-01"
+        #- name: "{{ himlar_location }}-admin-01.mgmt.local4.iaas.intern"
+        #  compute_resource: "{{ himlar_location }}-controller-01"
+        - name: "{{ himlar_location }}-proxy-01.mgmt.local4.iaas.intern"
+          compute_resource: "{{ himlar_location }}-controller-01"
+        #- name: "{{ himlar_location }}-dashboard-01.mgmt.local4.iaas.intern"
+        #  compute_resource: "{{ himlar_location }}-controller-01"
+
