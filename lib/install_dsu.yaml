@@ -17,6 +17,7 @@
         url: "{{ gpgsource }}{{ item }}"
         dest: /tmp/{{ item }}
         mode: '0440'
+        timeout: 30
       with_items:
         - "{{ gpgkeys }}"
       when: "'compute' not in inventory_hostname"
