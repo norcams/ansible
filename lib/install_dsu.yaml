@@ -9,7 +9,7 @@
       - 0x756ba70b1019ced6.asc
       - 0xca77951d23b66a9d.asc
       - 0x3CA66B4946770C59.asc
-    gpgsource: "https://linux.dell.com/repo/pgp_pubkeys/"
+    ggpgsource: "http://repo.mgmt.bgo.uhdc.no/keys/"
     invcol_url: "https://download.iaas.uio.no/nrec/repo/generic/dell-system-update_independent/x86_64/invcol_8YPK7_LN64_21_12_200_1196_A00-21.12.00-8YPK7.x86_64.rpm"
   tasks:
     - name: "Download GPG keys"
