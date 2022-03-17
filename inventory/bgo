@@ -337,6 +337,7 @@ bgo-object-ceph-05
 
 [bgo-proxy]
 bgo-proxy-01
+bgo-proxy-02
 
 [bgo-report]
 bgo-report-01
