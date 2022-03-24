@@ -64,6 +64,14 @@
     - name: 'Remove /etc/placement/'
       file: name=/etc/placement state=absent
 
+    - name: 'Clear problematic packages'
+      package:
+        name:
+        - openvswitch
+        - network-scripts-openvswitch
+        - rdo-network-scripts-openvswitch
+        state: absent
+
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
 
@@ -118,6 +126,14 @@
 
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
+
+    - name: 'Clear problematic packages'
+      package:
+        name:
+        - openvswitch
+        - network-scripts-openvswitch
+        - rdo-network-scripts-openvswitch
+        state: absent
 
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
