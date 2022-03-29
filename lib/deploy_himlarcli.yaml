@@ -5,20 +5,37 @@
 # sudo ansible-playbook -e "myhosts=bgo-login:bgo-master" lib/himlarcli.yaml
 #
 - hosts: "{{ myhosts }}"
+  gather_facts: True
+
+  vars:
+    packages_el7:
+      - python-virtualenv
+      - PyYAML
+      - git
+      - gcc
+      - openldap-devel
+      - openssl-devel
+      - libffi-devel
+    packages_el8:
+      - python3-virtualenv
+      - python3-pyyaml
+      - git
+      - gcc
+      - openldap-devel
+      - openssl-devel
+      - libffi-devel
+
   tasks:
-    - name: Install packages needed to run himlarcli on host
+    - name: Install packages needed to run himlarcli on host (el7)
       yum:
-        name: "{{ packages }}"
+        name: "{{ packages_el7 }}"
         state: installed
-      vars:
-        packages:
-          - git
-          - python-virtualenv
-          - gcc
-          - openldap-devel
-          - openssl-devel
-          - PyYAML
-          - libffi-devel
+      when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
+    - name: Install packages needed to run himlarcli on host (el8)
+      yum:
+        name: "{{ packages_el8 }}"
+        state: installed
+      when: (ansible_facts['distribution'] == "AlmaLinux" and ansible_facts['distribution_major_version'] == "8")
     - name: "Update {{himlarcli_repo}} with version {{himlarcli_ref}}"
       git:
         repo:     "{{himlarcli_repo}}"
