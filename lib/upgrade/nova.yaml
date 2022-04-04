@@ -27,6 +27,7 @@
 - hosts: "{{ location }}-novactrl"
   gather_facts: false
   tasks:
+    - systemd: name=crond state=stopped
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -101,6 +102,7 @@
   become: true
   gather_facts: yes
   tasks:
+    - systemd: name=crond state=stopped
     - name: Get http_proxy ip for {{location}}
       local_action: shell getent hosts {{ location }}-proxy-01 | awk '{ print $1 }'
       register: proxy_ip

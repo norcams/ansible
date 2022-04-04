@@ -5,8 +5,9 @@
 #
 # Upgrade console-0x
 - hosts: "{{ myhosts }}"
-  gather_facts: no
+  gather_facts: false
   tasks:
+    - systemd: name=crond state=stopped
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
