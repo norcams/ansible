@@ -3,14 +3,15 @@ osl-access
 osl-admin
 osl-api
 osl-builder
+osl-cephmds
 osl-cephmon
 osl-compute
 osl-compute-atlas
 osl-compute-gpu
 osl-compute-hpc
+osl-compute-numascale
 osl-compute-robin
 osl-compute-vgpu
-osl-compute-numascale
 osl-console
 osl-controller
 osl-dashboard
@@ -30,9 +31,7 @@ osl-mgmt-opx
 osl-monitor
 osl-mq
 osl-nat
-osl-nat-linux
 osl-network
-osl-nfs
 osl-novactrl
 osl-ns
 osl-proxy
@@ -52,6 +51,7 @@ osl-access
 osl-admin
 osl-api
 osl-builder
+osl-cephmds
 osl-cephmon
 osl-console
 osl-dashboard
@@ -67,9 +67,7 @@ osl-metric
 osl-monitor
 osl-mq
 osl-nat
-osl-nat-linux
 osl-network
-osl-nfs
 osl-novactrl
 osl-ns
 osl-proxy
@@ -90,6 +88,11 @@ osl-api-01
 
 [osl-builder]
 osl-builder-01
+
+[osl-cephmds]
+osl-cephmds-01
+osl-cephmds-02
+osl-cephmds-03
 
 [osl-cephmon]
 osl-cephmon-01
@@ -142,12 +145,12 @@ osl-compute-hpc-25
 osl-compute-hpc-26
 osl-compute-hpc-27
 osl-compute-hpc-28
+osl-compute-numascale-51
 osl-compute-robin-18
 osl-compute-vgpu-17
 osl-compute-vgpu-19
 osl-compute-vgpu-20
 osl-compute-vgpu-42
-osl-compute-numascale-51
 
 [osl-compute-atlas]
 osl-compute-atlas-11
@@ -182,6 +185,9 @@ osl-compute-hpc-26
 osl-compute-hpc-27
 osl-compute-hpc-28
 
+[osl-compute-numascale]
+osl-compute-numascale-51
+
 [osl-compute-robin]
 osl-compute-robin-18
 
@@ -190,9 +196,6 @@ osl-compute-vgpu-17
 osl-compute-vgpu-19
 osl-compute-vgpu-20
 osl-compute-vgpu-42
-
-[osl-compute-numascale]
-osl-compute-numascale-51
 
 [osl-console]
 osl-console-01
@@ -267,20 +270,13 @@ osl-monitor-01
 osl-mq-01
 
 [osl-nat]
-osl-nat-linux-01
-osl-nat-linux-02
-
-[osl-nat-linux]
-osl-nat-linux-01
-osl-nat-linux-02
+osl-nat-01
+osl-nat-02
 
 [osl-network]
 osl-network-01
 osl-network-02
 osl-network-03
-
-[osl-nfs]
-osl-nfs-01
 
 [osl-novactrl]
 osl-novactrl-01
@@ -367,4 +363,5 @@ osl-torack-02
 [osl-volume]
 osl-volume-01
 osl-volume-02
+ricky-swabb
 

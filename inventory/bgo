@@ -3,6 +3,7 @@ bgo-access
 bgo-admin
 bgo-api
 bgo-builder
+bgo-cephmds
 bgo-cephmon
 bgo-cephmon-object
 bgo-compute
@@ -53,6 +54,7 @@ bgo-access
 bgo-admin
 bgo-api
 bgo-builder
+bgo-cephmds
 bgo-cephmon
 bgo-cephmon-object
 bgo-console
@@ -92,6 +94,11 @@ bgo-api-01
 
 [bgo-builder]
 bgo-builder-01
+
+[bgo-cephmds]
+bgo-cephmds-01
+bgo-cephmds-02
+bgo-cephmds-03
 
 [bgo-cephmon]
 bgo-cephmon-01
@@ -272,6 +279,7 @@ bgo-logger-01
 
 [bgo-login]
 bgo-login-01
+bgo-login-02
 
 [bgo-metric]
 bgo-metric-01
@@ -299,13 +307,11 @@ bgo-monitor-01
 bgo-mq-01
 
 [bgo-nat]
-bgo-nat-linux-01
-bgo-nat-linux-02
+bgo-nat-01
+bgo-nat-02
 bgo-nat-linux-03
 
 [bgo-nat-linux]
-bgo-nat-linux-01
-bgo-nat-linux-02
 bgo-nat-linux-03
 
 [bgo-network]
@@ -376,6 +382,7 @@ bgo-storage-dcache-20
 bgo-storage-dcache-21
 bgo-storage-dcache-22
 bgo-storage-dcache-23
+
 bgo-storage-dcache-24
 bgo-storage-dcache-25
 bgo-storage-dcache-26
