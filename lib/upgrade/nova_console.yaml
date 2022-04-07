@@ -1,0 +1,45 @@
+# Example:
+# sudo ansible-playbook -e "myhosts=test01-console-01" lib/upgrade/console.yaml
+#
+# Last verified: 2022-04-04 (ansible version 2.9.25)
+#
+# Upgrade console-0x
+- hosts: "{{ myhosts }}"
+  gather_facts: false
+  tasks:
+    - systemd: name=crond state=stopped
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+
+    - name: 'Stop nova novaproxy service'
+      systemd: name=openstack-nova-novncproxy state=stopped
+      ignore_errors: yes
+
+    - name: Purge old package
+      yum: name=openstack-nova-common state=absent
+
+    - name: 'Remove /etc/nova/'
+      file: name=/etc/nova state=absent
+
+    - name: 'Clear problematic packages'
+      package:
+        name:
+        - openvswitch
+        - network-scripts-openvswitch
+        - rdo-network-scripts-openvswitch
+        state: absent
+
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+
+    - import_tasks: ../tasks/puppetrun.yaml
+    - import_tasks: ../tasks/puppetrun.yaml

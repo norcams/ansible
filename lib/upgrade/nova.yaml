@@ -27,6 +27,7 @@
 - hosts: "{{ location }}-novactrl"
   gather_facts: false
   tasks:
+    - systemd: name=crond state=stopped
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -96,80 +97,44 @@
 
     - import_tasks: ../tasks/puppetrun.yaml
 
-
-# Upgrade console-0x
-- hosts: "{{ location }}-console"
-  gather_facts: false
-  tasks:
-    - name: 'Repo files'
-      command: 'ls -1 /etc/yum.repos.d/'
-      register: repo_files
-
-    - name: 'Remove all old yum repos'
-      file: name="/etc/yum.repos.d/{{item}}" state=absent
-      with_items: "{{repo_files.stdout_lines | default([])}}"
-
-    - import_tasks: ../tasks/puppetrun.yaml
-      vars:
-        runmode: 'kickstart'
-
-    - name: 'Stop nova consoleauth service'
-      systemd: name=openstack-nova-consoleauth state=stopped
-      ignore_errors: yes
-
-    - name: 'Stop nova novaproxy service'
-      systemd: name=openstack-nova-novncproxy state=stopped
-      ignore_errors: yes
-
-    - name: Purge old package
-      yum: name=openstack-nova-common state=absent
-
-    - name: 'Remove /etc/nova/'
-      file: name=/etc/nova state=absent
-
-    - name: 'Clear problematic packages'
-      package:
-        name:
-        - openvswitch
-        - network-scripts-openvswitch
-        - rdo-network-scripts-openvswitch
-        state: absent
-
-    - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
-
-    - import_tasks: ../tasks/puppetrun.yaml
-    - import_tasks: ../tasks/puppetrun.yaml
-
-
 # Upgrade compute-0x
 - hosts: "{{ location }}-compute"
-  gather_facts: false
+  become: true
+  gather_facts: yes
   tasks:
+    - systemd: name=crond state=stopped
     - name: Get http_proxy ip for {{location}}
       local_action: shell getent hosts {{ location }}-proxy-01 | awk '{ print $1 }'
       register: proxy_ip
 
+    - name: 'Check distribution version'
+      debug: msg={{ ansible_distribution }}
+
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     - name: 'Stop openstack-nova-compute'
       systemd: name=openstack-nova-compute state=stopped
       ignore_errors: yes
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     - name: 'Stop openstack-nova-metadata-api'
       systemd: name=openstack-nova-metadata-api state=stopped
       ignore_errors: yes
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
         http_proxy: "{{proxy_ip}}:8888"
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     # Do not do yum update on compute
 #    - name: 'Yum update'
@@ -177,24 +142,30 @@
 
     - name: Purge old openstack-nova-common
       yum: name=openstack-nova-common state=absent
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     - name: Purge old openstack-nova-api
       yum: name=openstack-nova-api state=absent
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         http_proxy: "{{proxy_ip}}:8888"
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         http_proxy: "{{proxy_ip}}:8888"
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         http_proxy: "{{proxy_ip}}:8888"
+      when: ansible_facts['distribution'] == "AlmaLinux"
 
     # restart services
     - systemd: name=etcd state=restarted
