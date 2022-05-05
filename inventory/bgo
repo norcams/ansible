@@ -240,6 +240,7 @@ bgo-controller-08
 
 [bgo-dashboard]
 bgo-dashboard-01
+bgo-dashboard-mgmt-01
 
 [bgo-dashboard-mgmt]
 bgo-dashboard-mgmt-01
@@ -290,6 +291,8 @@ bgo-mgmt-opx-03
 bgo-mgmt-opx-04
 bgo-mgmt-opx-05
 bgo-mgmt-opx-06
+bgo-mgmt-opx-07
+bgo-mgmt-opx-09
 
 [bgo-mgmt-opx]
 bgo-mgmt-opx-01
@@ -298,6 +301,8 @@ bgo-mgmt-opx-03
 bgo-mgmt-opx-04
 bgo-mgmt-opx-05
 bgo-mgmt-opx-06
+bgo-mgmt-opx-07
+bgo-mgmt-opx-09
 
 [bgo-monitor]
 bgo-monitor-01
@@ -455,4 +460,3 @@ bgo-telemetry-01
 bgo-volume-01
 bgo-volume-02
 bgo-volume-03
-

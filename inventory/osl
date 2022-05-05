@@ -5,6 +5,7 @@ osl-api
 osl-builder
 osl-cephmds
 osl-cephmon
+osl-cephmon-object
 osl-compute
 osl-compute-atlas
 osl-compute-gpu
@@ -34,13 +35,15 @@ osl-nat
 osl-network
 osl-novactrl
 osl-ns
+osl-object
+osl-object-ceph
 osl-proxy
 osl-report
 osl-resolver
+osl-rgw
 osl-spine
 osl-status
 osl-storage
-osl-storage-arccache
 osl-storage-v2h
 osl-telemetry
 osl-torack
@@ -53,6 +56,7 @@ osl-api
 osl-builder
 osl-cephmds
 osl-cephmon
+osl-cephmon-object
 osl-console
 osl-dashboard
 osl-dashboard-mgmt
@@ -73,6 +77,7 @@ osl-ns
 osl-proxy
 osl-report
 osl-resolver
+osl-rgw
 osl-status
 osl-telemetry
 osl-volume
@@ -98,6 +103,14 @@ osl-cephmds-03
 osl-cephmon-01
 osl-cephmon-02
 osl-cephmon-03
+osl-cephmon-object-01
+osl-cephmon-object-02
+osl-cephmon-object-03
+
+[osl-cephmon-object]
+osl-cephmon-object-01
+osl-cephmon-object-02
+osl-cephmon-object-03
 
 [osl-compute]
 osl-compute-01
@@ -212,6 +225,7 @@ osl-controller-08
 
 [osl-dashboard]
 osl-dashboard-01
+osl-dashboard-mgmt-01
 
 [osl-dashboard-mgmt]
 osl-dashboard-mgmt-01
@@ -285,6 +299,20 @@ osl-novactrl-03
 [osl-ns]
 osl-ns-01
 
+[osl-object]
+osl-object-ceph-01
+osl-object-ceph-02
+osl-object-ceph-03
+osl-object-ceph-04
+osl-object-ceph-05
+
+[osl-object-ceph]
+osl-object-ceph-01
+osl-object-ceph-02
+osl-object-ceph-03
+osl-object-ceph-04
+osl-object-ceph-05
+
 [osl-proxy]
 osl-proxy-01
 osl-proxy-02
@@ -295,6 +323,9 @@ osl-report-01
 [osl-resolver]
 osl-resolver-01
 osl-resolver-02
+
+[osl-rgw]
+osl-rgw-01
 
 [osl-spine]
 osl-spine-01
@@ -311,11 +342,6 @@ osl-storage-04
 osl-storage-05
 osl-storage-06
 osl-storage-07
-osl-storage-arccache-08
-osl-storage-arccache-09
-osl-storage-arccache-10
-osl-storage-arccache-11
-osl-storage-arccache-12
 osl-storage-v2h-13
 osl-storage-v2h-14
 osl-storage-v2h-15
@@ -329,13 +355,6 @@ osl-storage-v2h-22
 osl-storage-v2h-23
 osl-storage-v2h-24
 osl-storage-v2h-25
-
-[osl-storage-arccache]
-osl-storage-arccache-08
-osl-storage-arccache-09
-osl-storage-arccache-10
-osl-storage-arccache-11
-osl-storage-arccache-12
 
 [osl-storage-v2h]
 osl-storage-v2h-13
@@ -362,5 +381,3 @@ osl-torack-02
 [osl-volume]
 osl-volume-01
 osl-volume-02
-ricky-swabb
-
