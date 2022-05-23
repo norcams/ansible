@@ -19,4 +19,4 @@ fi
 
 loc=$1
 
-sudo ansible-playbook -e "myhosts=${loc}-login:${loc}-proxy-02" lib/deploy_himlarcli.yaml
+sudo ansible-playbook -e "myhosts=${loc}-login-01:${loc}-proxy" lib/deploy_himlarcli.yaml
