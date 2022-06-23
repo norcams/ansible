@@ -158,6 +158,7 @@ test01-ns-01
 
 [test01-proxy]
 test01-proxy-01
+test01-proxy-02
 
 [test01-resolver]
 test01-resolver-01
