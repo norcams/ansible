@@ -1,0 +1,6 @@
+---
+himlarcli_ref: python2
+himlarcli_packages:
+  - python-virtualenv
+  - PyYAML
+

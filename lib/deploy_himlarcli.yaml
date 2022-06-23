@@ -1,41 +1,16 @@
 #
 # Deploy himlarcli to hosts under himlarcli_path
-# Verified: This will run under ansible 2.1
+# Verified: This will run under ansible 2.9
 #
-# sudo ansible-playbook -e "myhosts=bgo-login:bgo-master" lib/himlarcli.yaml
+# sudo ansible-playbook -e "myhosts=bgo-login:bgo-proxy" lib/deploy_himlarcli.yaml
 #
 - hosts: "{{ myhosts }}"
   gather_facts: True
-
-  vars:
-    packages_el7:
-      - python-virtualenv
-      - PyYAML
-      - git
-      - gcc
-      - openldap-devel
-      - openssl-devel
-      - libffi-devel
-    packages_el8:
-      - python3-virtualenv
-      - python3-pyyaml
-      - git
-      - gcc
-      - openldap-devel
-      - openssl-devel
-      - libffi-devel
-
   tasks:
-    - name: Install packages needed to run himlarcli on host (el7)
+    - name: Install packages needed to run himlarcli on host
       yum:
-        name: "{{ packages_el7 }}"
+        name: "{{ himlarcli_packages }}"
         state: installed
-      when: (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] == "7")
-    - name: Install packages needed to run himlarcli on host (el8)
-      yum:
-        name: "{{ packages_el8 }}"
-        state: installed
-      when: (ansible_facts['distribution'] == "AlmaLinux" and ansible_facts['distribution_major_version'] == "8")
     - name: "Update {{himlarcli_repo}} with version {{himlarcli_ref}}"
       git:
         repo:     "{{himlarcli_repo}}"
@@ -43,11 +18,12 @@
         dest:     "{{himlarcli_path}}"
         force:    "{{himlarcli_force_update}}"
     - name: Manually create the initial virtualenv for himlarcli
-      command: virtualenv --clear "{{himlarcli_path}}" creates="{{himlarcli_path}}/bin/activate"
+      command: virtualenv-3 --clear "{{himlarcli_path}}" creates="{{himlarcli_path}}/bin/activate"
     - name: Update setuptools
       pip:
         state: latest
         name: setuptools
+        virtualenv_command:       "{{himlarcli_virutalenv_command | default(omit)}}"
         virtualenv:               "{{himlarcli_path}}"
         chdir:                    "{{himlarcli_path}}"
         virtualenv_site_packages: "no"

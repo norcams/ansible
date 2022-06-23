@@ -15,6 +15,14 @@ himlarcli_path: /opt/himlarcli
 himlarcli_repo: https://github.com/norcams/himlarcli.git
 himlarcli_ref: master
 himlarcli_force_update: yes
+himlarcli_packages:
+  - python3-virtualenv
+  - python3-pyyaml
+  - git
+  - gcc
+  - openldap-devel
+  - openssl-devel
+  - libffi-devel
 
 # Secrets to sync
 secret_files: {}
