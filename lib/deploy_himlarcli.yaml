@@ -25,6 +25,7 @@
         name: setuptools
         virtualenv_command:       "{{himlarcli_virutalenv_command | default(omit)}}"
         virtualenv:               "{{himlarcli_path}}"
+        virtualenv_python:        "{{himlarcli_python_command | default(omit)}}"
         chdir:                    "{{himlarcli_path}}"
         virtualenv_site_packages: "no"
     - name: Upgrade pip

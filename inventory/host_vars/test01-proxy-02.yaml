@@ -1,0 +1,5 @@
+---
+himlarcli_packages:
+  - python39
+  - python39-devel
+himlarcli_python_command: python3.9
