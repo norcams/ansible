@@ -3,6 +3,7 @@ test01-access
 test01-admin
 test01-api
 test01-builder
+test01-cephmds
 test01-cephmon
 test01-compute
 test01-console
@@ -21,24 +22,24 @@ test01-metric
 test01-monitor
 test01-mq
 test01-nat
-test01-nat-linux
 test01-network
 test01-novactrl
 test01-ns
 test01-proxy
 test01-resolver
+test01-sflow
 test01-spine
 test01-status
 test01-storage
 test01-telemetry
 test01-volume
-test01-workflow
 
 [test01-nodes:children]
 test01-access
 test01-admin
 test01-api
 test01-builder
+test01-cephmds
 test01-cephmon
 test01-console
 test01-dashboard
@@ -54,16 +55,15 @@ test01-metric
 test01-monitor
 test01-mq
 test01-nat
-test01-nat-linux
 test01-network
 test01-novactrl
 test01-ns
 test01-proxy
 test01-resolver
+test01-sflow
 test01-status
 test01-telemetry
 test01-volume
-test01-workflow
 
 [test01-access]
 test01-access-01
@@ -76,6 +76,11 @@ test01-api-01
 
 [test01-builder]
 test01-builder-01
+
+[test01-cephmds]
+test01-cephmds-01
+test01-cephmds-02
+test01-cephmds-03
 
 [test01-cephmon]
 test01-cephmon-01
@@ -139,10 +144,7 @@ test01-monitor-01
 test01-mq-01
 
 [test01-nat]
-test01-nat-linux-01
-
-[test01-nat-linux]
-test01-nat-linux-01
+test01-nat-01
 
 [test01-network]
 test01-network-01
@@ -163,6 +165,9 @@ test01-proxy-02
 [test01-resolver]
 test01-resolver-01
 test01-resolver-02
+
+[test01-sflow]
+test01-sflow-01
 
 [test01-spine]
 test01-spine-01
@@ -185,5 +190,3 @@ test01-telemetry-01
 test01-volume-01
 test01-volume-02
 
-[test01-workflow]
-test01-workflow-01
