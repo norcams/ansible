@@ -19,6 +19,7 @@
         force:    "{{himlarcli_force_update}}"
     - name: Manually create the initial virtualenv for himlarcli
       command: virtualenv-3 --clear "{{himlarcli_path}}" creates="{{himlarcli_path}}/bin/activate"
+      when: himlarcli_python_command is not defined
     - name: Update setuptools
       pip:
         state: latest
