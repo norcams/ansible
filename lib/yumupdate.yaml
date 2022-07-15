@@ -21,9 +21,15 @@
       update_cache: yes
       exclude: "{{ exclude | default(omit) }}"
 
+  - name: Check if puppet runs
+    stat:
+      path: /opt/puppetlabs/puppet/cache/state/agent_catalog_run.lock
+    register: puppet_run
+
   - name: Run puppet agent and fail if anything goes wrong
     puppet:
     when:
+    - not puppet_run.stat.exists
     - '"admin" not in inventory_hostname'
     - location != "vagrant"
     - location != "uib"
