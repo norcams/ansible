@@ -4,12 +4,17 @@
   tasks:
     - name: 'Make sure puppet are enabled'
       command: "/opt/puppetlabs/bin/puppet agent --enable"
+
     - name: Run puppet agent with runmode {{ runmode | default('default')}}
       command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --detailed-exitcodes"
+      # hack: will not run if lock file exists
+      args:
+        creates: '/opt/puppetlabs/puppet/cache/state/agent_catalog_run.lock'
       environment:
         FACTER_RUNMODE: "{{ runmode | default('default')}}"
       ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
       register: puppet_debug
+
     - name: Puppetrun output (debug {{ debug_puppetrun | default('false')}})
       debug:
         var: puppet_debug.stdout_lines
