@@ -2,4 +2,5 @@
 himlarcli_packages:
   - python39
   - python39-devel
+  - python3-virtualenv
 himlarcli_python_command: python3.9
