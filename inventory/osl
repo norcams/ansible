@@ -8,7 +8,7 @@ osl-cephmon
 osl-cephmon-object
 osl-compute
 osl-compute-atlas
-osl-compute-gpu
+osl-compute-epyc
 osl-compute-hpc
 osl-compute-numascale
 osl-compute-robin
@@ -153,7 +153,10 @@ osl-compute-atlas-37
 osl-compute-atlas-38
 osl-compute-atlas-39
 osl-compute-atlas-40
-osl-compute-gpu-17
+osl-compute-epyc-52
+osl-compute-epyc-53
+osl-compute-epyc-54
+osl-compute-epyc-55
 osl-compute-hpc-25
 osl-compute-hpc-26
 osl-compute-hpc-27
@@ -163,7 +166,6 @@ osl-compute-robin-18
 osl-compute-vgpu-17
 osl-compute-vgpu-19
 osl-compute-vgpu-20
-osl-compute-vgpu-42
 
 [osl-compute-atlas]
 osl-compute-atlas-11
@@ -189,8 +191,11 @@ osl-compute-atlas-38
 osl-compute-atlas-39
 osl-compute-atlas-40
 
-[osl-compute-gpu]
-osl-compute-gpu-17
+[osl-compute-epyc]
+osl-compute-epyc-52
+osl-compute-epyc-53
+osl-compute-epyc-54
+osl-compute-epyc-55
 
 [osl-compute-hpc]
 osl-compute-hpc-25
@@ -208,7 +213,6 @@ osl-compute-robin-18
 osl-compute-vgpu-17
 osl-compute-vgpu-19
 osl-compute-vgpu-20
-osl-compute-vgpu-42
 
 [osl-console]
 osl-console-01
@@ -270,11 +274,13 @@ osl-metric-01
 osl-mgmt-opx-01
 osl-mgmt-opx-02
 osl-mgmt-opx-03
+osl-mgmt-opx-04
 
 [osl-mgmt-opx]
 osl-mgmt-opx-01
 osl-mgmt-opx-02
 osl-mgmt-opx-03
+osl-mgmt-opx-04
 
 [osl-monitor]
 osl-monitor-01
@@ -381,3 +387,4 @@ osl-torack-02
 [osl-volume]
 osl-volume-01
 osl-volume-02
+
