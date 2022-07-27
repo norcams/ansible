@@ -1,6 +1,8 @@
 #
 # Upgrade one or more hosts via yum. Also runs a kickstart puppet agent on the host
 #
+# Use --forks 30 when runnings this on large groups of nodes
+#
 # Options:
 #  - exclude: exclude packages. Default omit.
 #
@@ -28,6 +30,10 @@
       update_cache: yes
       exclude: "{{ exclude | default(omit) }}"
 
+  - name: Restart iptables
+    systemd:
+      name: iptables.service
+      state: restarted
 
   - import_tasks: tasks/puppetrun.yaml
     vars:
