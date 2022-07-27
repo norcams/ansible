@@ -1,2 +1,4 @@
 ---
-himlarcli_ref: python2
+himlarcli_virutalenv: "/bin/virtualenv-3"
+himlarcli_packages:
+  - python3-virtualenv
