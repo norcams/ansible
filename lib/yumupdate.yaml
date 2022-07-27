@@ -1,6 +1,8 @@
 #
-# Upgrade one or more hosts via yum. Also runs puppet agent on the
-# host, with the exception of the admin host
+# Upgrade one or more hosts via yum. Also runs a kickstart puppet agent on the host
+#
+# Options:
+#  - exclude: exclude packages. Default omit.
 #
 # Example 1: Normal upgrade
 #   ansible-playbook -e 'myhosts=vagrant-dns,vagrant-identity' lib/yumupdate.yaml
@@ -14,6 +16,11 @@
   gather_facts: False
   tasks:
 
+  - name: Disable puppet
+    import_tasks: tasks/toggle_puppet.yaml
+    vars:
+      action: disable
+
   - name: Upgrade all packages excluding {{ exclude | default('none') }}
     yum:
       name: '*'
@@ -21,24 +28,9 @@
       update_cache: yes
       exclude: "{{ exclude | default(omit) }}"
 
-  - name: Check if puppet runs
-    stat:
-      path: /opt/puppetlabs/puppet/cache/state/agent_catalog_run.lock
-    register: puppet_run
 
-  - name: Run puppet agent and fail if anything goes wrong
-    puppet:
+  - import_tasks: tasks/puppetrun.yaml
+    vars:
+      runmode: 'kickstart'
     when:
-    - not puppet_run.stat.exists
-    - '"admin" not in inventory_hostname'
-    - location != "vagrant"
     - location != "uib"
-    - exclude is not defined
-
-  - name: Run Puppet via himlar/provision/puppetrun.sh
-    command: /opt/himlar/provision/puppetrun.sh
-    when:
-    - '"admin" in inventory_hostname'
-    - location != "vagrant"
-    - location == "uib"
-    - exclude is not defined
