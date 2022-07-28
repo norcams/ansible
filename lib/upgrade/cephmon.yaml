@@ -34,16 +34,16 @@
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
     - name: 'Enable puppet'
-      command: "puppet agent --enable"
+      command: "/opt/puppetlabs/bin/puppet agent --enable"
     - name: 'Puppet kickstart runmode'
-      command: "puppet agent --onetime --no-daemonize"
+      command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       environment:
         FACTER_RUNMODE: kickstart
       ignore_errors: yes
     - name: 'Upate all packages'
       yum: name=* state=latest update_cache=yes
     - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
+      command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       ignore_errors: yes
     - name: 'Reboot host'
       command: shutdown -r 1 "Ansible updates triggered"
