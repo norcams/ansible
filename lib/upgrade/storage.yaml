@@ -13,25 +13,23 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-storage" lib/upgrade/storage.yaml
 #
-# Last verified: 2019-06-26 (ansible version 2.7.8)
+# Last verified: 2022-07-28 (ansible version 2.9.27)
 #
 - hosts: "{{ myhosts }}"
   serial: 1
   gather_facts: no
   tasks:
-    - name: 'Stop crond'
-      systemd: name=crond state=stopped
     - name: 'Set OSD noout'
       command: "ceph osd set noout"
       ignore_errors: yes
-    - name: 'Remove ceph mgr' # Should not be present
-      yum:
-        name: "{{ packages }}"
-        state: absent
-        update_cache: yes
-      vars:
-        packages:
-        - ceph-mgr
+#    - name: 'Remove ceph mgr' # Should not be present
+#      yum:
+#        name: "{{ packages }}"
+#        state: absent
+#        update_cache: yes
+#      vars:
+#        packages:
+#        - ceph-mgr
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -39,11 +37,11 @@
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
     - name: 'Enable puppet'
-      command: "puppet agent --enable"
-    - name: 'Puppet bootstrap runmode'
-      command: "puppet agent --onetime --no-daemonize"
+      command: "/opt/puppetlabs/bin/puppet agent --enable"
+    - name: 'Puppet kickstart runmode'
+      command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       environment:
-        FACTER_RUNMODE: bootstrap
+        FACTER_RUNMODE: kickstart
       ignore_errors: yes
     - name: 'Upate all packages'
       yum: name=* state=latest update_cache=yes
@@ -53,7 +51,7 @@
         daemon_reload: yes
         name: ceph-osd.target
     - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
+      command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       ignore_errors: yes
 #    - name: 'Reboot host'
 #      command: shutdown -r 1 "Ansible updates triggered"
