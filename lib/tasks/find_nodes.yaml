@@ -1,12 +1,14 @@
 ---
 - name: Find nodes on hypervisor
-  community.libvirt.virt:
+#  community.libvirt.virt:
+  virt:
     command: list_vms
   register: nodes
   tags: always
 
 - name: Get node info
-  community.libvirt.virt:
+#  community.libvirt.virt:
+  virt:
     command: info
   register: virt_info
   tags: always
