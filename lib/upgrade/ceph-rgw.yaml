@@ -1,0 +1,63 @@
+---
+
+#
+# This can be used to upgrade radosgw daemons to new version of ceph
+#
+# Before you start you need to stop puppet and deploy latest version of himlar,
+# and update puppet modules. (lib/deploy_himlar.yaml)
+#
+# Mandatory input variables:
+# * myhosts (str): ansible node(s)
+#
+# Example:
+# sudo ansible-playbook -e "myhosts=bgo-rgw-01" lib/upgrade/ceph-rgw.yaml
+#
+# Last verified: 2022-08-09 (ansible version 2.9.27)
+#
+
+- hosts: "{{ myhosts }}"
+  gather_facts: no
+  serial: 1
+  tasks:
+    - name: Register repo files
+      command: "ls -1 /etc/yum.repos.d/"
+      register: repo_files
+
+    - name: Remove all old yum repos
+      file:
+        name: "/etc/yum.repos.d/{{item}}"
+        state: absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+
+    - name: Puppet is enabled
+      command: "/opt/puppetlabs/bin/puppet agent --enable"
+
+    - name: Run puppet with kickstart runmode - (update repos)
+      command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+
+    - name: Update all packages
+      yum:
+        name: "*"
+        state: latest
+        update_cache: yes
+
+    - name: Puppet run as foreground processes, in case of config change
+      command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
+      ignore_errors: yes
+
+    - name: Service ceph-radosgw.target is restarted
+      service:
+        name: ceph-radosgw.target
+        state: restarted
+
+    - name: Reboot host in one minute
+      command: shutdown -r 1 "Ansible updates triggered"
+      async: 0
+      poll: 0
+      ignore_errors: true
+
+    - name: waiting for server to come back
+      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
