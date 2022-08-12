@@ -1,0 +1,62 @@
+---
+
+#
+# This can be used to upgrade storage nodes to new version of ceph
+# and execute OSD bluestore repair script before reboot
+#
+# Before you start you need to stop puppet and
+#
+# *** ALL CEPHMONs MUST BE UPGRADED BEFORE STORAGE ***
+#
+# Mandatory input variables:
+# * myhosts (str): ansible node(s)
+#
+# After upgrading node, the storage node will reboot.
+#
+# Example:
+# sudo ansible-playbook -e "myhosts=test01-storage" lib/upgrade/storage_bluerepair.yaml
+#
+# Last verified: 2022-08-11 (ansible version 2.9.27)
+#
+
+- hosts: "localhost"
+  serial: 1
+  gather_facts: false
+  tasks:
+    - name: 'Set OSD noout'
+      command: "ceph osd set noout"
+      ignore_errors: yes
+
+    - name: 'Get repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+
+    - name: 'Enable puppet'
+      command: "/opt/puppetlabs/bin/puppet agent --enable"
+
+    - name: 'Run puppet kickstart runmode'
+      command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
+      environment:
+        FACTER_RUNMODE: kickstart
+      ignore_errors: yes
+
+    - name: 'Disable puppet'
+      command: "/opt/puppetlabs/bin/puppet agent --disable"
+
+    - name: 'Update all packages'
+      yum: name=* state=latest update_cache=yes
+
+    - name: Transfer OSD bluestore repair script
+      copy: src={{ playbook_dir }}/../../files/scripts/repair_bluestore.sh dest=/root/repair_bluestore.sh mode=0777
+
+    - name: Execute OSD bluestore repair script
+      command: sh /root/repair_bluestore.sh
+
+    - name: 'Reboot host'
+      command: shutdown -r 1 "Ansible updates triggered"
+      async: 0
+      poll: 0
+      ignore_errors: true
+
+    - name: waiting for server to come back
+      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
