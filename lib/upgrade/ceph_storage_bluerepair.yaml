@@ -14,7 +14,7 @@
 # After upgrading node, the storage node will reboot.
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-storage" lib/upgrade/storage_bluerepair.yaml
+# sudo ansible-playbook -e "myhosts=test01-storage" lib/upgrade/ceph_storage_bluerepair.yaml
 #
 # Last verified: 2022-08-11 (ansible version 2.9.27)
 #
