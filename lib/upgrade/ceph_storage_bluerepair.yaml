@@ -19,7 +19,7 @@
 # Last verified: 2022-08-11 (ansible version 2.9.27)
 #
 
-- hosts: "localhost"
+- hosts: "{{ myhosts }}"
   serial: 1
   gather_facts: false
   tasks:
