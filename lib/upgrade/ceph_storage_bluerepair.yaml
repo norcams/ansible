@@ -1,5 +1,4 @@
 ---
-
 #
 # This can be used to upgrade storage nodes to new version of ceph
 # and execute OSD bluestore repair script before reboot
@@ -14,36 +13,47 @@
 # After upgrading node, the storage node will reboot.
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-storage" lib/upgrade/storage_bluerepair.yaml
+# sudo ansible-playbook -e "myhosts=test01-storage" lib/upgrade/ceph_storage_bluerepair.yaml
 #
-# Last verified: 2022-08-11 (ansible version 2.9.27)
+# Last verified: 2022-08-15 (ansible version 2.9.27)
 #
 
-- hosts: "localhost"
+- hosts: "{{ myhosts }}"
   serial: 1
   gather_facts: false
   tasks:
-    - name: 'Set OSD noout'
+    - name: waiting for clean pgs...
+      command: "ceph pg stat --format json"
+      register: ceph_pg_stat
+      until: >
+        (((ceph_pg_stat.stdout | from_json).pg_summary.num_pg_by_state | length) > 0)
+        and
+        (((ceph_pg_stat.stdout | from_json).pg_summary.num_pg_by_state | selectattr('name', 'search', '^active\\+clean') | map(attribute='num') | list | sum) == (ceph_pg_stat.stdout | from_json).pg_summary.num_pgs)
+      changed_when: false
+      retries: 600 # default from ceph-ansible project is 600
+      delay: 2 # default from ceph-ansible project is 2
+
+    - name: Set OSD noout flag
       command: "ceph osd set noout"
       ignore_errors: yes
 
-    - name: 'Get repo files'
-      command: 'ls -1 /etc/yum.repos.d/'
+    - name: Get repo files
+      command: "ls -1 /etc/yum.repos.d/"
       register: repo_files
 
-    - name: 'Enable puppet'
+    - name: Enable puppet
       command: "/opt/puppetlabs/bin/puppet agent --enable"
 
-    - name: 'Run puppet kickstart runmode'
+    - name: Run puppet kickstart runmode
       command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       environment:
         FACTER_RUNMODE: kickstart
       ignore_errors: yes
 
-    - name: 'Disable puppet'
+    - name: Disable puppet
       command: "/opt/puppetlabs/bin/puppet agent --disable"
 
-    - name: 'Update all packages'
+    - name: Update all packages
       yum: name=* state=latest update_cache=yes
 
     - name: Transfer OSD bluestore repair script
@@ -52,7 +62,7 @@
     - name: Execute OSD bluestore repair script
       command: sh /root/repair_bluestore.sh
 
-    - name: 'Reboot host'
+    - name: Reboot host
       command: shutdown -r 1 "Ansible updates triggered"
       async: 0
       poll: 0
