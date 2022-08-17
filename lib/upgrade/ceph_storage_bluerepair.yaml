@@ -41,6 +41,10 @@
       command: "ls -1 /etc/yum.repos.d/"
       register: repo_files
 
+    - name: Remove all old yum repos
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+
     - name: Enable puppet
       command: "/opt/puppetlabs/bin/puppet agent --enable"
 
