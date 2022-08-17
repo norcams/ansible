@@ -1,5 +1,4 @@
 ---
-#
 # This can be used to upgrade storage nodes to new version of ceph
 # and execute OSD bluestore repair script before reboot
 #
@@ -15,13 +14,18 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-storage" lib/upgrade/ceph_storage_bluerepair.yaml
 #
-# Last verified: 2022-08-15 (ansible version 2.9.27)
+# to update DELL-firmware set run_fw_upg=true, used on DELL metall
+#
+# sudo ansible-playbook -e "myhosts=test01-storage run_fw_upg=true" lib/upgrade/ceph_storage_bluerepair.yaml
+#
+# Last verified: 2022-08-17 (ansible version 2.9.27)
 #
 
 - hosts: "{{ myhosts }}"
   serial: 1
   gather_facts: false
   tasks:
+
     - name: waiting for clean pgs...
       command: "ceph pg stat --format json"
       register: ceph_pg_stat
@@ -30,12 +34,25 @@
         and
         (((ceph_pg_stat.stdout | from_json).pg_summary.num_pg_by_state | selectattr('name', 'search', '^active\\+clean') | map(attribute='num') | list | sum) == (ceph_pg_stat.stdout | from_json).pg_summary.num_pgs)
       changed_when: false
-      retries: 600 # default from ceph-ansible project is 600
-      delay: 2 # default from ceph-ansible project is 2
+      retries: 900 # default from ceph-ansible project is 600
+      delay: 3 # default from ceph-ansible project is 2
 
     - name: Set OSD noout flag
       command: "ceph osd set noout"
       ignore_errors: yes
+
+    - name: stopp osd services
+      service:
+        name: ceph-osd.target
+        state: stopped
+
+    - name: upgrade DELL-firmware
+      when: run_fw_upg | default(false) | bool
+      block:
+        - name: Run dsu in non-interactive mode
+          command: /sbin/dsu --non-interactive
+          ignore_errors: yes
+          when: "'compute' not in inventory_hostname"
 
     - name: Get repo files
       command: "ls -1 /etc/yum.repos.d/"
