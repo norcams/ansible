@@ -10,7 +10,7 @@
     - pause: seconds=10
     - systemd: name=calico-felix state=restarted
     - pause: seconds=10
-    - systemd: name=calico-dhcp-agent state=restarted
-    - pause: seconds=5
     - systemd: name=openstack-nova-metadata-api state=restarted
-    - pause: seconds=10
+    - pause: seconds=20
+    - systemd: name=calico-dhcp-agent state=restarted
+
