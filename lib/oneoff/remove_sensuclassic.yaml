@@ -1,0 +1,17 @@
+---
+- hosts: "{{ myhosts }}"
+  name: Remove sensuclassic from nodes
+  gather_facts: true
+  tasks:
+
+    - name: Remove packages
+      yum:
+        state: absent
+        name:
+          - sensu
+          - sensu-cli
+
+    - name: Remove config dir
+      file:
+        state: absent
+        path: /etc/sensu
