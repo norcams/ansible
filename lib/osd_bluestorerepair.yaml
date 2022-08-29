@@ -1,6 +1,21 @@
 - hosts: "{{ myhosts }}"
+  serial: 1
+  gather_facts: false
   tasks:
+
+    - name: waiting for clean pgs...
+      command: "ceph pg stat --format json"
+      register: ceph_pg_stat
+      until: >
+        (((ceph_pg_stat.stdout | from_json).pg_summary.num_pg_by_state | length) > 0)
+        and
+        (((ceph_pg_stat.stdout | from_json).pg_summary.num_pg_by_state | selectattr('name', 'search', '^active\\+clean') | map(attribute='num') | list | sum) == (ceph_pg_stat.stdout | from_json).pg_summary.num_pgs)
+      changed_when: false
+      retries: 600 # default from ceph-ansible project is 600
+      delay: 2 # default from ceph-ansible project is 2
+
     - name: Transfer OSD bluestore repair script
       copy: src={{ playbook_dir }}/../files/scripts/repair_bluestore.sh dest=/root/repair_bluestore.sh mode=0777
+
     - name: Execute OSD bluestore repair script
       command: sh /root/repair_bluestore.sh
