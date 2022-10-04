@@ -1,0 +1,12 @@
+--- guest.py        2021-10-07 15:07:29.000000000 +0200
++++ guest.py_fix     2022-09-30 15:42:19.313547284 +0200
+@@ -252,8 +252,7 @@
+         """Undefines a domain from hypervisor."""
+         try:
+             flags = libvirt.VIR_DOMAIN_UNDEFINE_MANAGED_SAVE
+-            if support_uefi:
+-                flags |= libvirt.VIR_DOMAIN_UNDEFINE_NVRAM
++            flags |= libvirt.VIR_DOMAIN_UNDEFINE_NVRAM
+             self._domain.undefineFlags(flags)
+         except libvirt.libvirtError:
+             LOG.debug("Error from libvirt during undefineFlags for guest "
