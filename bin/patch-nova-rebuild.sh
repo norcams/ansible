@@ -19,5 +19,6 @@ if [ $# -ne 1 ]; then
   usage
 fi
 
+# dest=/usr/lib/python2.7/site-packages/nova/virt/libvirt/guest.py hvis EL7 (CentOS 7.9)
 sudo ansible-playbook -e "myhosts=${host} patchfile=${HOME}/ansible/files/patches/nova-libvirt-rebuild.diff dest=/usr/lib/python3.6/site-packages/nova/virt/libvirt/guest.py" lib/patch.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute" lib/systemd_restart.yaml
