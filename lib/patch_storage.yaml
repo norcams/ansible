@@ -4,7 +4,7 @@
 #   (and can run dsu to update dell hosts)
 #
 # example
-#    sudo ansible-playbook -e 'myhosts=bgo-storage-v2d run_fw_upg=true' lib/patch_storage.yaml
+#    sudo ansible-playbook -e 'myhosts=bgo-storage-v2d run_dsu=true' lib/patch_storage.yaml
 #
 # last tested 2022-11-24
 
