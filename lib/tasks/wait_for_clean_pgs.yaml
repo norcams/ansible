@@ -1,0 +1,19 @@
+---
+
+# This is an ansible task and must be included in a playbook.
+# Example:
+# tasks:
+#   - import_tasks: tasks/wait_for_clean_pgs.yaml
+#
+# uses output from "ceph pg stat --format json" and evaluates if pgs are active and clean
+
+- name: waiting for clean pgs...
+  command: "ceph pg stat --format json"
+  register: ceph_pg_stat
+  until: >
+    (((ceph_pg_stat.stdout | from_json).pg_summary.num_pg_by_state | length) > 0)
+    and
+    (((ceph_pg_stat.stdout | from_json).pg_summary.num_pg_by_state | selectattr('name', 'search', '^active\\+clean') | map(attribute='num') | list | sum) == (ceph_pg_stat.stdout | from_json).pg_summary.num_pgs)
+  changed_when: false
+  retries: 900
+  delay: 5

@@ -1,0 +1,67 @@
+---
+
+# Can be used to patch storage hosts running ceph-osd.services
+#   (and can run dsu to update dell hosts)
+#
+# example
+#    sudo ansible-playbook -e 'myhosts=bgo-storage-v2d run_fw_upg=true' lib/patch_storage.yaml
+#
+# last tested 2022-11-24
+
+- hosts: "{{ myhosts }}"
+  serial: 1 # one host at the time
+  gather_facts: false
+  tasks:
+    - name: First check for clean pgs
+      import_tasks: tasks/wait_for_clean_pgs.yaml
+
+    - name: Silence sensu before to many alarms are triggered
+      command:
+        cmd: "bin/python manage_sensu.py silence -e 3600 -H {{ inventory_hostname }}"
+        chdir: "{{ himlarcli_path }}"
+      delegate_to: "{{ inventory_hostname.split('-') | first }}-proxy-02"  # <region>-proxy-02
+
+    - name: Disable puppet
+      import_tasks: tasks/toggle_puppet.yaml
+      vars:
+        action: disable
+
+    - name: Set OSD noout flag
+      command: 'ceph osd set noout'
+      ignore_errors: yes
+
+    - name: Upgrade packages
+      yum:
+        name: '*'
+        state: latest
+        update_cache: yes
+
+    - name: First check for clean pgs
+      import_tasks: tasks/wait_for_clean_pgs.yaml
+
+    - name: stopp osd services
+      service:
+        name: ceph-osd.target
+        state: stopped
+
+    - name: upgrade DELL-firmware
+      when: run_dsu | default(false) | bool
+      block:
+        - name: Run dsu in non-interactive mode
+          command: /sbin/dsu --non-interactive
+          ignore_errors: yes
+          when: "'compute' not in inventory_hostname"
+
+    - name: Enable puppet
+      import_tasks: tasks/toggle_puppet.yaml
+      vars:
+        action: enable
+
+    - name: Reboot host
+      command: shutdown -r 1 "Ansible updates triggered"
+      async: 0
+      poll: 0
+      ignore_errors: true
+
+    - name: waiting for server to come back
+      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
