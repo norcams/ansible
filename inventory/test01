@@ -27,11 +27,12 @@ test01-novactrl
 test01-ns
 test01-proxy
 test01-resolver
-test01-sflow
+test01-sensugo
 test01-spine
 test01-status
 test01-storage
 test01-telemetry
+test01-tsdb
 test01-volume
 
 [test01-nodes:children]
@@ -60,9 +61,10 @@ test01-novactrl
 test01-ns
 test01-proxy
 test01-resolver
-test01-sflow
+test01-sensugo
 test01-status
 test01-telemetry
+test01-tsdb
 test01-volume
 
 [test01-access]
@@ -137,9 +139,6 @@ test01-login-01
 [test01-metric]
 test01-metric-01
 
-[test01-monitor]
-test01-monitor-01
-
 [test01-mq]
 test01-mq-01
 
@@ -159,15 +158,16 @@ test01-novactrl-02
 test01-ns-01
 
 [test01-proxy]
-test01-proxy-01
 test01-proxy-02
 
 [test01-resolver]
 test01-resolver-01
 test01-resolver-02
 
-[test01-sflow]
-test01-sflow-01
+[test01-sensugo]
+test01-sensugo-01
+test01-sensugo-02
+test01-sensugo-03
 
 [test01-spine]
 test01-spine-01
@@ -185,6 +185,9 @@ test01-storage-05
 
 [test01-telemetry]
 test01-telemetry-01
+
+[test01-tsdb]
+test01-tsdb-01
 
 [test01-volume]
 test01-volume-01
