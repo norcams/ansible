@@ -56,5 +56,5 @@ sudo ansible-playbook -e "myhosts=${host} name=calico-dhcp-agent" lib/systemd_re
 #sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute.service" lib/systemd_restart.yaml
 #sudo ansible-playbook -e "myhosts=${host}" lib/downgrade_etcd.yaml
 # Fix for nova missing nvram flag when rebuilding from a uefi image
-sudo ansible-playbook -e "myhosts=${host} patchfile=${HOME}/ansible/files/patches/nova-libvirt-rebuild.diff dest=/usr/lib/python3.6/site-packages/nova/virt/libvirt/guest.py" lib/patch.yaml
+sudo ansible-playbook -e "myhosts=${host} patchfile=../files/patches/nova-libvirt-rebuild.diff dest=/usr/lib/python3.6/site-packages/nova/virt/libvirt/guest.py" lib/patch.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute" lib/systemd_restart.yaml
