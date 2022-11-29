@@ -10,7 +10,8 @@
       - 0xca77951d23b66a9d.asc
       - 0x3CA66B4946770C59.asc
     gpgsource: "https://iaas-repo.uio.no/nrec/nrec-resources/files/dell/keys/"
-    invcol_url: "https://download.iaas.uio.no/nrec/repo/generic/dell-system-update_independent/x86_64/invcol_8DP69_LN64_22_03_200_1230_A00-22.03.00-8DP69.x86_64.rpm"
+    invcol_url: "https://download.iaas.uio.no/nrec/repo/generic/dell-system-update_independent/x86_64/invcol_FTVH8_LN64_22_11_200_38_A00-22.11.00-FTVH8.x86_64.rpm"
+
   tasks:
     - name: "Download GPG keys"
       get_url:
