@@ -1,0 +1,19 @@
+#
+# Install package
+#
+# Options:
+#  - package: package to install
+#
+# Example:
+#   ansible-playbook -e 'myhosts=bgo-compute-vgpu-53 package=nrec-vgpu-mdev' lib/yum_install_package.yaml
+#
+---
+- hosts: "{{ myhosts }}"
+  gather_facts: False
+
+  tasks:
+
+  - name: Install package {{ package }}
+    ansible.builtin.yum:
+      name: {{ package }}
+      state: latest
