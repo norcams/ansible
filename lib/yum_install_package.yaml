@@ -15,5 +15,5 @@
 
   - name: Install package {{ package }}
     ansible.builtin.yum:
-      name: {{ package }}
+      name: "{{ package }}"
       state: latest
