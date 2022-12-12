@@ -1,0 +1,139 @@
+diff -u old/config.py new/config.py
+--- old/config.py	2022-12-12 13:07:30.939384964 +0100
++++ new/config.py	2022-12-12 13:07:35.027343304 +0100
+@@ -3100,6 +3100,7 @@
+                                         root_name="capability", **kwargs)
+         self.type = None
+         self.iommu_group = None
++        self.uuid = None
+ 
+     def parse_dom(self, xmldoc):
+         super(LibvirtConfigNodeDeviceMdevInformation,
+@@ -3109,6 +3110,8 @@
+                 self.type = c.get('id')
+             if c.tag == "iommuGroup":
+                 self.iommu_group = int(c.get('number'))
++            if c.tag == "uuid":
++                self.uuid = c.text
+ 
+ 
+ class LibvirtConfigGuestRng(LibvirtConfigGuestDevice):
+diff -u old/driver.py new/driver.py
+--- old/driver.py	2022-12-12 13:07:30.939384964 +0100
++++ new/driver.py	2022-12-12 13:07:35.028343294 +0100
+@@ -7168,15 +7168,52 @@
+ 
+     def _get_mediated_device_information(self, devname):
+         """Returns a dict of a mediated device."""
+-        virtdev = self._host.device_lookup_by_name(devname)
++        # LP #1951656 - In Libvirt 7.7, the mdev name now includes the PCI
++        # address of the parent device (e.g. mdev_<uuid>_<pci_address>) due to
++        # the mdevctl allowing for multiple mediated devs having the same UUID
++        # defined (only one can be active at a time). Since the guest
++        # information doesn't have the parent ID, try to lookup which
++        # mediated device is available that matches the UUID. If multiple
++        # devices are found that match the UUID, then this is an error
++        # condition.
++        try:
++            virtdev = self._host.device_lookup_by_name(devname)
++        except libvirt.libvirtError as ex:
++            if ex.get_error_code() != libvirt.VIR_ERR_NO_NODE_DEVICE:
++                raise
++            mdevs = [dev for dev in self._host.list_mediated_devices()
++                     if dev.startswith(devname)]
++            # If no matching devices are found, simply raise the original
++            # exception indicating that no devices are found.
++            if not mdevs:
++                raise
++            elif len(mdevs) > 1:
++                msg = ("The mediated device name %(devname)s refers to a UUID "
++                       "that is present in multiple libvirt mediated devices. "
++                       "Matching libvirt mediated devices are %(devices)s. "
++                       "Mediated device UUIDs must be unique for Nova." %
++                       {'devname': devname,
++                        'devices': ', '.join(mdevs)})
++                raise exception.InvalidLibvirtMdevConfig(reason=msg)
++
++            LOG.debug('Found requested device %s as %s. Using that.',
++                      devname, mdevs[0])
++            virtdev = self._host.device_lookup_by_name(mdevs[0])
+         xmlstr = virtdev.XMLDesc(0)
+         cfgdev = vconfig.LibvirtConfigNodeDevice()
+         cfgdev.parse_str(xmlstr)
++        # Starting with Libvirt 7.3, the uuid information is available in the
++        # node device information. If its there, use that. Otherwise,
++        # fall back to the previous behavior of parsing the uuid from the
++        # devname.
++        if cfgdev.mdev_information.uuid:
++            mdev_uuid = cfgdev.mdev_information.uuid
++        else:
++            mdev_uuid = libvirt_utils.mdev_name2uuid(cfgdev.name)
+ 
+         device = {
+             "dev_id": cfgdev.name,
+-            # name is like mdev_00ead764_fdc0_46b6_8db9_2963f5c815b4
+-            "uuid": libvirt_utils.mdev_name2uuid(cfgdev.name),
++            "uuid": mdev_uuid,
+             # the physical GPU PCI device
+             "parent": cfgdev.parent,
+             "type": cfgdev.mdev_information.type,
+diff -u old/host.py new/host.py
+--- old/host.py	2022-12-12 13:07:30.939384964 +0100
++++ new/host.py	2022-12-12 13:07:35.028343294 +0100
+@@ -1159,7 +1159,7 @@
+     def list_mediated_devices(self, flags=0):
+         """Lookup mediated devices.
+ 
+-        :returns: a list of virNodeDevice instance
++        :returns: a list of strings with the name of the instance
+         """
+         return self._list_devices("mdev", flags=flags)
+ 
+diff -u old/utils.py new/utils.py
+--- old/utils.py	2022-12-12 13:07:30.939384964 +0100
++++ new/utils.py	2022-12-12 13:07:35.028343294 +0100
+@@ -587,18 +587,32 @@
+     return default_mtypes.get(arch)
+ 
+ 
+-def mdev_name2uuid(mdev_name):
+-    """Convert an mdev name (of the form mdev_<uuid_with_underscores>) to a
+-    uuid (of the form 8-4-4-4-12).
+-    """
+-    return str(uuid.UUID(mdev_name[5:].replace('_', '-')))
+-
+-
+-def mdev_uuid2name(mdev_uuid):
+-    """Convert an mdev uuid (of the form 8-4-4-4-12) to a name (of the form
+-    mdev_<uuid_with_underscores>).
+-    """
+-    return "mdev_" + mdev_uuid.replace('-', '_')
++def mdev_name2uuid(mdev_name: str) -> str:
++    """Convert an mdev name (of the form mdev_<uuid_with_underscores> or
++    mdev_<uuid_with_underscores>_<pciaddress>) to a uuid
++    (of the form 8-4-4-4-12).
++
++    :param mdev_name: the name of the mdev to parse the UUID from
++    :returns: string containing the uuid
++     """
++    mdev_uuid = mdev_name[5:].replace('_', '-')
++    # Unconditionnally remove the PCI address from the name
++    mdev_uuid = mdev_uuid[:36]
++    return str(uuid.UUID(mdev_uuid))
++ 
++ 
++def mdev_uuid2name(mdev_uuid: str, parent: str = None) -> str:
++    """Convert an mdev uuid (of the form 8-4-4-4-12) and optionally its parent
++    device to a name (of the form mdev_<uuid_with_underscores>[_<pciid>]).
++
++    :param mdev_uuid: the uuid of the mediated device
++    :param parent: the parent device id for the mediated device
++    :returns: name of the mdev to reference in libvirt
++     """
++    name = "mdev_" + mdev_uuid.replace('-', '_')
++    if parent and parent.startswith('pci_'):
++        name = name + parent[4:]
++    return name
+ 
+ 
+ def get_flags_by_flavor_specs(flavor):
