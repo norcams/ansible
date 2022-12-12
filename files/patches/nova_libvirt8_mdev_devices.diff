@@ -1,5 +1,5 @@
-diff -u config.py config.py
---- config.py	2022-12-12 13:07:30.939384964 +0100
+diff -u config.py.orig config.py
+--- config.py.orig	2022-12-12 13:07:30.939384964 +0100
 +++ config.py	2022-12-12 13:07:35.027343304 +0100
 @@ -3100,6 +3100,7 @@
                                          root_name="capability", **kwargs)
@@ -18,8 +18,8 @@ diff -u config.py config.py
  
  
  class LibvirtConfigGuestRng(LibvirtConfigGuestDevice):
-diff -u driver.py driver.py
---- driver.py	2022-12-12 13:07:30.939384964 +0100
+diff -u driver.py.orig driver.py
+--- driver.py.orig	2022-12-12 13:07:30.939384964 +0100
 +++ driver.py	2022-12-12 13:07:35.028343294 +0100
 @@ -7168,15 +7168,52 @@
  
@@ -77,8 +77,8 @@ diff -u driver.py driver.py
              # the physical GPU PCI device
              "parent": cfgdev.parent,
              "type": cfgdev.mdev_information.type,
-diff -u host.py host.py
---- host.py	2022-12-12 13:07:30.939384964 +0100
+diff -u host.py.orig host.py
+--- host.py.orig	2022-12-12 13:07:30.939384964 +0100
 +++ host.py	2022-12-12 13:07:35.028343294 +0100
 @@ -1159,7 +1159,7 @@
      def list_mediated_devices(self, flags=0):
@@ -89,8 +89,8 @@ diff -u host.py host.py
          """
          return self._list_devices("mdev", flags=flags)
  
-diff -u utils.py utils.py
---- utils.py	2022-12-12 13:07:30.939384964 +0100
+diff -u utils.py.orig utils.py
+--- utils.py.orig	2022-12-12 13:07:30.939384964 +0100
 +++ utils.py	2022-12-12 13:07:35.028343294 +0100
 @@ -587,18 +587,32 @@
      return default_mtypes.get(arch)
