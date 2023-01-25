@@ -15,7 +15,7 @@ if [ $# -ne 1 ]; then
   usage
 fi
 
-sudo ansible-playbook -e "myhosts=${host} patchfile=files/patches/cinder-fix-CVE-2022-47951.diff basedir=/usr/lib/python3.6/site-packages/cinder" lib/patch.yaml
+sudo ansible-playbook -e "myhosts=${host} patchfile=../files/patches/cinder-fix-CVE-2022-47951.diff basedir=/usr/lib/python3.6/site-packages" lib/patch.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-cinder-volume" lib/systemd_restart.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-cinder-scheduler" lib/systemd_restart.yaml
 
