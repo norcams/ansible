@@ -17,7 +17,3 @@ fi
 
 sudo ansible-playbook -e "myhosts=${host} patchfile=../files/patches/glance-fix-CVE-2022-47951.diff basedir=/usr/lib/python3.6/site-packages" lib/patch.yaml
 sudo ansible-playbook -e "myhosts=${host} name=openstack-glance-api" lib/systemd_restart.yaml
-
-# openstack-glance-api.service           enabled
-# openstack-glance-registry.service      disabled
-# openstack-glance-scrubber.service      disabled
