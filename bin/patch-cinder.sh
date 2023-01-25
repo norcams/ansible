@@ -3,9 +3,8 @@
 # print help
 function usage {
   echo ""
-  echo "Run this script to update the size error message in dashboard."
-  echo "And to hide create volume in the workflow for sources in dashboard."
-  echo "bin/patch-dashboard.sh <location>-dashboard-01"
+  echo "Run this script to patch cinder for CVE-2022-47951"
+  echo "bin/patch-cinder.sh <location>-volume-01"
   echo ""
   exit 1
 }
@@ -16,11 +15,11 @@ if [ $# -ne 1 ]; then
   usage
 fi
 
-sudo ansible-playbook -e "myhosts=${host} patchfile=${HOME}/ansible/files/patches/horizon-tables-size.diff dest=/usr/share/openstack-dashboard/openstack_dashboard/dashboards/project/instances/tables.py" lib/patch.yaml
-sudo ansible-playbook -e "myhosts=${host} patchfile=${HOME}/ansible/files/patches/horizon-hide-create-volume-bootsource.diff dest=/usr/share/openstack-dashboard/openstack_dashboard/dashboards/project/static/dashboard/project/workflow/launch-instance/launch-instance-model.service.js" lib/patch.yaml
-sudo ansible-playbook -e "myhosts=${host} name=httpd" lib/systemd_restart.yaml
+sudo ansible-playbook -e "myhosts=${host} patchfile=files/patches/cinder-fix-CVE-2022-47951.diff basedir=/usr/lib/python3.6/site-packages/cinder" lib/patch.yaml
+sudo ansible-playbook -e "myhosts=${host} name=openstack-cinder-volume" lib/systemd_restart.yaml
+sudo ansible-playbook -e "myhosts=${host} name=openstack-cinder-scheduler" lib/systemd_restart.yaml
 
-
-cinder-fix-CVE-2022-47951.diff
-
-/usr/lib/python3.6/site-packages/cinder
+# openstack-cinder-api.service           disabled
+# openstack-cinder-backup.service        disabled
+# openstack-cinder-scheduler.service     enabled
+# openstack-cinder-volume.service        enabled
