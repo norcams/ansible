@@ -8,5 +8,5 @@
 - hosts: "{{ myhosts }}"
   gather_facts: False
   tasks:
-    - systemd: name={{ name }} state=stopped
+    - systemd: name={{ name }} state=restarted
 
