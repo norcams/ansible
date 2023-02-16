@@ -5,6 +5,7 @@ bgo-api
 bgo-builder
 bgo-cephmds
 bgo-cephmon
+bgo-cephmon-c2
 bgo-cephmon-object
 bgo-compute
 bgo-compute-alice
@@ -33,7 +34,6 @@ bgo-mgmt-opx
 bgo-monitor
 bgo-mq
 bgo-nat
-bgo-nat-linux
 bgo-network
 bgo-novactrl
 bgo-ns
@@ -59,6 +59,7 @@ bgo-api
 bgo-builder
 bgo-cephmds
 bgo-cephmon
+bgo-cephmon-c2
 bgo-cephmon-object
 bgo-console
 bgo-dashboard
@@ -74,7 +75,6 @@ bgo-metric
 bgo-monitor
 bgo-mq
 bgo-nat
-bgo-nat-linux
 bgo-network
 bgo-novactrl
 bgo-ns
@@ -107,9 +107,17 @@ bgo-cephmds-03
 bgo-cephmon-01
 bgo-cephmon-02
 bgo-cephmon-03
+bgo-cephmon-c2-01
+bgo-cephmon-c2-02
+bgo-cephmon-c2-03
 bgo-cephmon-object-01
 bgo-cephmon-object-02
 bgo-cephmon-object-03
+
+[bgo-cephmon-c2]
+bgo-cephmon-c2-01
+bgo-cephmon-c2-02
+bgo-cephmon-c2-03
 
 [bgo-cephmon-object]
 bgo-cephmon-object-01
@@ -133,6 +141,7 @@ bgo-compute-40
 bgo-compute-58
 bgo-compute-59
 bgo-compute-60
+bgo-compute-81
 bgo-compute-alice-11
 bgo-compute-alice-12
 bgo-compute-alice-13
@@ -364,10 +373,7 @@ bgo-mq-01
 [bgo-nat]
 bgo-nat-01
 bgo-nat-02
-bgo-nat-linux-03
-
-[bgo-nat-linux]
-bgo-nat-linux-03
+bgo-nat-03
 
 [bgo-network]
 bgo-network-01
@@ -563,3 +569,4 @@ bgo-telemetry-01
 bgo-volume-01
 bgo-volume-02
 bgo-volume-03
+
