@@ -1,0 +1,22 @@
+---
+# Created new agent cert
+
+- hosts: "{{ myhosts }}"
+  user: iaas
+  gather_facts: False
+  tasks:
+
+  - name: Remove old cert
+    file:
+       state: absent
+       path: /etc/puppetlabs/puppet/ssl
+    when:
+    - '"admin" not in inventory_hostname'
+    - '"proxy" not in inventory_hostname' 
+
+  - import_tasks: tasks/puppetrun.yaml
+    vars:
+      runmode: 'kickstart'
+    when:
+    - location != "uib"
+
