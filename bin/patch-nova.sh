@@ -24,4 +24,6 @@ sudo ansible ${host} -o -m file -a "name=/usr/lib/python3.6/site-packages/nova/v
 sudo ansible ${host} -o -a "python3 -m compileall /usr/lib/python3.6/site-packages/nova/virt/"
 sudo ansible ${host} -o -a "python3 -m compileall /usr/lib/python3.6/site-packages/nova/conf/"
 
-sudo ansible-playbook -e "myhosts=${host}" lib/restart_compute_services.yaml
+sudo ansible ${host} -o -m systemd -a "name=openstack-nova-compute state=restarted"
+sleep 20
+sudo ansible ${host} -o -m systemd -a "name=openstack-nova-metadata-api state=restarted"
