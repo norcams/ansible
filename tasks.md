@@ -36,3 +36,5 @@ sudo ansible -u iaas -a 'rpm -qa | grep etcd' -m shell test01-compute
 # Reinstall node
 sudo ansible-playbook -e "myhosts=test01-proxy-01 install_host=test01-image-01" lib/reinstall.yaml
 
+# Change NAT GW on compute nodes
+sudo ansible -u iaas -a 'ip route del default table private && ip route add default via 172.18.32.26 table private' -m shell osl-compute
