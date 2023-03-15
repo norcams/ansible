@@ -1,0 +1,21 @@
+---
+secret_files:
+  cert:
+    path:  '/etc/pki/tls/certs/test01-db-global-01.test01.uhdc.no.cert.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'mysql'
+  key:
+    path:  '/etc/pki/tls/private/test01-db-global-01.test01.uhdc.no.key.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'mysql'
+  cafile:
+    path:  '/etc/pki/tls/certs/cachain.pem'
+    mode:  '0640'
+    owner: 'root'
+    group: 'mysql'
+# Use this for bootstrap since mysql group do not exists yet
+#    mode:  '0644'
+#    owner: 'root'
+#    group: 'root'
