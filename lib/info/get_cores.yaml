@@ -1,0 +1,32 @@
+---
+
+- name: get cpu info
+  hosts: "{{ myhosts }}"
+  gather_facts: true
+
+  tasks:
+
+    - name: print processor_cores
+      ansible.builtin.debug:
+        var: ansible_facts['processor_cores']  # alt name: ansible_processor_cores
+
+    - name: print sockets
+      ansible.builtin.debug:
+        var: ansible_facts['processor_count']  # alt name: ansibe_processor_count
+
+    - name: set cpu_cores
+      ansible.builtin.set_fact:
+        cpu_cores: "{{ ansible_facts['processor_cores'] | int }}"
+        cpu_sockets: "{{ ansible_facts['processor_count'] | int }}"
+
+    - name: calculate total cores for node
+      ansible.builtin.set_fact:
+        total_cores: "{{ (cpu_cores|int) * (cpu_sockets|int) }}"
+
+    - name: print sum of total_cores
+      ansible.builtin.debug:
+        msg: "{{ ansible_play_hosts
+                  | map('extract', hostvars, 'total_cores')
+                  | map('int')
+                  | sum }}"
+      run_once: true
