@@ -2,6 +2,7 @@
 # Download GPG keys and install dsu
 #
 ---
+
 - hosts: "{{ myhosts }}"
   vars:
     gpgkeys:
@@ -10,7 +11,6 @@
       - 0xca77951d23b66a9d.asc
       - 0x3CA66B4946770C59.asc
     gpgsource: "https://iaas-repo.uio.no/nrec/nrec-resources/files/dell/keys/"
-    invcol_url: "https://download.iaas.uio.no/nrec/repo/generic/dell-system-update_independent/x86_64/invcol_FTVH8_LN64_22_11_200_38_A00-22.11.00-FTVH8.x86_64.rpm"
 
   tasks:
     - name: "Download GPG keys"
@@ -22,6 +22,7 @@
       with_items:
         - "{{ gpgkeys }}"
       when: "'compute' not in inventory_hostname"
+
     - name: "Download GPG keys"
       command: "curl -o /tmp/{{ item }} {{ gpgsource }}{{ item }}"
       args:
@@ -32,6 +33,7 @@
         http_proxy: "{{ http_proxy }}"
         https_proxy: "{{ https_proxy }}"
       when: "'compute' in inventory_hostname"
+
     - name: Chmod GPG keys
       file:
          path: "/tmp/{{ item }}"
@@ -39,38 +41,46 @@
       with_items:
         - "{{ gpgkeys }}"
       when: "'compute' in inventory_hostname"
+
     - name: "RPM-import GPG keys"
       rpm_key:
         state: present
         key: "/tmp/{{ item }}"
       with_items:
        - "{{ gpgkeys }}"
+
     - name: "Install Dell system update package for el7"
       yum:
         name: dell-system-update
         state: latest
         update_cache: yes
       when: ansible_distribution_major_version == '7'
+
     - name: "Install Dell system update package for el8"
       dnf:
         name: dell-system-update
         state: latest
         update_cache: yes
       when: ansible_distribution_major_version == '8'
+
     - name: "Transfer Dell GPG keys import script"
       copy: src={{ playbook_dir }}/../files/scripts/cp_dell_gpg_keys.sh dest=/root/cp_dell_gpg_keys.sh mode=0777
+
     - name: "Execute Dell GPG keys import script"
       command: sh /root/cp_dell_gpg_keys.sh
       when: "'compute' not in inventory_hostname"
+
     - name: "Execute Dell GPG keys import script"
       command: sh /root/cp_dell_gpg_keys.sh
       environment:
         http_proxy: "{{ http_proxy }}"
         https_proxy: "{{ https_proxy }}"
       when: "'compute' in inventory_hostname"
+
     - name: "Import keys to dsu"
       command: /sbin/dsu --import-public-key -i
       when: "'compute' not in inventory_hostname"
+
     - name: "Import keys to dsu"
       command: /sbin/dsu --import-public-key -i
       environment:
