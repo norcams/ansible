@@ -45,21 +45,6 @@
         key: "/tmp/{{ item }}"
       with_items:
        - "{{ gpgkeys }}"
-    # Workaround for problematic Dell repo
-    - name: "Install Dell inventory collector for el7"
-      yum:
-        name: "{{ invcol_url }}"
-        state: present
-      when: ansible_distribution_major_version == '7'
-    - name: "Install Dell inventory collector for el8"
-      dnf:
-        name: "{{ invcol_url }}"
-        state: present
-      environment:
-        http_proxy: "{{ http_proxy }}"
-        https_proxy: "{{ https_proxy }}"
-        when: "'compute' in inventory_hostname"
-      when: ansible_distribution_major_version == '8'
     - name: "Install Dell system update package for el7"
       yum:
         name: dell-system-update
