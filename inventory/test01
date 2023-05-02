@@ -19,12 +19,15 @@ test01-image
 test01-logger
 test01-login
 test01-metric
+test01-monitor
 test01-mq
 test01-nat
+test01-nettank
 test01-network
 test01-novactrl
 test01-ns
 test01-proxy
+test01-report
 test01-resolver
 test01-sensugo
 test01-spine
@@ -52,12 +55,15 @@ test01-identity
 test01-image
 test01-logger
 test01-metric
+test01-monitor
 test01-mq
 test01-nat
+test01-nettank
 test01-network
 test01-novactrl
 test01-ns
 test01-proxy
+test01-report
 test01-resolver
 test01-sensugo
 test01-status
@@ -91,6 +97,7 @@ test01-cephmon-03
 test01-compute-01
 test01-compute-02
 test01-compute-03
+test01-compute-04
 
 [test01-console]
 test01-console-01
@@ -137,11 +144,17 @@ test01-login-01
 [test01-metric]
 test01-metric-01
 
+[test01-monitor]
+test01-monitor-01
+
 [test01-mq]
 test01-mq-01
 
 [test01-nat]
 test01-nat-01
+
+[test01-nettank]
+test01-nettank-01
 
 [test01-network]
 test01-network-01
@@ -156,7 +169,11 @@ test01-novactrl-02
 test01-ns-01
 
 [test01-proxy]
+test01-proxy-01
 test01-proxy-02
+
+[test01-report]
+test01-report-01
 
 [test01-resolver]
 test01-resolver-01
