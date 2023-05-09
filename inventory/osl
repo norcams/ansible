@@ -131,6 +131,13 @@ osl-compute-47
 osl-compute-48
 osl-compute-49
 osl-compute-50
+osl-compute-57
+osl-compute-58
+osl-compute-59
+osl-compute-60
+osl-compute-61
+osl-compute-62
+osl-compute-63
 osl-compute-atlas-11
 osl-compute-atlas-12
 osl-compute-atlas-13
@@ -157,6 +164,7 @@ osl-compute-epyc-52
 osl-compute-epyc-53
 osl-compute-epyc-54
 osl-compute-epyc-55
+osl-compute-epyc-56
 osl-compute-hpc-25
 osl-compute-hpc-26
 osl-compute-hpc-27
@@ -196,6 +204,7 @@ osl-compute-epyc-52
 osl-compute-epyc-53
 osl-compute-epyc-54
 osl-compute-epyc-55
+osl-compute-epyc-56
 
 [osl-compute-hpc]
 osl-compute-hpc-25
@@ -258,6 +267,7 @@ osl-image-02
 osl-image-03
 
 [osl-leaf]
+osl-leaf-02
 osl-leaf-03
 osl-leaf-04
 
@@ -266,21 +276,27 @@ osl-logger-01
 
 [osl-login]
 osl-login-01
+osl-login-02
 
 [osl-metric]
 osl-metric-01
 
 [osl-mgmt]
+osl-mgmt-04
+osl-mgmt-05
+osl-mgmt-07
 osl-mgmt-opx-01
 osl-mgmt-opx-02
 osl-mgmt-opx-03
-osl-mgmt-opx-04
+osl-mgmt-opx-05
+osl-mgmt-opx-07
 
 [osl-mgmt-opx]
 osl-mgmt-opx-01
 osl-mgmt-opx-02
 osl-mgmt-opx-03
-osl-mgmt-opx-04
+osl-mgmt-opx-05
+osl-mgmt-opx-07
 
 [osl-monitor]
 osl-monitor-01
