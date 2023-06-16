@@ -1,0 +1,7 @@
+---
+secret_files:
+  windowsbuilder_rsa:
+    path:  '/home/imagebuilder/.ssh/windowsbuilder_rsa'
+    mode:  '0600'
+    owner: 'imagebuilder'
+    group: 'imagebuilder'
