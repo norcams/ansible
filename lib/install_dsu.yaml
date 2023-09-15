@@ -1,6 +1,8 @@
 #
 # Download GPG keys and install dsu
 #
+# Upstream location for DSU keys: "https://linux.dell.com/repo/pgp_pubkeys/"
+#
 ---
 
 - hosts: "{{ myhosts }}"
