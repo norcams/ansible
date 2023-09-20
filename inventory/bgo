@@ -57,7 +57,6 @@ bgo-admin
 bgo-api
 bgo-builder
 bgo-cephmds
-bgo-cephmon
 bgo-cephmon-object
 bgo-console
 bgo-dashboard
@@ -335,6 +334,7 @@ bgo-login-02
 bgo-metric-01
 
 [bgo-mgmt]
+bgo-mgmt-08
 bgo-mgmt-opx-01
 bgo-mgmt-opx-02
 bgo-mgmt-opx-03
