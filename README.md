@@ -29,4 +29,3 @@ sudo ansible-playbook -e "myhosts=bgo" lib/ping.yaml
 ## Dry-run
 
 To use dry-run add `--check` to the command
-
