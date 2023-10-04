@@ -1,67 +1,87 @@
 ---
-
-# Can be used to patch storage hosts running ceph-osd.services
-#   (and can run dsu to update dell hosts)
+# This can be used patch storage nodes to minor versions of ceph
+# and execute OSD bluestore repair script before reboot
 #
-# example
-#    sudo ansible-playbook -e 'myhosts=bgo-storage-v2d run_dsu=true' lib/patch_storage.yaml
+# Mandatory input variables:
+# * myhosts (str): ansible node(s)
 #
-# last tested 2022-11-24
+# After upgrading node, the storage node will reboot.
+#
+# Example:
+# sudo ansible-playbook -e "myhosts=test01-storage" lib/patch_storage.yaml
+#
+# to update DELL-firmware set run_fw_upg=true, used on DELL metall, dsu must be installed
+#
+# sudo ansible-playbook -e "myhosts=test01-storage run_fw_upg=true" lib/patch_storage.yaml
+#
+# Last verified: 2023-10-04 (ansible version 2.9.27)
 
 - hosts: "{{ myhosts }}"
-  serial: 1 # one host at the time
+  serial: 1    # one host at the time
   gather_facts: false
   tasks:
+
     - name: First check for clean pgs
       import_tasks: tasks/wait_for_clean_pgs.yaml
 
     - name: Silence sensu before to many alarms are triggered
-      command:
-        cmd: "bin/python manage_sensu.py silence -e 3600 -H {{ inventory_hostname }}"
+      ansible.builtin.command:
+        cmd: "bin/python manage_sensu.py silence -H {{ inventory_hostname }}"
         chdir: "{{ himlarcli_path }}"
-      delegate_to: "{{ inventory_hostname.split('-') | first }}-proxy-02"  # <region>-proxy-02
-
-    - name: Disable puppet
-      import_tasks: tasks/toggle_puppet.yaml
-      vars:
-        action: disable
+      delegate_to: "{{ inventory_hostname.split('-') | first }}-proxy-02"    # <loc>-proxy-02
 
     - name: Set OSD noout flag
-      command: 'ceph osd set noout'
-      ignore_errors: yes
+      ansible.builtin.command: "ceph osd set noout"
+      ignore_errors: true
 
-    - name: Upgrade packages
-      yum:
-        name: '*'
-        state: latest
-        update_cache: yes
+    - name: Disable puppet
+      ansible.builtin.command: "/opt/puppetlabs/bin/puppet agent --disable"
 
-    - name: First check for clean pgs
-      import_tasks: tasks/wait_for_clean_pgs.yaml
-
-    - name: stopp osd services
-      service:
+    - name: Stopp osd services
+      ansible.builtin.service:
         name: ceph-osd.target
         state: stopped
 
-    - name: upgrade DELL-firmware
-      when: run_dsu | default(false) | bool
+    - name: Upgrade DELL-firmware
+      when: run_fw_upg | default(false) | bool
       block:
         - name: Run dsu in non-interactive mode
-          command: /sbin/dsu --non-interactive
-          ignore_errors: yes
-          when: "'compute' not in inventory_hostname"
+          ansible.builtin.command: /sbin/dsu --non-interactive
+          ignore_errors: true
 
-    - name: Enable puppet
-      import_tasks: tasks/toggle_puppet.yaml
-      vars:
-        action: enable
+    - name: Update all packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        update_cache: true
+
+    - name: Transfer OSD bluestore repair script
+      ansible.builtin.copy:
+        src: "{{ playbook_dir }}/../files/scripts/repair_bluestore.sh"
+        dest: /root/repair_bluestore.sh mode=0777
+
+    - name: Execute OSD bluestore repair script
+      ansible.builtin.command: sh /root/repair_bluestore.sh
+
+    - name: Stopp osd services
+      ansible.builtin.service:
+        name: ceph-osd.target
+        state: stopped
+
+    - name: Silence sensu before reboot
+      ansible.builtin.command:
+        cmd: "bin/python manage_sensu.py silence -H {{ inventory_hostname }}"
+        chdir: "{{ himlarcli_path }}"
+      delegate_to: "{{ inventory_hostname.split('-') | first }}-proxy-02"    # <loc>-proxy-02
 
     - name: Reboot host
-      command: shutdown -r 1 "Ansible updates triggered"
+      ansible.builtin.command: shutdown -r 1 "Ansible updates triggered"
       async: 0
       poll: 0
       ignore_errors: true
 
-    - name: waiting for server to come back
+    - name: Waiting for server to come back
       local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
+
+    - name: Enable puppet
+      ansible.builtin.command: "/opt/puppetlabs/bin/puppet agent --enable"
