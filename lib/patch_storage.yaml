@@ -81,7 +81,9 @@
       ignore_errors: true
 
     - name: Waiting for server to come back
-      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
+      ansible.builtin.wait_for_connection:
+        timeout: 1800
+        delay: 75
 
     - name: Enable puppet
       ansible.builtin.command: "/opt/puppetlabs/bin/puppet agent --enable"
