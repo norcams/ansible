@@ -3,9 +3,9 @@
 # and execute OSD bluestore repair script before reboot
 #
 # Mandatory input variables:
-# * myhosts (str): ansible node(s)
+# * myhosts (str): ansible host(s)
 #
-# After upgrading node, the storage node will reboot.
+# After upgrading node, the storage host will reboot.
 #
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-storage" lib/patch_storage.yaml
