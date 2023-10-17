@@ -29,3 +29,10 @@ sudo ansible-playbook -e "myhosts=bgo" lib/ping.yaml
 ## Dry-run
 
 To use dry-run add `--check` to the command
+
+## Getting nasty output, do you have problem with http(s) proxy?                                                                                                                                            
+                                                                                                      
+Try setting the https_proxy varaiable to http://IP:PORT                                               
+
+Example:
+sudo  ansible-playbook -e "myhosts=osl-compute-08" -e "https_proxy=http://172.16.32.97:8888" lib/install_dsu.yaml
