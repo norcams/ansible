@@ -8,11 +8,17 @@
   tasks:
     - name: Run dsu in non-interactive mode
       command: /sbin/dsu --non-interactive
-      ignore_errors: yes
+      register: _dsu
+      changed_when:
+        - _dsu.rc == 0
+        - _dsu.rc == 8
       when: "'compute' not in inventory_hostname"
     - name: Run dsu in non-interactive mode
       command: /sbin/dsu --non-interactive
-      ignore_errors: yes
+      register: _dsu
+      changed_when:
+        - _dsu.rc == 0
+        - _dsu.rc == 8
       environment:
         http_proxy: "{{ http_proxy }}"
         https_proxy: "{{ https_proxy }}"
