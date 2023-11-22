@@ -405,6 +405,8 @@ bgo-resolver-02
 
 [bgo-rgw]
 bgo-rgw-01
+bgo-rgw-02
+bgo-rgw-03
 
 [bgo-spine]
 bgo-spine-01
@@ -559,4 +561,3 @@ bgo-telemetry-01
 bgo-volume-01
 bgo-volume-02
 bgo-volume-03
-

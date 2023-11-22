@@ -5,6 +5,7 @@ osl-api
 osl-builder
 osl-cephmds
 osl-cephmon
+osl-cephmon-object
 osl-compute
 osl-compute-atlas
 osl-compute-epyc
@@ -39,6 +40,7 @@ osl-object-ceph
 osl-proxy
 osl-report
 osl-resolver
+osl-rgw
 osl-spine
 osl-status
 osl-storage
@@ -53,6 +55,7 @@ osl-admin
 osl-api
 osl-builder
 osl-cephmds
+osl-cephmon-object
 osl-console
 osl-dashboard
 osl-dashboard-mgmt
@@ -73,6 +76,7 @@ osl-ns
 osl-proxy
 osl-report
 osl-resolver
+osl-rgw
 osl-status
 osl-telemetry
 osl-volume
@@ -98,6 +102,14 @@ osl-cephmds-03
 osl-cephmon-01
 osl-cephmon-02
 osl-cephmon-03
+osl-cephmon-object-01
+osl-cephmon-object-02
+osl-cephmon-object-03
+
+[osl-cephmon-object]
+osl-cephmon-object-01
+osl-cephmon-object-02
+osl-cephmon-object-03
 
 [osl-compute]
 osl-compute-01
@@ -214,10 +226,6 @@ osl-compute-vgpu-20
 osl-console-01
 
 [osl-controller]
-osl-controller-01
-osl-controller-02
-osl-controller-03
-osl-controller-04
 osl-controller-05
 osl-controller-06
 osl-controller-07
@@ -270,7 +278,9 @@ osl-login-02
 osl-metric-01
 
 [osl-mgmt]
+osl-mgmt-00
 osl-mgmt-01
+osl-mgmt-02
 osl-mgmt-03
 osl-mgmt-04
 osl-mgmt-05
@@ -337,6 +347,11 @@ osl-report-01
 osl-resolver-01
 osl-resolver-02
 
+[osl-rgw]
+osl-rgw-01
+osl-rgw-02
+osl-rgw-03
+
 [osl-spine]
 osl-spine-01
 osl-spine-02
@@ -391,4 +406,3 @@ osl-torack-02
 [osl-volume]
 osl-volume-01
 osl-volume-02
-
