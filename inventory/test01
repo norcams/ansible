@@ -79,6 +79,8 @@ test01-admin-01
 
 [test01-api]
 test01-api-01
+test01-api-02
+test01-api-03
 
 [test01-builder]
 test01-builder-01
@@ -207,4 +209,3 @@ test01-tsdb-01
 [test01-volume]
 test01-volume-01
 test01-volume-02
-
