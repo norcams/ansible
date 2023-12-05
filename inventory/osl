@@ -137,12 +137,12 @@ osl-compute-60
 osl-compute-61
 osl-compute-62
 osl-compute-63
-osl-compute-atlas-11
-osl-compute-atlas-12
-osl-compute-atlas-13
-osl-compute-atlas-14
-osl-compute-atlas-15
-osl-compute-atlas-16
+osl-compute-epyc-11
+osl-compute-epyc-12
+osl-compute-epyc-13
+osl-compute-epyc-14
+osl-compute-epyc-15
+osl-compute-epyc-16
 osl-compute-atlas-21
 osl-compute-atlas-22
 osl-compute-atlas-23
@@ -175,12 +175,6 @@ osl-compute-vgpu-19
 osl-compute-vgpu-20
 
 [osl-compute-atlas]
-osl-compute-atlas-11
-osl-compute-atlas-12
-osl-compute-atlas-13
-osl-compute-atlas-14
-osl-compute-atlas-15
-osl-compute-atlas-16
 osl-compute-atlas-21
 osl-compute-atlas-22
 osl-compute-atlas-23
@@ -199,6 +193,12 @@ osl-compute-atlas-39
 osl-compute-atlas-40
 
 [osl-compute-epyc]
+osl-compute-epyc-11
+osl-compute-epyc-12
+osl-compute-epyc-13
+osl-compute-epyc-14
+osl-compute-epyc-15
+osl-compute-epyc-16
 osl-compute-epyc-52
 osl-compute-epyc-53
 osl-compute-epyc-54
