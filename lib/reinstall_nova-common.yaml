@@ -1,0 +1,13 @@
+---
+- hosts: "{{ myhosts }}"
+  tasks:
+
+  - name: Reinstall nova-common to fix file permissons
+    yum:
+      name: 'openstack-nova-common'
+      state: absent
+    yum:
+      name: 'openstack-nova-common'
+      state: present
+
+#  - import_tasks: tasks/puppetrun.yaml
