@@ -1,93 +1,107 @@
 #
-# This will configure a host for vgpu consumption by
-# virtual instances running on the host.
+# This will configure a host for vgpu consumption by virtual instances
+# running on the host.
 #
-# Last verified: 2019-12-13 (ansible version 2.8.0)
+# Last verified: 2024-02-07 (ansible version 2.13.3)
 #
-# sudo ansible-playbook  -e "myhosts=test01-compute-vgpu-01 nvidia_file=NVIDIA-GRID-Linux-KVM-418.109-426.26.zip" lib/setup_vgpu.yaml
+# sudo ansible-playbook -e "myhosts=osl-compute-vgpu-17" lib/setup_vgpu.yaml
 #
-
-- hosts: "{{ myhosts.split('-')[0] }}-proxy-01"
-  gather_facts: False
-  tasks:
-    - import_tasks: tasks/sensu_silence.yaml
-      vars:
-        mute_time: "1800"
-      when: "'vgpu' in myhosts"
 
 - hosts: "{{ myhosts }}"
   user: iaas
   gather_facts: False
-  vars:
-    sensu_expire: 3600
-    repo_url: 'https://download.iaas.uio.no/nonfree/nvidia-vgpu'
-    
+
   tasks:
-    - name: Get http_proxy ip for {{location}}
-      local_action: shell getent hosts {{ myhosts.split('-')[0] }}-proxy-01 | awk '{ print $1 }'
-      register: proxy_ip
-    - name: set up nvidia vgpu host
-      block:
-        - name: blacklist nouveau module
-          lineinfile:
-            path: /etc/modprobe.d/blacklist.conf
-            state: present
-            line: 'blacklist nouveau'
-        - name: ensure nouveau is disabled
-          lineinfile:
-            path: /etc/modprobe.d/blacklist.conf
-            state: present
-            line: 'options nouveau modeset=0'
-        - name: create new ramdisk with correct nouveau related settings
-          command: dracut --force
-        - name: install required packages
-          yum:
-            name:
-              - wget
-              - unzip
-              - kernel-devel
-              - epel-release
-              - "@Development Tools"
-            state: present
-        - name: update all existing packages
-          yum:
-            name: '*'
-            state: latest
-            update_cache: yes
-            exclude: "{{ exclude | default(omit) }}"
-        - name: reboot
-          command: shutdown -r 1 "Ansible updates triggered"
-          async: 0
-          poll: 0
-          ignore_errors: true
-        - name: waiting for server to come back
-          local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
-        - name: create temp. for driver package
-          tempfile:
-            state: directory
-          register: unpack_dir
-        - name: download and unpack driver installation package
-          unarchive:
-            src: "{{ repo_url }}/{{ nvidia_file }}"
-            dest: "{{ unpack_dir.path }}"
-            remote_src: yes
-            validate_certs: false
-          environment:
-            https_proxy: "https://{{proxy_ip.stdout}}:8888"
-        - name: nvidia driver installation
-          shell: sh *-vgpu-kvm.run -s
-          args:
-            chdir: "{{ unpack_dir.path }}"
-        - name: remove installation files and directories
-          file:
-            path: "{{ unpack_dir }}"
-            state: absent
-          when: unpack_dir.path is defined
-        - name: final reboot
-          command: shutdown -r 1 "Ansible nvidia updates triggered"
-          async: 0
-          poll: 0
-          ignore_errors: true
-        - name: waiting a final time for server to come back up
-          local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
-      when: "'vgpu' in myhosts"
+    - name: Fail if host is not vGPU host
+      fail:
+        msg: "{{ inventory_hostname }} is not a vGPU host"
+      when: "'vgpu' not in inventory_hostname"
+
+    - name: Ensure correct kernel version
+      ansible.builtin.yum:
+        name:
+          - "kernel-core-{{ vgpu_kernel_version }}"
+          - "kernel-devel-{{ vgpu_kernel_version }}"
+          - "kernel-headers-{{ vgpu_kernel_version }}"
+          - "kernel-modules-{{ vgpu_kernel_version }}"
+          - "kernel-tools-libs-{{ vgpu_kernel_version }}"
+          - "kernel-tools-{{ vgpu_kernel_version }}"
+          - "kernel-{{ vgpu_kernel_version }}"
+          - "python3-perf-{{ vgpu_kernel_version }}"
+        allow_downgrade: true
+        state: present
+        update_cache: yes
+
+    - name: Get default kernel
+      ansible.builtin.command: grubby --default-kernel
+      register: default_boot_kernel
+      changed_when: false
+
+    - name: Set default kernel
+      ansible.builtin.command: grubby --set-default="{{ required_boot_kernel }}"
+      when: default_boot_kernel.stdout != required_boot_kernel
+
+    - name: Blacklist nouveau module
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        state: present
+        create: true
+        line: 'blacklist nouveau'
+      register: blacklist
+
+    - name: Ensure nouveau is disabled
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        state: present
+        create: true
+        line: 'options nouveau modeset=0'
+      register: blacklist
+
+    - name: Create new ramdisk with correct nouveau related settings
+      ansible.builtin.command: dracut --kver "{{ vgpu_kernel_version }}.x86_64" --force
+      when: blacklist is changed
+
+    - name: Install required packages
+      ansible.builtin.yum:
+        name:
+          - nrec-vgpu-mdev
+          - wget
+          - "@Development Tools"
+        state: present
+
+    - name: Rebooting...
+      ansible.builtin.reboot:
+        reboot_timeout: 1800
+
+    - name: Install Nvidia host driver from repo
+      ansible.builtin.yum:
+        name: "{{ host_driver_rpm }}"
+        state: present
+        disable_gpg_check: true
+      environment:
+        http_proxy: "{{ http_proxy }}"
+        https_proxy: "{{ https_proxy }}"
+
+    - name: Enable service - NREC mdev create
+      ansible.builtin.service:
+        name: create-mdev
+        enabled: yes
+
+    - name: Enable timer - NREC mdev cleanup
+      ansible.builtin.service:
+        name: delete-unused-mdev.timer
+        enabled: yes
+
+    - name: Enable service - NVIDIA vGPU Manager Daemon
+      ansible.builtin.service:
+        name: nvidia-vgpu-mgr
+        enabled: yes
+
+    - name: Enable service -  NVIDIA vGPU Daemon
+      ansible.builtin.service:
+        name: nvidia-vgpud
+        enabled: yes
+
+    - name: Rebooting...
+      ansible.builtin.reboot:
+        reboot_timeout: 1800

@@ -1,0 +1,10 @@
+---
+# Variables for vGPU
+#
+
+# This is vGPU version 16.3 (LTS)
+host_driver_rpm: "https://download.iaas.uio.no/nonfree/NVIDIA-vGPU-rhel-8.9-535.154.02.x86_64.rpm"
+
+# This is the first kernel in the el 8.9 series
+vgpu_kernel_version:  "4.18.0-513.5.1.el8_9"
+required_boot_kernel: "/boot/vmlinuz-{{ vgpu_kernel_version }}.x86_64"
