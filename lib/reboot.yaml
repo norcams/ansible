@@ -1,4 +1,4 @@
-- hosts: "{{ myhosts.split('-')[0] }}-proxy-01"
+- hosts: "{{ myhosts.split('-')[0] }}-proxy-02"
   tasks:
     - import_tasks: tasks/sensu_silence.yaml
       vars:

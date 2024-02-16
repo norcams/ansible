@@ -40,6 +40,6 @@ if [[ ! $REPLY =~ ^[Yy]$ ]]; then
 fi
 echo
 
-sudo ansible-playbook -e "myhosts=${location}-proxy-01 sensu_expire=7200 install_host=${host}" lib/delete_host.yaml
+sudo ansible-playbook -e "myhosts=${location}-proxy-02 sensu_expire=7200 install_host=${host}" lib/delete_host.yaml
 sudo ansible -u iaas -a '/usr/cumulus/bin/onie-select -i -f' -m shell ${host}
 sudo ansible-playbook -e "myhosts=${host}" lib/reboot.yaml

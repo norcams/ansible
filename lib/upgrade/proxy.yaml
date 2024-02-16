@@ -5,7 +5,7 @@
 # * myhosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-proxy-01" lib/upgrade/proxy.yaml
+# sudo ansible-playbook -e "myhosts=test01-proxy-02" lib/upgrade/proxy.yaml
 #
 # Last verified: 2019-02-07 (ansible version 2.7.5)
 #

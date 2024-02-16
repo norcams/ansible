@@ -104,7 +104,7 @@
   tasks:
     - systemd: name=crond state=stopped
     - name: Get http_proxy ip for {{location}}
-      local_action: shell getent hosts {{ location }}-proxy-01 | awk '{ print $1 }'
+      local_action: shell getent hosts {{ location }}-proxy-02 | awk '{ print $1 }'
       register: proxy_ip
 
     - name: 'Check distribution version'

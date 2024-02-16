@@ -28,7 +28,7 @@ location=${hostname[0]}
 
 # Stop and destory all OSDs on target node
 sudo ansible-playbook -e "myhosts=${host}" lib/osd_destroy.yaml
-sudo ansible-playbook -e "myhosts=${location}-proxy-01 sensu_expire=7200 install_host=${host}" lib/reinstall.yaml
+sudo ansible-playbook -e "myhosts=${location}-proxy-02 sensu_expire=7200 install_host=${host}" lib/reinstall.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/reboot.yaml
 # remove host keys from login
 sudo ansible-playbook -e "myhosts=${location}-login host=${host}" lib/ssh_host_keys.yaml
