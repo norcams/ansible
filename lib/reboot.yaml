@@ -5,11 +5,6 @@
         mute_time: "1800"
 - hosts: "{{ myhosts }}"
   tasks:
-    - name: Reboot host
-      command: shutdown -r 1 "Ansible updates triggered"
-      async: 0
-      poll: 0
-      ignore_errors: true
-    #- debug: msg="{{ inventory_hostname}}|{{ansible_ssh_host}}"
-    - name: waiting for server to come back
-      local_action: wait_for port=22 host={{ inventory_hostname }} timeout=1800 delay=75 state=present
+    - name: Rebooting...
+      ansible.builtin.reboot:
+        reboot_timeout: 1800
