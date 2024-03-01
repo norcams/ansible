@@ -11,3 +11,6 @@ secret_files:
     mode:  '0644'
     owner: 'root'
     group: 'root'
+puppet_environments:
+  - admin
+  - ussuri

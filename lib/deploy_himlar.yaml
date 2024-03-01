@@ -12,6 +12,9 @@
       command: "{{himlar_path}}/provision/puppetmodules.sh"
       environment:
         HIMLAR_PUPPETFILE: deploy
+        HIMLAR_DEPLOYMENT: redeploy
+        HIMLAR_PUPPET_ENV: "{{ item }}"
+      loop: {{ puppet_environments }}
     - name: Update hieradata/secrets
       command: "{{himlar_path}}/provision/puppetsecrets.sh"
       when: himlar_update_secrets == True
