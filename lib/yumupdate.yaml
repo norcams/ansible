@@ -15,13 +15,19 @@
 ---
 - hosts: "{{ myhosts }}"
   user: iaas
-  gather_facts: False
+  gather_facts: True
   tasks:
 
   - name: Disable puppet
     import_tasks: tasks/toggle_puppet.yaml
     vars:
       action: disable
+
+  - name: Update all release packages to get new gpg keys first
+    yum:
+      name: '*-release'
+      state: latest
+      update_cache: yes
 
   - name: Upgrade all packages excluding {{ exclude | default('none') }}
     yum:
