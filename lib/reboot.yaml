@@ -1,10 +1,14 @@
-- hosts: "{{ myhosts.split('-')[0] }}-proxy-02"
-  tasks:
-    - import_tasks: tasks/sensu_silence.yaml
-      vars:
-        mute_time: "1800"
+---
+
 - hosts: "{{ myhosts }}"
   tasks:
+
+    - name: Silence sensu using <loc>-proxy-02
+      ansible.builtin.command:
+        cmd: "bin/python manage_sensu.py silence -H {{ inventory_hostname }}"
+        chdir: "{{ himlarcli_path }}"
+      delegate_to: "{{ inventory_hostname.split('-') | first }}-proxy-02"
+
     - name: Rebooting...
       ansible.builtin.reboot:
         reboot_timeout: 1800
