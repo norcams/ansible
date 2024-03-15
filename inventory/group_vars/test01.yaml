@@ -1,6 +1,6 @@
 ---
 location: test01
 domain: mgmt.test01.uhdc.no
-#himlar_ref: stein/master
+himlar_ref: foreman_upgrade
 #himlar_repo: https://github.com/norcams/himlar.git
 #himlarcli_ref: image_rewrite
