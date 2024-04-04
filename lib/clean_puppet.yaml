@@ -1,0 +1,34 @@
+---
+# This will clean up all puppet cert on hosts and run puppet to get new cert from puppet-ca
+# Will only work if the cert is already deleted from puppet-ca
+
+- hosts: "{{ myhosts }}"
+  vars:
+    puppet_env: 'production'
+    waitforcert: ''
+    # if you need time to sign the cert use this:
+    #waitforcert: '--waitforcert 120'
+
+  tasks:
+
+    - name: Enable puppet
+      command: /opt/puppetlabs/bin/puppet agent --enable
+
+    - name: Remove old puppet cert
+      ansible.builtin.shell: |
+        rm -f /etc/puppetlabs/puppet/ssl/certs/{{ ansible_fqdn }}.pem
+        rm -f /etc/puppetlabs/puppet/ssl/certs/ca.pem
+        rm -f /etc/puppetlabs/puppet/ssl/crl.pem
+        rm -f /etc/puppetlabs/puppet/ssl/private_keys/{{ ansible_fqdn }}.pem
+
+        exit 0
+      args:
+        warn: false     
+
+    - name: "Run puppet kickstart with environment {{ puppet_env }}"
+      command: "/opt/puppetlabs/bin/puppet agent -t --environment {{ puppet_env }} {{ waitforcert }}" 
+      environment:
+        FACTER_RUNMODE: "kickstart"
+        http_roxy: "{{ http_proxy  | default(omit) }}"
+        https_proxy: "{{ http_proxy | default(omit) }}"
+      ignore_errors: true
