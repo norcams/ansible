@@ -24,5 +24,10 @@ himlarcli_packages:
   - openssl-devel
   - libffi-devel
 
+puppet_environments:
+  - admin
+  - ussuri
+
+
 # Secrets to sync
 secret_files: {}
