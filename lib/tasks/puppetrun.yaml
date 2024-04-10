@@ -7,7 +7,7 @@
 #     vars:
 #       runmode: kickstart
 #
-- name: Enable puppet
+- name: (task puppetrun) Enable puppet
   command: /opt/puppetlabs/bin/puppet agent --enable
   when: enable_puppet | default(true)
 
@@ -21,6 +21,7 @@
   command: /opt/himlar/provision/puppetrun.sh
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
+    HIMLAR_PUPPET_ENV: "{{ ('admin' in inventory_hostname) | ternary('admin', omit) }}"
   when: location == "vagrant" or "admin" in inventory_hostname
   register: puppet_debug
 

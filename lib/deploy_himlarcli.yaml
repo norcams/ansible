@@ -19,7 +19,9 @@
         force:    "{{himlarcli_force_update}}"
     - name: Manually create the initial virtualenv for himlarcli
       command: virtualenv-3 --clear "{{himlarcli_path}}" creates="{{himlarcli_path}}/bin/activate"
-      when: himlarcli_python_command is not defined
+      when:
+        - himlarcli_python_command is not defined
+        - himlarcli_virutalenv_command is not defined
     - name: Update setuptools
       pip:
         state: latest
@@ -31,14 +33,19 @@
         virtualenv_site_packages: "no"
     - name: Upgrade pip
       command: bin/pip install --upgrade pip chdir={{himlarcli_path}}
+      ignore_errors: "{{ ansible_check_mode }}"
     - name: Install python modules with pip
       pip:
+        virtualenv_command:       "{{himlarcli_virutalenv_command | default(omit)}}"
         virtualenv:               "{{himlarcli_path}}"
+        virtualenv_python:        "{{himlarcli_python_command | default(omit)}}"
         requirements:             "requirements.txt"
         chdir:                    "{{himlarcli_path}}"
         virtualenv_site_packages: "no"
+      ignore_errors: "{{ ansible_check_mode }}"
     - name: Run setup.py if himlarcli package is not setup
       command: bin/python setup.py develop chdir={{himlarcli_path}} creates={{himlarcli_path}}/himlarcli.egg-info
+      ignore_errors: "{{ ansible_check_mode }}"
     - name: Copy config.ini from remote host
       fetch: src=/etc/himlarcli/config.ini dest={{himlarcli_path}}/config.ini.{{location}} flat=yes
       when: '("login" not in inventory_hostname) and location != "vagrant"'
