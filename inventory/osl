@@ -10,7 +10,6 @@ osl-compute
 osl-compute-atlas
 osl-compute-epyc
 osl-compute-hpc
-osl-compute-numascale
 osl-compute-robin
 osl-compute-vgpu
 osl-console
@@ -137,12 +136,6 @@ osl-compute-60
 osl-compute-61
 osl-compute-62
 osl-compute-63
-osl-compute-epyc-11
-osl-compute-epyc-12
-osl-compute-epyc-13
-osl-compute-epyc-14
-osl-compute-epyc-15
-osl-compute-epyc-16
 osl-compute-atlas-21
 osl-compute-atlas-22
 osl-compute-atlas-23
@@ -159,6 +152,12 @@ osl-compute-atlas-37
 osl-compute-atlas-38
 osl-compute-atlas-39
 osl-compute-atlas-40
+osl-compute-epyc-11
+osl-compute-epyc-12
+osl-compute-epyc-13
+osl-compute-epyc-14
+osl-compute-epyc-15
+osl-compute-epyc-16
 osl-compute-epyc-52
 osl-compute-epyc-53
 osl-compute-epyc-54
@@ -168,7 +167,6 @@ osl-compute-hpc-25
 osl-compute-hpc-26
 osl-compute-hpc-27
 osl-compute-hpc-28
-osl-compute-numascale-51
 osl-compute-robin-18
 osl-compute-vgpu-17
 osl-compute-vgpu-19
@@ -210,9 +208,6 @@ osl-compute-hpc-25
 osl-compute-hpc-26
 osl-compute-hpc-27
 osl-compute-hpc-28
-
-[osl-compute-numascale]
-osl-compute-numascale-51
 
 [osl-compute-robin]
 osl-compute-robin-18
@@ -262,7 +257,6 @@ osl-image-02
 osl-image-03
 
 [osl-leaf]
-osl-leaf-02
 osl-leaf-03
 osl-leaf-04
 
@@ -406,3 +400,4 @@ osl-torack-02
 [osl-volume]
 osl-volume-01
 osl-volume-02
+
