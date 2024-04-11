@@ -16,4 +16,9 @@ secret_files:
     mode:  '0600'
     owner: 'root'
     group: 'root'
+  ssh_config:
+    path:  '/root/.ssh/config'
+    mode:  '0600'
+    owner: 'root'
+    group: 'root'
 
