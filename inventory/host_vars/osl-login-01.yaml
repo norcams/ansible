@@ -1,4 +1,4 @@
 ---
-himlarcli_virutalenv: "/bin/virtualenv-3"
+himlarcli_virutalenv_command: 'python3.11 -m venv'
 himlarcli_packages:
-  - python3-virtualenv
+  - python3.11-devel
