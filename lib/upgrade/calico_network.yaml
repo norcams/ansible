@@ -5,6 +5,8 @@
 #
 - hosts: "{{ myhosts }}"
   gather_facts: no
+  vars:
+    clear_etcd_data: false
   tasks:
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
@@ -31,3 +33,10 @@
       ignore_errors: yes
     - name: 'Restart neutron server'
       systemd: name=neutron-server state=restarted
+    - name: 'Clear all data in etcd on one network node'
+      command: '/usr/bin/etcdctl del "" --from-key=true'
+      environment:
+        ETCDCTL_API: 3
+      ignore_errors: yes
+      run_once: true
+      when: clear_etcd_data is true
