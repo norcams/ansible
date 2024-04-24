@@ -17,9 +17,9 @@
     - name: 'Stop calico felix'
       systemd: name=calico-felix state=stopped
     - name: 'Make sure puppet are enabled'
-      command: "puppet agent --enable"
+      command: "/opt/puppetlabs/bin/puppet agent --enable"
     - name: 'Puppet kickstart runmode'
-      command: "puppet agent --onetime --no-daemonize"
+      command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       environment:
         FACTER_RUNMODE: kickstart
       ignore_errors: yes
@@ -33,15 +33,8 @@
         - calico-dhcp-agent
         - calico-felix
         - dnsmasq
-        - openstack-neutron
-        - openstack-neutron-common
-        - python-neutron
-        - python2-neutronclient
     - name: 'Puppet run'
-      command: "puppet agent --onetime --no-daemonize"
-      ignore_errors: yes
-    - name: 'Run puppet again'
-      command: "puppet agent --onetime --no-daemonize"
+      command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       ignore_errors: yes
     - name: 'Restart felix agent'
       systemd: name=calico-felix state=restarted
