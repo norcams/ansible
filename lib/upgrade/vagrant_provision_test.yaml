@@ -1,0 +1,14 @@
+---
+# Simple test to provision a node in vagrant with ansible.
+
+- hosts: "{{ myhosts }}"
+  serial: 1
+  gather_facts: no
+  tasks:
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+        himlar_deployment: 'redeploy'
+        himlar_puppet_env: 'victoria'
+
+

@@ -1,20 +1,34 @@
 # This is a ansible task and must be included in a playbook.
 # For vagrant we use provision script and all other location use puppet agent.
+#
+# In vagrant you will need to always set puppet environment
 # runmode variable must be set to run anything other than default runmode.
+#
 # Example usage of runmode=kickstart in tasks:
 # tasks:
 #   - import_tasks: tasks/puppetrun.yaml
 #     vars:
-#       runmode: kickstart
+#       runmode: "kickstart"
+#       himlar_puppet_env: "admin"
 #
 - name: (task puppetrun) Enable puppet
   command: /opt/puppetlabs/bin/puppet agent --enable
-  when: enable_puppet | default(true)
+  when:
+    - enable_puppet | default(true)
+    - location != "vagrant"
 
-- name: Run puppetmodules in Vagrant
+- name: (Vagrant only) Run puppetmodules script
   command: "/opt/himlar/provision/puppetmodules.sh"
   environment:
-    HIMLAR_PUPPETFILE: 'deploy'
+    HIMLAR_DEPLOYMENT: "{{ himlar_deployment | default(omit) }}"
+    HIMLAR_PUPPET_ENV: "{{ himlar_puppet_env | default('production') }}"
+  when: location == "vagrant"
+
+- name: (Vagrant only) Run puppet provision script with runmode {{ runmode | default('default')}}
+  command: /opt/himlar/provision/puppetrun.sh
+  environment:
+    FACTER_RUNMODE: "{{ runmode | default('default')}}"
+    HIMLAR_PUPPET_ENV: "{{ himlar_puppet_env | default('production') }}"
   when: location == "vagrant"
 
 - name: Run puppet provision script with runmode {{ runmode | default('default')}}
@@ -22,25 +36,18 @@
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
     HIMLAR_PUPPET_ENV: "{{ ('admin' in inventory_hostname) | ternary('admin', omit) }}"
-  when: location == "vagrant" or "admin" in inventory_hostname
-  register: puppet_debug
-
-- name: Run puppet agent with runmode {{ runmode | default('default')}} and http proxy
-  command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --pluginsync"
-  environment:
-    FACTER_RUNMODE: "{{ runmode | default('default')}}"
-    http_proxy: "{{ http_proxy }}"
-    https_proxy: "{{ http_proxy }}"
-  ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
-  when: location != "vagrant" and http_proxy is defined
+  when: location != "vagrant" and "admin" in inventory_hostname
   register: puppet_debug
 
 - name: Run puppet agent with runmode {{ runmode | default('default')}}
   command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --pluginsync"
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
+    HIMLAR_PUPPET_ENV: "{{ himlar_puppet_env | default(omit) }}"
+    http_proxy: "{{ http_proxy | default(omit) }}"
+    https_proxy: "{{ http_proxy | default(omit) }}"
   ignore_errors: "{{ ignore_puppet_errors | default('yes')}}"
-  when: location != "vagrant" and http_proxy is not defined and "admin" not in inventory_hostname
+  when: location != "vagrant"
   register: puppet_debug
 
 - name: Puppetrun output (debug {{ debug_puppetrun | default('false')}})
