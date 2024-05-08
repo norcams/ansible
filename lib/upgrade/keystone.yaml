@@ -40,7 +40,7 @@
     - shell: "/usr/local/sbin/db-dump.sh {{location}}-db-global-01 >/dev/null"
       when: location != 'vagrant'
 
-# Step 3: run on db to allow schema change
+# Step 3: run on db to allow schema change (until restart of db)
 - hosts: "{{ location }}-db-global-01"
   gather_facts: false
   tasks:
@@ -56,6 +56,9 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
+        himlar_puppet_env: 'victoria'
+        # these are only used by vagrant
+        himlar_deployment: 'redeploy'
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
     - name: 'Stop keystone webserver'
@@ -71,6 +74,10 @@
     - name: 'Remove /etc/keystone/'
       file: name=/etc/keystone state=absent
     - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
+        # this is only used by vagrant
+        himlar_deployment: 'redeploy'
     - name: Pull fernet keys from db
       command: "/usr/local/sbin/token_dist.sh fernet slave"
       when: location != 'vagrant'
@@ -106,6 +113,9 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
+        himlar_puppet_env: 'victoria'
+        # this is only used by vagrant
+        himlar_deployment: 'redeploy'
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
     - name: 'Stop keystone webserver'
@@ -115,6 +125,10 @@
     - name: 'Remove /etc/keystone/'
       file: name=/etc/keystone state=absent
     - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
+        # this is only used by vagrant
+        himlar_deployment: 'redeploy'
     - name: Pull fernet keys from db
       command: "/usr/local/sbin/token_dist.sh fernet slave"
       when: location != "vagrant"
