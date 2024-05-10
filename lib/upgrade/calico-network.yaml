@@ -1,27 +1,35 @@
 #
-# This can be used to upgrade calico from version 2.6.x to 3.1.x on compute hosts
+# This can be used to upgrade calico from version on compute hosts
 #
-# Before you start you need to stop puppet and deploy latest version of himlar, including modules.
+# Before you start
+#   - deploy latest version of himlar, including modules.
+#   - disable puppet to avoid collision with started puppet runs
 #
+
 - hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
-    - name: 'Repo files'
+
+    - name: 'Register repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
       when: clear_etcd_data == false
+  
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
       when: clear_etcd_data == false
+  
     - name: 'Make sure puppet are enabled'
       command: "/opt/puppetlabs/bin/puppet agent --enable"
       when: clear_etcd_data == false
+  
     - name: 'Puppet kickstart runmode'
       command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       environment:
         FACTER_RUNMODE: kickstart
       ignore_errors: yes
+  
     - name: 'Calico packages'
       yum:
         name: "{{ packages }}"
@@ -30,13 +38,16 @@
         - calico-control
         - networking-calico
       when: clear_etcd_data == false
+  
     - name: 'Puppet run'
       command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       ignore_errors: yes
       when: clear_etcd_data == false
+  
     - name: 'Restart neutron server'
       systemd: name=neutron-server state=restarted
       when: clear_etcd_data == false
+  
     - name: 'Clear all data in etcd on one network node'
       command: '/usr/bin/etcdctl del "" --from-key=true'
       environment:
