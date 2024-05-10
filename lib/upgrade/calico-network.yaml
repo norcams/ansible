@@ -1,5 +1,5 @@
 #
-# This can be used to upgrade calico from version on compute hosts
+# This can be used to upgrade calico from version on network hosts
 #
 # Before you start
 #   - deploy latest version of himlar, including modules.
@@ -7,6 +7,8 @@
 #
 
 - hosts: "{{ myhosts }}"
+  vars:
+    clear_etcd_data: false
   gather_facts: no
   tasks:
 
@@ -33,6 +35,8 @@
     - name: 'Calico packages'
       yum:
         name: "{{ packages }}"
+        state: latest
+        update_cache: yes
       vars:
         packages:
         - calico-control
