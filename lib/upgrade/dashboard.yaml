@@ -25,6 +25,9 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
+        himlar_puppet_env: 'victoria'
+        # these are only used by vagrant
+        himlar_deployment: 'redeploy'
     - name: 'Stop httpd'
       systemd: name=httpd state=stopped
     - name: Purge old package
@@ -36,7 +39,16 @@
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
     - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
+    - import_tasks: ../tasks/patch.yaml
+      vars:
+        patchfile: ../../files/patches/horizon-flavor-help-text.diff
+        basedir: /usr/share/openstack-dashboard
+
 #    - import_tasks: ../tasks/patch.yaml
 #      vars:
 #        patchfile: ../../files/patches/horizon-flavor-sort-fix-pike.diff
