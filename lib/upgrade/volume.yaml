@@ -12,38 +12,80 @@
 # Last verified: 2020-08-17 (ansible version 2.9.10)
 #
 # Run this to purge epel packages
-- hosts: "{{ myhosts }}"
-  gather_facts: no
+
+- import_playbook: ../toggle_puppet.yaml
+  vars:
+    myhosts: "{{ location }}-identity"
+    action: disable
+  when: location != 'vagrant'
+
+- hosts: "{{ location }}-volume"
+  gather_facts: false 
+
   tasks:
-    - name: 'Repo files'
-      command: 'ls -1 /etc/yum.repos.d/'
+  
+    - name: 'Register repo files'
+      ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
-    - name: 'Remove all old yum repos'
-      file: name="/etc/yum.repos.d/{{item}}" state=absent
+
+    - name: 'Remove all old yum repo-files'
+      ansible.builtin.file:
+        name: "/etc/yum.repos.d/{{item}}"
+        state: absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
+
+    - name: 'Run kickstart'
+      ansible.builtin.import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+
+    - name: 'Stop httpd'
+      ansible.builtin.systemd:
+        name: httpd
+        state: stopped
+
+    # Assumed service upgrade order is cinder-scheduler, cinder-volume, cinder-backup and finally cinder-api
+    - name: 'Stop cinder scheduler service'
+      ansible.builtin.systemd:
+        name: openstack-cinder-scheduler
+        state: stopped
+      ignore_errors: yes
+
+    - name: 'Stop cinder volume service'
+      ansible.builtin.systemd:
+        name: openstack-cinder-volume
+        state: stopped
+      ignore_errors: yes
+
+    - name: 'Purge old package'
+      ansible.builtin.dnf:
+        name: openstack-cinder
+        state: absent
+
+    - name: 'Remove /etc/cinder/'
+      ansible.builtin.file:
+        name: /etc/cinder
+        state: absent
+
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-    - name: 'Stop httpd'
-      systemd: name=httpd state=stopped
-    - name: 'Stop cinder scheduler service'
-      systemd: name=openstack-cinder-scheduler state=stopped
-      ignore_errors: yes
-    - name: 'Stop cinder volume service'
-      systemd: name=openstack-cinder-volume state=stopped
-      ignore_errors: yes
-    - name: 'Purge old package'
-      yum: name=openstack-cinder state=absent
-    - name: 'Remove /etc/cinder/'
-      file: name=/etc/cinder state=absent
-    - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
-    - import_tasks: ../tasks/puppetrun.yaml
-    - import_tasks: ../tasks/puppetrun.yaml
+        himlar_puppet_env: 'victoria'
+        himlar_deployment: 'redeploy'
 
-- import_playbook: ../openstack-version.yaml
+    - name: 'dnf update'
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
 
-- hosts: "{{ myhosts }}"
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
+        himlar_deployment: 'redeploy'
+#    - import_tasks: ../tasks/puppetrun.yaml
+
+- hosts: "{{ location }}-volume"
   gather_facts: no
   tasks:
     - name: 'Restart httpd'
