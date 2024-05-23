@@ -27,7 +27,7 @@ himlarcli_packages:
 puppet_environments:
   - admin
   - ussuri
-
+  - victoria
 
 # Secrets to sync
 secret_files: {}
