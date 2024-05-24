@@ -9,7 +9,7 @@
 # Example:
 # sudo ansible-playbook -e "myhosts=test02-network-01" lib/upgrade/network.yaml
 #
-# Last verified: 2020-08-17 (ansible version 2.9.10)
+# Last verified: 2024-05-24 (ansible version 2.16.6)
 #
 # Run this to purge epel packages
 - hosts: "{{ myhosts }}"
@@ -54,3 +54,17 @@
         himlar_puppet_env: 'victoria'
         # this is only used by vagrant
         himlar_deployment: 'redeploy'
+    - name: Run db upgrade expand
+      command: neutron-db-manage upgrade --expand
+      run_once: true
+
+    - name: Prepare for post upgrade tasks
+      systemd: name=neutron-server state=stopped
+      ignore_errors: yes
+  
+    - name: Finalize database upgrade
+      command: neutron-db-manage upgrade --contract
+      run_once: true
+  
+    - name: Start neutron server and finish
+      systemd: name=neutron-server state=started
