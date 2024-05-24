@@ -25,6 +25,9 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
+        himlar_puppet_env: 'victoria'
+        # these are only used by vagrant
+        himlar_deployment: 'redeploy'
     - name: 'Stop neutron server'
       systemd: name=neutron-server state=stopped
       ignore_errors: yes
@@ -42,4 +45,12 @@
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
+        # this is only used by vagrant
+        himlar_deployment: 'redeploy'
     - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
+        # this is only used by vagrant
+        himlar_deployment: 'redeploy'
