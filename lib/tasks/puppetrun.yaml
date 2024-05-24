@@ -40,7 +40,7 @@
   register: puppet_debug
 
 - name: Run puppet agent with runmode {{ runmode | default('default')}}
-  command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --pluginsync"
+  command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize --no-usecacheonfailure --no-use_cached_catalog --pluginsync --environment {{ himlar_puppet_env | default('production') }}"
   environment:
     FACTER_RUNMODE: "{{ runmode | default('default')}}"
     HIMLAR_PUPPET_ENV: "{{ himlar_puppet_env | default(omit) }}"
