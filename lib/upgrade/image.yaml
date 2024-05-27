@@ -12,6 +12,12 @@
 - hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
+    - name: Run db expand
+      command: glance-manage db expand
+      run_once: true
+    - name: Run db migrate
+      command: glance-manage db migrate
+      run_once: true
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -21,6 +27,7 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
+        himlar_puppet_env: 'victoria'
     - name: 'Stop image api'
       systemd: name=openstack-glance-api state=stopped
       ignore_errors: yes
@@ -31,5 +38,11 @@
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
     - import_tasks: ../tasks/puppetrun.yaml
-- import_playbook: ../openstack-version.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
+    - name: Run db contract
+      command: glance-manage db contract
+      run_once: true
