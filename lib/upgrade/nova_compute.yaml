@@ -1,0 +1,101 @@
+# This will try to upgrade nova without downtime
+#
+# Example:
+# ansible-playbook -e location=test01 lib/upgrade/nova.yaml
+#
+# Vagrant example:
+# ansible-playbook -K -e location=vagrant lib/upgrade/nova.yaml
+#
+# In vagrant also run this first:
+# vagrant rsync identity
+# sudo -v (once every sudo-timeout to avoid 'sudo: a password is required')
+#
+# Variables:
+#   location: name of location (mandatory)
+#
+# Last verified: 2020-08-18 (ansible version 2.9.10)
+#
+
+# Stop puppet on all novactrl nodes
+- import_playbook: ../toggle_puppet.yaml
+  vars:
+    myhosts:  "{{ location }}-novactrl"
+    action:   disable
+  when: location != 'vagrant'
+
+# Upgrade novactrl-0x
+- hosts: "{{ location }}-novactrl"
+  gather_facts: false
+  tasks:
+    - systemd: name=crond state=stopped
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+      ignore_errors: yes
+
+    - name: 'Stop httpd for nova API service'
+      systemd: name=httpd state=stopped
+      ignore_errors: yes
+
+    - name: 'Stop nova scheduler service'
+      systemd: name=openstack-nova-scheduler state=stopped
+      ignore_errors: yes
+
+    - name: 'Stop nova conductor service'
+      systemd: name=openstack-nova-conductor state=stopped
+      ignore_errors: yes
+
+    - name: Purge old package
+      yum: name=*nova* state=absent
+
+    - name: Purge old package
+      yum: name=*placement* state=absent
+
+    - name: 'Remove /etc/nova/'
+      file: name=/etc/nova state=absent
+
+    - name: 'Remove /etc/placement/'
+      file: name=/etc/placement state=absent
+
+    - name: 'Clear problematic packages'
+      package:
+        name:
+        - openvswitch
+        - network-scripts-openvswitch
+        - rdo-network-scripts-openvswitch
+        state: absent
+
+    - name: 'Yum update'
+      yum: name=* state=latest update_cache=yes
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
+    - name: "api db sync"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage api_db sync"
+
+    - name: "db sync"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage db sync"
+
+    - name: "db cell_v2 simple_cell_setup"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage cell_v2 simple_cell_setup"
+      ignore_errors: yes
+
+    - name: "db online_data_migrations"
+      when: '"novactrl" in inventory_hostname'
+      command: "nova-manage db online_data_migrations"
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: 'victoria'
