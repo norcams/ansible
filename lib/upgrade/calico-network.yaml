@@ -6,6 +6,8 @@
 #   - disable puppet to avoid collision with started puppet runs
 #
 
+---
+
 - hosts: "{{ myhosts }}"
   vars:
     clear_etcd_data: false
@@ -16,22 +18,22 @@
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
       when: clear_etcd_data == false
-  
+
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
       when: clear_etcd_data == false
-  
+
     - name: 'Make sure puppet are enabled'
       command: "/opt/puppetlabs/bin/puppet agent --enable"
       when: clear_etcd_data == false
-  
+
     - name: 'Puppet kickstart runmode'
       command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       environment:
         FACTER_RUNMODE: kickstart
       ignore_errors: yes
-  
+
     - name: 'Calico packages'
       yum:
         name: "{{ packages }}"
@@ -39,19 +41,19 @@
         update_cache: yes
       vars:
         packages:
-        - calico-control
-        - networking-calico
+          - calico-control
+          - networking-calico
       when: clear_etcd_data == false
-  
+
     - name: 'Puppet run'
       command: "/opt/puppetlabs/bin/puppet agent --onetime --no-daemonize"
       ignore_errors: yes
       when: clear_etcd_data == false
-  
+
     - name: 'Restart neutron server'
       systemd: name=neutron-server state=restarted
       when: clear_etcd_data == false
-  
+
     - name: 'Clear all data in etcd on one network node'
       command: '/usr/bin/etcdctl del "" --from-key=true'
       environment:
