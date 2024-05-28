@@ -1,9 +1,10 @@
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-console-01" lib/upgrade/console.yaml
+# sudo ansible-playbook -e "myhosts=test01-console-01 himlar_puppet_env=victoria" lib/upgrade/console.yaml
 #
-# Last verified: 2022-04-04 (ansible version 2.9.25)
+# Last verified: 2024-05-27 (ansible version 2.14.14)
 #
 # Upgrade console-0x
+
 - hosts: "{{ myhosts }}"
   gather_facts: false
   tasks:
@@ -30,20 +31,21 @@
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
 
-    - name: 'Clear problematic packages'
-      package:
-        name:
-        - openvswitch
-        - network-scripts-openvswitch
-        - rdo-network-scripts-openvswitch
-        state: absent
+# Probably not necessary any more
+#    - name: 'Clear problematic packages'
+#      package:
+#        name:
+#        - openvswitch
+#        - network-scripts-openvswitch
+#        - rdo-network-scripts-openvswitch
+#        state: absent
 
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: "{{ himlar_puppet_env }}"
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: "{{ himlar_puppet_env }}"
