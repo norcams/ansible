@@ -1,0 +1,23 @@
+---
+#
+# Clean etcd for host specific data
+#
+- hosts: "{{ myhosts }}"
+  tasks:
+    - name: Stop calico felix
+      service: name=calico-felix state=stopped
+      ignore_errors: true
+    - name: Clean etcd for calico host workloads
+      shell:
+        cmd: |
+          /usr/bin/etcdctl --endpoints=127.0.0.1:23790 del "/calico/resources/v3/projectcalico.org/workloadendpoints/openstack/$(hostname | sed 's/-/--/g')" --prefix
+      environment:
+        ETCDCTL_API: 3
+      ignore_errors: true
+    - name: Clean etcd for calico host resources
+      shell:
+        cmd: |
+          /usr/bin/etcdctl --endpoints=127.0.0.1:23790 del "/calico/felix/v2/no-region/host/$(hostname)/" --prefix
+      environment:
+        ETCDCTL_API: 3
+      ignore_errors: true
