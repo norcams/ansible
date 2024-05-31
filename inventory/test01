@@ -19,10 +19,8 @@ test01-image
 test01-logger
 test01-login
 test01-metric
-test01-monitor
 test01-mq
 test01-nat
-test01-nettank
 test01-network
 test01-novactrl
 test01-ns
@@ -55,10 +53,8 @@ test01-identity
 test01-image
 test01-logger
 test01-metric
-test01-monitor
 test01-mq
 test01-nat
-test01-nettank
 test01-network
 test01-novactrl
 test01-ns
@@ -146,17 +142,11 @@ test01-login-01
 [test01-metric]
 test01-metric-01
 
-[test01-monitor]
-test01-monitor-01
-
 [test01-mq]
 test01-mq-01
 
 [test01-nat]
 test01-nat-01
-
-[test01-nettank]
-test01-nettank-01
 
 [test01-network]
 test01-network-01
