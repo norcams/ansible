@@ -27,7 +27,11 @@
 - hosts: "{{ location }}-novactrl"
   gather_facts: false
   tasks:
-    - systemd: name=crond state=stopped
+    - name: 'Stop crond to avoid puppet run'
+      systemd:
+        name: crond
+        state: stopped
+
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -39,7 +43,7 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-      ignore_errors: yes
+        puppet_ignore_errors: no
 
     - name: 'Stop httpd for nova API service'
       systemd: name=httpd state=stopped
@@ -53,11 +57,35 @@
       systemd: name=openstack-nova-conductor state=stopped
       ignore_errors: yes
 
-    - name: Purge old package
-      yum: name=*nova* state=absent
+    - name: 'Purge old package'
+      dnf:
+        name:
+          - python3-nova
+          - python3-novaclient
+          - openstack-nova-api
+          - openstack-nova-common
+          - openstack-nova-scheduler
+        state: absent
 
-    - name: Purge old package
-      yum: name=*placement* state=absent
+    - name: 'Purge old package'
+      dnf:
+        name:
+          - python3-placement
+          - openstack-placement-common
+          - openstack-placement-api
+        state: absent
+
+#    - name: 'Clear problematic packages'
+#      dnf:
+#        name:
+#        - openvswitch
+#        - network-scripts-openvswitch
+#        - rdo-network-scripts-openvswitch
+#        state: absent
+
+    - name: 'Autoremove unneeded packages installed as dependencies'
+      dnf:
+        autoremove: yes
 
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
@@ -65,21 +93,16 @@
     - name: 'Remove /etc/placement/'
       file: name=/etc/placement state=absent
 
-# Probably not necessary any more
-#    - name: 'Clear problematic packages'
-#      package:
-#        name:
-#        - openvswitch
-#        - network-scripts-openvswitch
-#        - rdo-network-scripts-openvswitch
-#        state: absent
-
-    - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
+    - name: 'Updated the reset of RDO packages'
+      dnf:
+        name: "*"
+        state: latest
+        update_cache: true
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ himlar_puppet_env }}"
+        puppet_ignore_errors: no
 
 # These two is done by the nova puppet module
 #    - name: "api db sync"
@@ -102,3 +125,4 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ himlar_puppet_env }}"
+        puppet_ignore_errors: no
