@@ -1,17 +1,10 @@
 # This will try to upgrade nova without downtime
 #
 # Example:
-# ansible-playbook -e location=test01 lib/upgrade/nova.yaml
-#
-# Vagrant example:
-# ansible-playbook -K -e location=vagrant lib/upgrade/nova.yaml
-#
-# In vagrant also run this first:
-# vagrant rsync identity
-# sudo -v (once every sudo-timeout to avoid 'sudo: a password is required')
+# ansible-playbook -e "myhosts=test01-compute-01" lib/upgrade/compute.yaml
 #
 # Variables:
-#   location: name of location (mandatory)
+#   myhosts: name of host(s) to upgrade (mandatory)
 #
 # Last verified: 2020-08-18 (ansible version 2.9.10)
 #
@@ -19,15 +12,19 @@
 # Stop puppet on all novactrl nodes
 - import_playbook: ../toggle_puppet.yaml
   vars:
-    myhosts:  "{{ location }}-novactrl"
+    myhosts:  "{{ myhosts }}"
     action:   disable
   when: location != 'vagrant'
 
-# Upgrade novactrl-0x
-- hosts: "{{ location }}-novactrl"
+# Upgrade compute host(s)
+- hosts: "{{ myhosts }}"
   gather_facts: false
   tasks:
-    - systemd: name=crond state=stopped
+    - name: 'Stop crond to avoid puppet run'
+      systemd:
+        name: crond
+        state: stopped
+
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -36,28 +33,49 @@
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
 
+    - name: 'Stop openstack-nova-compute'
+      systemd: name=openstack-nova-compute state=stopped
+      ignore_errors: yes
+
+    - name: 'Stop nova metadata-api service'
+      systemd: name=openstack-nova-metadata-api state=stopped
+      ignore_errors: yes
+
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-      ignore_errors: yes
+        puppet_ignore_errors: no
 
-    - name: 'Stop httpd for nova API service'
-      systemd: name=httpd state=stopped
-      ignore_errors: yes
+    - name: 'Purge old package'
+      dnf:
+        name:
+          - python3-nova
+          - python3-novaclient
+          - openstack-nova-api
+          - openstack-nova-common
+          - openstack-nova-compute
+        state: absent
 
-    - name: 'Stop nova scheduler service'
-      systemd: name=openstack-nova-scheduler state=stopped
-      ignore_errors: yes
+# Trengs kanskje ikke?
+    - name: 'Purge old package'
+      dnf:
+        name:
+          - python3-placement
+          - openstack-placement-common
+          - openstack-placement-api
+        state: absent
 
-    - name: 'Stop nova conductor service'
-      systemd: name=openstack-nova-conductor state=stopped
-      ignore_errors: yes
+#    - name: 'Clear problematic packages'
+#      dnf:
+#        name:
+#        - openvswitch
+#        - network-scripts-openvswitch
+#        - rdo-network-scripts-openvswitch
+#        state: absent
 
-    - name: Purge old package
-      yum: name=*nova* state=absent
-
-    - name: Purge old package
-      yum: name=*placement* state=absent
+    - name: 'Autoremove unneeded packages installed as dependencies'
+      dnf:
+        autoremove: yes
 
     - name: 'Remove /etc/nova/'
       file: name=/etc/nova state=absent
@@ -65,37 +83,33 @@
     - name: 'Remove /etc/placement/'
       file: name=/etc/placement state=absent
 
-    - name: 'Clear problematic packages'
-      package:
-        name:
-        - openvswitch
-        - network-scripts-openvswitch
-        - rdo-network-scripts-openvswitch
-        state: absent
-
-    - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
+    - name: 'Updated the reset of RDO packages'
+      dnf:
+        name: "*"
+        state: latest
+        update_cache: true
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
-    - name: "api db sync"
-      when: '"novactrl" in inventory_hostname'
-      command: "nova-manage api_db sync"
+        himlar_puppet_env: "{{ himlar_puppet_env }}"
+        puppet_ignore_errors: no
 
-    - name: "db sync"
-      when: '"novactrl" in inventory_hostname'
-      command: "nova-manage db sync"
+# Trenger man disse på hver compute?
 
-    - name: "db cell_v2 simple_cell_setup"
-      when: '"novactrl" in inventory_hostname'
-      command: "nova-manage cell_v2 simple_cell_setup"
-      ignore_errors: yes
+#    - name: "db cell_v2 simple_cell_setup"
+#      when: '"novactrl" in inventory_hostname'
+#      command: "nova-manage cell_v2 simple_cell_setup"
+#      ignore_errors: yes
 
-    - name: "db online_data_migrations"
-      when: '"novactrl" in inventory_hostname'
-      command: "nova-manage db online_data_migrations"
+#    - name: "db online_data_migrations"
+#      when: '"novactrl" in inventory_hostname'
+#      command: "nova-manage db online_data_migrations"
 
-    - import_tasks: ../tasks/puppetrun.yaml
-      vars:
-        himlar_puppet_env: 'victoria'
+#    - import_tasks: ../tasks/puppetrun.yaml
+#      vars:
+#        himlar_puppet_env: "{{ himlar_puppet_env }}"
+#        puppet_ignore_errors: no
+
+     - name: 'Restart metadata-api'
+       systemd: name=openstack-nova-metadata-api state=restarted
+
