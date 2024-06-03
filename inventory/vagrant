@@ -6,6 +6,7 @@ vagrant-api-01 ansible_host=172.31.0.86
 
 [vagrant-compute]
 vagrant-compute-01 ansible_host=172.31.0.103
+vagrant-compute-02 ansible_host=172.31.0.104
 
 [vagrant-console]
 vagrant-console-01 ansible_host=172.31.0.61
