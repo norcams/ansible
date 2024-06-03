@@ -1,25 +1,27 @@
 #
 # This can be used to upgrade volume to new version of openstack
 #
-# Before you start you need to stop puppet and deploy latest version of himlar.
+# Before you start you need to deploy latest version of himlar.
 #
 # Mandatory input variables:
-# * myhosts (str): ansible node(s)
+# * location (str): vagrant, test01 ...
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-volume-01" lib/upgrade/volume.yaml
+# sudo ansible-playbook -e "=location=test01" lib/upgrade/volume.yaml
 #
-# Last verified: 2020-08-17 (ansible version 2.9.10)
+# Last verified: never (ansible version 2.x)
 #
-# Run this to purge epel packages
+# https://docs.openstack.org/cinder/victoria/upgrade.html
 
-- import_playbook: ../toggle_puppet.yaml
+- name: stop puppet on all volume-nodes
+  import_playbook: ../toggle_puppet.yaml
   vars:
-    myhosts: "{{ location }}-identity"
+    myhosts: "{{ location }}-volume"
     action: disable
   when: location != 'vagrant'
 
-- hosts: "{{ location }}-volume"
+- name: upgrade volume
+  hosts: "{{ location }}-volume"
   gather_facts: false 
 
   tasks:
@@ -44,7 +46,7 @@
         name: httpd
         state: stopped
 
-    # Assumed service upgrade order is cinder-scheduler, cinder-volume, cinder-backup and finally cinder-api
+    # Assumed service upgrade order is cinder-scheduler, cinder-volume, N/A:backup and finally cinder-api
     - name: 'Stop cinder scheduler service'
       ansible.builtin.systemd:
         name: openstack-cinder-scheduler
@@ -83,10 +85,12 @@
       vars:
         himlar_puppet_env: 'victoria'
         himlar_deployment: 'redeploy'
-#    - import_tasks: ../tasks/puppetrun.yaml
 
-- hosts: "{{ location }}-volume"
+- name: restart volume api
+  hosts: "{{ location }}-volume"
   gather_facts: no
   tasks:
     - name: 'Restart httpd'
-      systemd: name=httpd state=restarted
+      systemd:
+        name: httpd
+        state: restarted
