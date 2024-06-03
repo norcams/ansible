@@ -1,7 +1,7 @@
 # This will try to upgrade nova without downtime
 #
 # Example:
-# ansible-playbook -e "myhosts=test01-compute-01" lib/upgrade/compute.yaml
+# ansible-playbook -e "myhosts=test01-compute-01 himlar_puppet_env=victoria" lib/upgrade/compute.yaml
 #
 # Variables:
 #   myhosts: name of host(s) to upgrade (mandatory)
@@ -88,6 +88,8 @@
         name: "*"
         state: latest
         update_cache: true
+        disablerepo: "*"
+        enablerepo: "rdo-release"
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
@@ -110,6 +112,6 @@
 #        himlar_puppet_env: "{{ himlar_puppet_env }}"
 #        puppet_ignore_errors: no
 
-     - name: 'Restart metadata-api'
-       systemd: name=openstack-nova-metadata-api state=restarted
+    - name: 'Restart metadata-api'
+      systemd: name=openstack-nova-metadata-api state=restarted
 
