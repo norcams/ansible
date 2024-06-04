@@ -25,6 +25,12 @@
         name: crond
         state: stopped
 
+    - name: Update release package to get new gpg keys first
+      yum:
+        name: 'almalinux-release'
+        state: latest
+        update_cache: yes
+
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
