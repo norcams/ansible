@@ -49,3 +49,8 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ himlar_puppet_env }}"
+
+    - name: 'Start crond again'
+      systemd:
+        name: crond
+        state: started

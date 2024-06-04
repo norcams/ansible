@@ -104,3 +104,8 @@
     - name: 'Restart metadata-api'
       systemd: name=openstack-nova-metadata-api state=restarted
 
+    - name: 'Start crond again'
+      systemd:
+        name: crond
+        state: started
+

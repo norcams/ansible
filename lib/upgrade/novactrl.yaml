@@ -126,3 +126,8 @@
       vars:
         himlar_puppet_env: "{{ himlar_puppet_env }}"
         puppet_ignore_errors: no
+
+    - name: 'Stop crond to avoid puppet run'
+      systemd:
+        name: crond
+        state: stopped
