@@ -1,7 +1,7 @@
 # This will try to upgrade nova without downtime
 #
 # Example:
-# ansible-playbook -e "myhosts=test01-compute-01 himlar_puppet_env=victoria" lib/upgrade/compute.yaml
+# sudo ansible-playbook -e "myhosts=test01-compute-01 himlar_puppet_env=victoria" lib/upgrade/compute.yaml
 #
 # Variables:
 #   myhosts: name of host(s) to upgrade (mandatory)
@@ -57,13 +57,13 @@
         state: absent
 
 # Trengs kanskje ikke?
-    - name: 'Purge old package'
-      dnf:
-        name:
-          - python3-placement
-          - openstack-placement-common
-          - openstack-placement-api
-        state: absent
+#    - name: 'Purge old package'
+#      dnf:
+#        name:
+#          - python3-placement
+#          - openstack-placement-common
+#          - openstack-placement-api
+#        state: absent
 
 #    - name: 'Clear problematic packages'
 #      dnf:
@@ -83,7 +83,7 @@
     - name: 'Remove /etc/placement/'
       file: name=/etc/placement state=absent
 
-    - name: 'Updated the reset of RDO packages'
+    - name: 'Updated the rest of RDO packages'
       dnf:
         name: "*"
         state: latest
@@ -95,17 +95,6 @@
       vars:
         himlar_puppet_env: "{{ himlar_puppet_env }}"
         puppet_ignore_errors: no
-
-# Trenger man disse på hver compute?
-
-#    - name: "db cell_v2 simple_cell_setup"
-#      when: '"novactrl" in inventory_hostname'
-#      command: "nova-manage cell_v2 simple_cell_setup"
-#      ignore_errors: yes
-
-#    - name: "db online_data_migrations"
-#      when: '"novactrl" in inventory_hostname'
-#      command: "nova-manage db online_data_migrations"
 
 #    - import_tasks: ../tasks/puppetrun.yaml
 #      vars:
