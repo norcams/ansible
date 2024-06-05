@@ -130,4 +130,4 @@
     - name: 'Stop crond to avoid puppet run'
       systemd:
         name: crond
-        state: stopped
+        state: started
