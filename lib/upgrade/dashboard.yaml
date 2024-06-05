@@ -16,6 +16,10 @@
 - hosts: "{{ myhosts }}"
   gather_facts: no
   tasks:
+    - name: 'Stop crond to avoid puppet run'
+      systemd:
+        name: crond
+        state: stopped
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -59,3 +63,7 @@
 #        basedir: /usr/share/openstack-dashboard
     - name: 'Restart httpd'
       systemd: name=httpd state=restarted
+    - name: 'Stop crond to avoid puppet run'
+      systemd:
+        name: crond
+        state: stopped
