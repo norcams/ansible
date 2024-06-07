@@ -37,6 +37,7 @@ echo
 sudo ansible-playbook -e "myhosts=${host}" lib/check_for_running_instances.yaml || exit 1
 sudo ansible-playbook -e "myhosts=${host}" lib/fix_uefi_bootorder.yaml # FIXME
 sudo ansible-playbook -e "myhosts=${location}-proxy-02 sensu_expire=7200 install_host=${host}" lib/reinstall.yaml
+sudo ansible-playbook -e "myhosts=${host}" lib/clean_calico_host_etcd.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/reboot.yaml
 sleep 120
 sudo ansible-playbook -e "myhosts=${host} name=iptables" lib/systemd_restart.yaml

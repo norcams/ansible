@@ -1,0 +1,117 @@
+# This will try to upgrade nova without downtime
+#
+# Example:
+# sudo ansible-playbook -e "myhosts=test01-compute-01 himlar_puppet_env=victoria" lib/upgrade/compute.yaml
+#
+# Variables:
+#   myhosts: name of host(s) to upgrade (mandatory)
+#
+# Last verified: 2020-08-18 (ansible version 2.9.10)
+#
+
+# Stop puppet on all novactrl nodes
+- import_playbook: ../toggle_puppet.yaml
+  vars:
+    myhosts:  "{{ myhosts }}"
+    action:   disable
+  when: location != 'vagrant'
+
+# Upgrade compute host(s)
+- hosts: "{{ myhosts }}"
+  gather_facts: false
+  tasks:
+    - name: 'Stop crond to avoid puppet run'
+      systemd:
+        name: crond
+        state: stopped
+
+    - name: Update release package to get new gpg keys first
+      yum:
+        name: 'almalinux-release'
+        state: latest
+        update_cache: yes
+
+    - name: 'Repo files'
+      command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+
+    - name: 'Remove all old yum repos'
+      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+
+    - name: 'Stop openstack-nova-compute'
+      systemd: name=openstack-nova-compute state=stopped
+      ignore_errors: yes
+
+    - name: 'Stop nova metadata-api service'
+      systemd: name=openstack-nova-metadata-api state=stopped
+      ignore_errors: yes
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+        puppet_ignore_errors: no
+
+    - name: 'Purge old package'
+      dnf:
+        name:
+          - python3-nova
+          - python3-novaclient
+          - openstack-nova-api
+          - openstack-nova-common
+          - openstack-nova-compute
+        state: absent
+
+# Trengs kanskje ikke?
+#    - name: 'Purge old package'
+#      dnf:
+#        name:
+#          - python3-placement
+#          - openstack-placement-common
+#          - openstack-placement-api
+#        state: absent
+
+#    - name: 'Clear problematic packages'
+#      dnf:
+#        name:
+#        - openvswitch
+#        - network-scripts-openvswitch
+#        - rdo-network-scripts-openvswitch
+#        state: absent
+
+    - name: 'Autoremove unneeded packages installed as dependencies'
+      dnf:
+        autoremove: yes
+
+    - name: 'Remove /etc/nova/'
+      file: name=/etc/nova state=absent
+
+    - name: 'Remove /etc/placement/'
+      file: name=/etc/placement state=absent
+
+    - name: 'Updated the rest of RDO packages'
+      dnf:
+        name: "*"
+        state: latest
+        update_cache: true
+        disablerepo: "*"
+        enablerepo: "rdo-release"
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ himlar_puppet_env }}"
+        puppet_ignore_errors: no
+
+#    - import_tasks: ../tasks/puppetrun.yaml
+#      vars:
+#        himlar_puppet_env: "{{ himlar_puppet_env }}"
+#        puppet_ignore_errors: no
+
+    - name: 'Restart metadata-api'
+      systemd: name=openstack-nova-metadata-api state=restarted
+
+    - name: 'Start crond again'
+      systemd:
+        name: crond
+        state: started
+
