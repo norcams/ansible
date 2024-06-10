@@ -1,0 +1,17 @@
+---
+- hosts: "{{ myhosts }}"
+  tasks:
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+        himlar_puppet_env: 'ussuri'
+
+    - name: 'dnf downgrade'
+      command:
+        cmd: 'dnf downgrade -y --disablerepo=* --enablerepo=rdo-release python* openstack* --refresh'
+
+    - name: 'Make sure everything is up to date with old repos'
+      dnf:
+        name: "*"
+        state: latest
+        update_cache: true
