@@ -281,19 +281,6 @@ osl-mgmt-03
 osl-mgmt-04
 osl-mgmt-05
 osl-mgmt-06
-osl-mgmt-07
-osl-mgmt-opx-01
-osl-mgmt-opx-02
-osl-mgmt-opx-03
-osl-mgmt-opx-05
-osl-mgmt-opx-07
-
-[osl-mgmt-opx]
-osl-mgmt-opx-01
-osl-mgmt-opx-02
-osl-mgmt-opx-03
-osl-mgmt-opx-05
-osl-mgmt-opx-07
 
 [osl-monitor]
 osl-monitor-01
