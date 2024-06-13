@@ -27,7 +27,6 @@ osl-logger
 osl-login
 osl-metric
 osl-mgmt
-osl-mgmt-opx
 osl-monitor
 osl-mq
 osl-nat
