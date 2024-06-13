@@ -1,0 +1,55 @@
+#
+# patches nova victoria for this bug: https://bugs.launchpad.net/nova/+bug/1944947
+# "NUMA instance with shared CPU policy cannot be restarted after upgrade to Victoria"
+#
+# example:
+#   sudo ansible-playbook -e 'myhosts=test01-compute:test01-novactr' lib/patch_nova_victoria.yaml
+#
+# another example when patching with db-migration (runs db-migration on novactrl)
+#   sudo ansible-playbook -e 'myhosts=test01-compute:test01-novactr db_migrate=true' lib/patch_nova_victoria.yaml
+
+
+---
+- hosts: "{{ myhosts }}"
+  vars:
+    db_migrate: false
+  tasks:
+
+    - name: patch-tool is installed on host
+      ansible.builtin.dnf:
+        name: "patch"
+        state: latest
+
+    - name: patch for instance_numa.py is applied
+      ansible.builtin.patch:
+        src: ../files/patches/nova/victoria/instance_numa.py.diff
+        basedir: /usr/lib/python3.6/site-packages
+        strip: 1
+
+    - name: patch for request_spec.py.diff is applied
+      ansible.builtin.patch:
+        src: ../files/patches/nova/victoria/request_spec.py.diff
+        basedir: /usr/lib/python3.6/site-packages
+        strip: 1
+
+    - name: old pyc and opt-1.pyc files are absent
+      ansible.builtin.file:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/lib/python3.6/site-packages/nova/objects/__pycache__/request_spec.cpython-36.opt-1.pyc
+        - /usr/lib/python3.6/site-packages/nova/objects/__pycache__/request_spec.cpython-36.pyc
+        - /usr/lib/python3.6/site-packages/nova/objects/__pycache__/instance_numa.cpython-36.opt-1.pyc
+        - /usr/lib/python3.6/site-packages/nova/objects/__pycache__/instance_numa.cpython-36.pyc
+
+    - name: pyc-files are recompiled
+      ansible.builtin.command:
+        cmd: "{{ item }}"
+      loop:
+        - /usr/bin/python3 -m compileall /usr/lib/python3.6/site-packages/nova/objects/
+
+    - name: db online_data_migrations
+      when:
+        - '"novactrl" in inventory_hostname'
+        - db_migrate | default(false) | bool
+      command: "nova-manage db online_data_migrations"
