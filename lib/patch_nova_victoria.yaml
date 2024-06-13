@@ -5,14 +5,11 @@
 # example:
 #   sudo ansible-playbook -e 'myhosts=test01-compute:test01-novactr' lib/patch_nova_victoria.yaml
 #
-# another example when patching with db-migration (runs db-migration on novactrl)
-#   sudo ansible-playbook -e 'myhosts=test01-compute:test01-novactr db_migrate=true' lib/patch_nova_victoria.yaml
 
 
 ---
 - hosts: "{{ myhosts }}"
-  vars:
-    db_migrate: false
+
   tasks:
 
     - name: patch-tool is installed on host
@@ -50,6 +47,6 @@
 
     - name: db online_data_migrations
       when:
-        - '"novactrl" in inventory_hostname'
-        - db_migrate | default(false) | bool
+        - '"novactrl-01" in inventory_hostname'
       command: "nova-manage db online_data_migrations"
+
