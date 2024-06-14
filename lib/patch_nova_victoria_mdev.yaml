@@ -1,0 +1,43 @@
+#
+# patches nova victoria for this bug: https://bugs.launchpad.net/nova/+bug/1951656
+# "ValueError: badly formed hexadecimal UUID string"
+#
+# example:
+#   sudo ansible-playbook -e 'myhosts=osl-compute-vgpu-17' lib/patch_nova_victoria_mdev.yaml
+#
+
+
+---
+- hosts: "{{ myhosts }}"
+
+  tasks:
+
+    - name: Check that rpm-package patch is installed on host
+      ansible.builtin.dnf:
+        name: "patch"
+        state: latest
+
+    - name: Apply patch for config.py
+      ansible.builtin.patch:
+        src: ../files/patches/nova/victoria/libvirt_mdev.diff
+        basedir: /
+        strip: 0
+
+    - name: Remove old pyc and opt-1.pyc files
+      ansible.builtin.file:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - /usr/lib/python3.6/site-packages/nova/virt/libvirt/__pycache__/config.cpython-36.opt-1.pyc
+        - /usr/lib/python3.6/site-packages/nova/virt/libvirt/__pycache__/config.cpython-36.pyc
+
+    - name: Recompile pyc
+      ansible.builtin.command:
+        cmd: "{{ item }}"
+      loop:
+        - /usr/bin/python3 -m compileall /usr/lib/python3.6/site-packages/nova/virt/libvirt/config.py
+
+    - name: Restart openstack-nova-compute
+      ansible.builtin.systemd_service:
+        name: openstack-nova-compute
+        state: restarted
