@@ -19,7 +19,25 @@
 
     - name: Apply patch for config.py
       ansible.builtin.patch:
-        src: ../files/patches/nova/victoria/libvirt_mdev.diff
+        src: ../files/patches/nova/victoria/libvirt_config.py.diff
+        basedir: /
+        strip: 0
+
+    - name: Apply patch for driver.py
+      ansible.builtin.patch:
+        src: ../files/patches/nova/victoria/libvirt_driver.py.diff
+        basedir: /
+        strip: 0
+
+    - name: Apply patch for host.py
+      ansible.builtin.patch:
+        src: ../files/patches/nova/victoria/libvirt_host.py.diff
+        basedir: /
+        strip: 0
+
+    - name: Apply patch for utils.py
+      ansible.builtin.patch:
+        src: ../files/patches/nova/victoria/libvirt_utils.py.diff
         basedir: /
         strip: 0
 
@@ -30,12 +48,18 @@
       loop:
         - /usr/lib/python3.6/site-packages/nova/virt/libvirt/__pycache__/config.cpython-36.opt-1.pyc
         - /usr/lib/python3.6/site-packages/nova/virt/libvirt/__pycache__/config.cpython-36.pyc
+        - /usr/lib/python3.6/site-packages/nova/virt/libvirt/__pycache__/driver.cpython-36.opt-1.pyc
+        - /usr/lib/python3.6/site-packages/nova/virt/libvirt/__pycache__/driver.cpython-36.pyc
+        - /usr/lib/python3.6/site-packages/nova/virt/libvirt/__pycache__/host.cpython-36.opt-1.pyc
+        - /usr/lib/python3.6/site-packages/nova/virt/libvirt/__pycache__/host.cpython-36.pyc
+        - /usr/lib/python3.6/site-packages/nova/virt/libvirt/__pycache__/utils.cpython-36.opt-1.pyc
+        - /usr/lib/python3.6/site-packages/nova/virt/libvirt/__pycache__/utils.cpython-36.pyc
 
     - name: Recompile pyc
       ansible.builtin.command:
         cmd: "{{ item }}"
       loop:
-        - /usr/bin/python3 -m compileall /usr/lib/python3.6/site-packages/nova/virt/libvirt/config.py
+        - /usr/bin/python3 -m compileall /usr/lib/python3.6/site-packages/nova/virt/libvirt/
 
     - name: Restart openstack-nova-compute
       systemd: name=openstack-nova-compute state=restarted

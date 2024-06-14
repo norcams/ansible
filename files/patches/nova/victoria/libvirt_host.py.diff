@@ -1,0 +1,11 @@
+--- /usr/lib/python3.6/site-packages/nova/virt/libvirt/host.py_ORIG	2024-06-14 16:15:33.098205804 +0200
++++ /usr/lib/python3.6/site-packages/nova/virt/libvirt/host.py	2024-06-14 16:16:18.241037831 +0200
+@@ -1169,7 +1169,7 @@
+     def list_mediated_devices(self, flags=0):
+         """Lookup mediated devices.
+ 
+-        :returns: a list of virNodeDevice instance
++        :returns: a list of strings with the name of the instance
+         """
+         return self._list_devices("mdev", flags=flags)
+ 
