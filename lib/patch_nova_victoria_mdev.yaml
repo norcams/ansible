@@ -38,6 +38,4 @@
         - /usr/bin/python3 -m compileall /usr/lib/python3.6/site-packages/nova/virt/libvirt/config.py
 
     - name: Restart openstack-nova-compute
-      ansible.builtin.systemd_service:
-        name: openstack-nova-compute
-        state: restarted
+      systemd: name=openstack-nova-compute state=restarted
