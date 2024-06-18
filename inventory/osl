@@ -137,6 +137,9 @@ osl-compute-60
 osl-compute-61
 osl-compute-62
 osl-compute-63
+osl-compute-64
+osl-compute-65
+osl-compute-66
 osl-compute-atlas-21
 osl-compute-atlas-22
 osl-compute-atlas-23
@@ -390,7 +393,4 @@ osl-volume-01
 osl-volume-02
 
 [osl-test]
-osl-test-01
-osl-test-02
-osl-test-03
 osl-test-04
