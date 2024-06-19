@@ -27,9 +27,8 @@
       when: "'compute' not in inventory_hostname"
 
     - name: "Download GPG keys"
-      command: "curl -o /tmp/{{ item }} {{ gpgsource }}{{ item }}"
-      args:
-        warn: false
+      ansible.builtin.command:
+        cmd: "curl -o /tmp/{{ item }} {{ gpgsource }}{{ item }}"
       with_items:
         - "{{ gpgkeys }}"
       environment:
