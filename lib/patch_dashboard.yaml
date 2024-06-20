@@ -1,0 +1,23 @@
+#
+# patches nova for CVE-2022-47951 on ussuri
+# restart openstack-nova-compute and openstack-nova-metadata-api after task is finished
+#
+
+---
+- hosts: "{{ myhosts }}"
+  tasks:
+
+    - import_tasks: ../tasks/patch.yaml
+      vars:
+        patchfile: ../../files/patches/dashboard/0002-custom-flavor-help.patch
+        basedir: /usr/share/openstack-dashboard
+    - import_tasks: tasks/patch.yaml
+      vars:
+        patchfile: ../files/patches/dashboard/0003-openstack-auth-login-msg.diff
+        basedir: /usr/lib/python3.6/site-packages/openstack_auth
+#    - import_tasks: ../tasks/patch.yaml
+#      vars:
+#        patchfile: ../../files/patches/horizon-tables-size.diff
+#        basedir: /usr/share/openstack-dashboard
+#- name: 'Restart httpd'
+#     systemd: name=httpd state=restarted

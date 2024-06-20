@@ -29,7 +29,7 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
         # these are only used by vagrant
         himlar_deployment: 'redeploy'
     - name: 'Stop httpd'
@@ -44,15 +44,18 @@
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
     - import_tasks: ../tasks/patch.yaml
       vars:
-        patchfile: ../../files/patches/horizon-flavor-help-text.diff
+        patchfile: ../../files/patches/dashboard/0002-custom-flavor-help.patch
         basedir: /usr/share/openstack-dashboard
-
+    - import_tasks: ../tasks/patch.yaml
+      vars:
+        patchfile: ../../files/patches/dashboard/0003-openstack-auth-login-msg.diff
+        basedir: /usr/lib/python3.6/site-packages/openstack_auth
 #    - import_tasks: ../tasks/patch.yaml
 #      vars:
 #        patchfile: ../../files/patches/horizon-flavor-sort-fix-pike.diff
@@ -61,6 +64,10 @@
 #      vars:
 #        patchfile: ../../files/patches/horizon-tables-size.diff
 #        basedir: /usr/share/openstack-dashboard
+    - name: 'Restart memcache to avoid stale data'
+      systemd:
+        name: memcached
+        state: restarted
     - name: 'Restart httpd'
       systemd: name=httpd state=restarted
     - name: 'Stop crond to avoid puppet run'

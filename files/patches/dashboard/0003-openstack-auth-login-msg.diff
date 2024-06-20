@@ -1,0 +1,13 @@
+diff --git a/backend.py b/backend.py
+index e8e9fed..827c5a1 100644
+--- a/backend.py
++++ b/backend.py
+@@ -149,7 +149,7 @@ class KeystoneBackend(object):
+             scoped_auth = domain_auth
+             scoped_auth_ref = domain_auth_ref
+         elif not scoped_auth_ref and not domain_auth_ref:
+-            msg = _('You are not authorized for any projects or domains.')
++            msg = _('You are not authorized for any projects or domains. Please visit https://access.nrec.no first')
+             raise exceptions.KeystoneNoProjectsException(msg)
+ 
+         # Check expiry for our new scoped token.
