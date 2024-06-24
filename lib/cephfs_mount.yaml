@@ -1,6 +1,11 @@
 #
 # Mount or unmount a cephfs filesystem on host
 #
+# operation: mount|unmount
+#
+# example:
+#   sudo ansible-playbook -e "myhosts=test01-compute-02 operation=mount" lib/cephfs_mount.yaml
+
 ---
 - hosts: "{{ myhosts }}"
   vars:
