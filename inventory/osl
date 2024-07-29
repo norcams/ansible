@@ -43,6 +43,7 @@ osl-spine
 osl-status
 osl-storage
 osl-storage-v2h
+osl-storage-v2d
 osl-telemetry
 osl-torack
 osl-volume
@@ -365,6 +366,13 @@ osl-storage-v2h-22
 osl-storage-v2h-23
 osl-storage-v2h-24
 osl-storage-v2h-25
+osl-storage-v2d-26
+osl-storage-v2d-27
+osl-storage-v2d-28
+osl-storage-v2d-29
+osl-storage-v2d-30
+osl-storage-v2d-31
+osl-storage-v2d-32
 
 [osl-storage-v2h]
 osl-storage-v2h-13
@@ -381,6 +389,15 @@ osl-storage-v2h-23
 osl-storage-v2h-24
 osl-storage-v2h-25
 
+[osl-storage-v2d]
+osl-storage-v2d-26
+osl-storage-v2d-27
+osl-storage-v2d-28
+osl-storage-v2d-29
+osl-storage-v2d-30
+osl-storage-v2d-31
+osl-storage-v2d-32
+
 [osl-telemetry]
 osl-telemetry-01
 
@@ -391,6 +408,3 @@ osl-torack-02
 [osl-volume]
 osl-volume-01
 osl-volume-02
-
-[osl-test]
-osl-test-04
