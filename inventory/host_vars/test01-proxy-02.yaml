@@ -1,6 +1,7 @@
 ---
-himlarcli_packages:
-  - python39
-  - python39-devel
-  - python3-virtualenv
-himlarcli_python_command: python3.9
+#himlarcli_packages:
+#  - python3.11
+#  - python3.11-devel
+#  - python3-virtualenv
+#himlarcli_python_command: python3.11
+#himlarcli_virutalenv_command: 'python3.11 -m venv'
