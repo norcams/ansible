@@ -8,12 +8,14 @@
 # After upgrading node, the storage host will reboot.
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-storage" lib/patch_storage.yaml
+# sudo ansible-playbook -e 'myhosts=test01-storage' lib/patch_storage.yaml
 #
 # to update DELL-firmware set run_fw_upg=true, used on DELL metall, dsu must be installed
+# sudo ansible-playbook -e 'myhosts=test01-storage run_fw_upg=true' lib/patch_storage.yaml
 #
-# sudo ansible-playbook -e "myhosts=test01-storage run_fw_upg=true" lib/patch_storage.yaml
-#
+# on hosts with osd-issues use: enable_osds=false, will not enable puppet after reboot, TBU
+# sudo ansible-playbook -e 'myhosts=test01-storage run_fw_upg=true enable_osds=fasle' lib/patch_storage.yaml
+
 # Last verified: 2023-10-04 (ansible version 2.9.27)
 
 - hosts: "{{ myhosts }}"
@@ -37,9 +39,15 @@
     - name: Disable puppet
       ansible.builtin.command: "/opt/puppetlabs/bin/puppet agent --disable"
 
+    - name: Possibly Waiting for puppetrun to be finised
+      ansible.builtin.wait_for:
+        path: /opt/puppetlabs/puppet/cache/state/agent_catalog_run.lock
+        state: absent
+
     - name: Stopp osd services
       ansible.builtin.service:
         name: ceph-osd.target
+        enabled: false
         state: stopped
 
     - name: Upgrade DELL-firmware
@@ -88,4 +96,5 @@
         delay: 75
 
     - name: Enable puppet
+      when: enable_osds | default(true) | bool
       ansible.builtin.command: "/opt/puppetlabs/bin/puppet agent --enable"
