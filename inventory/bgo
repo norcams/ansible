@@ -11,7 +11,6 @@ bgo-compute-alice
 bgo-compute-alice2
 bgo-compute-clarino
 bgo-compute-epyc
-bgo-compute-gpu1
 bgo-compute-vgpu
 bgo-console
 bgo-controller
@@ -194,7 +193,7 @@ bgo-compute-epyc-51
 bgo-compute-epyc-55
 bgo-compute-epyc-56
 bgo-compute-epyc-57
-bgo-compute-gpu1-54
+bgo-compute-vgpu-54
 bgo-compute-vgpu-35
 bgo-compute-vgpu-52
 bgo-compute-vgpu-53
@@ -267,13 +266,11 @@ bgo-compute-epyc-55
 bgo-compute-epyc-56
 bgo-compute-epyc-57
 
-[bgo-compute-gpu1]
-bgo-compute-gpu1-54
-
 [bgo-compute-vgpu]
 bgo-compute-vgpu-35
 bgo-compute-vgpu-52
 bgo-compute-vgpu-53
+bgo-compute-vgpu-54
 
 [bgo-console]
 bgo-console-01
