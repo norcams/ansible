@@ -28,6 +28,7 @@ puppet_environments:
   - admin
   - ussuri
   - victoria
+  - wallaby
 
 # Secrets to sync
 secret_files: {}
