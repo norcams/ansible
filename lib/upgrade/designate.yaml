@@ -28,7 +28,7 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
 
     - name: 'Stop designate API service'
       systemd: name=designate-api state=stopped
@@ -65,7 +65,7 @@
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
