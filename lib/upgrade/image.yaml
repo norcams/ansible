@@ -24,7 +24,7 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
         # these are only used by vagrant
         himlar_deployment: 'redeploy'
     - name: 'Stop image api'
@@ -46,12 +46,12 @@
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
         # this is only used by vagrant
         himlar_deployment: 'redeploy'
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
         # this is only used by vagrant
         himlar_deployment: 'redeploy'
     - name: Run db contract
