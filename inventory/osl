@@ -47,7 +47,6 @@ osl-storage-v2d
 osl-telemetry
 osl-torack
 osl-volume
-osl-test
 
 [osl-nodes:children]
 osl-access
@@ -80,7 +79,6 @@ osl-rgw
 osl-status
 osl-telemetry
 osl-volume
-osl-test
 
 [osl-access]
 osl-access-01
