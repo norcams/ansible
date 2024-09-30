@@ -197,6 +197,7 @@ bgo-compute-vgpu-54
 bgo-compute-vgpu-35
 bgo-compute-vgpu-52
 bgo-compute-vgpu-53
+bgo-compute-vgpu-88
 
 [bgo-compute-alice]
 bgo-compute-alice-11
@@ -271,6 +272,7 @@ bgo-compute-vgpu-35
 bgo-compute-vgpu-52
 bgo-compute-vgpu-53
 bgo-compute-vgpu-54
+bgo-compute-vgpu-88
 
 [bgo-console]
 bgo-console-01
