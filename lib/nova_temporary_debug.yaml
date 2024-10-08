@@ -14,7 +14,7 @@
   
   tasks:
     - name: Disable puppet
-      command: "puppet agent --disable 'Disabled by ansible playbook nova_temporary_debug.yaml'"
+      ansible.builtin.command: "puppet agent --disable 'Disabled by ansible playbook nova_temporary_debug.yaml'"
 
     - name: Ensure "debug=true" is in section "[DEFAULT]" in nova.conf
       community.general.ini_file:
@@ -55,4 +55,4 @@
         dest: "{{ my_file }}"
 
     - name: Enable puppet
-      command: "puppet agent --enable"
+      ansible.builtin.command: "puppet agent --enable"
