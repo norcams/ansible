@@ -1,7 +1,7 @@
 # Set debug=true in nova.conf temporarily, for testing purposes
 #
 # Example:
-#   ansible-playbook -e 'myhosts=osl-novactrl' nova_temporary_debug.yaml
+#   sudo ansible-playbook -e 'myhosts=osl-novactrl' lib/nova_temporary_debug.yaml
 #
 # Author: trondham
 #
@@ -14,7 +14,7 @@
   
   tasks:
     - name: Disable puppet
-      ansible.builtin.command: "puppet agent --disable 'Disabled by ansible playbook nova_temporary_debug.yaml'"
+      ansible.builtin.command: "/opt/puppetlabs/bin/puppet agent --disable 'Disabled by ansible playbook nova_temporary_debug.yaml'"
 
     - name: Ensure "debug=true" is in section "[DEFAULT]" in nova.conf
       community.general.ini_file:
@@ -57,4 +57,4 @@
         dest: "{{ my_file }}"
 
     - name: Enable puppet
-      ansible.builtin.command: "puppet agent --enable"
+      ansible.builtin.command: "/opt/puppetlabs/bin/puppet agent --enable"
