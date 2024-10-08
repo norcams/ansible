@@ -23,6 +23,8 @@
         option: debug
         value: "true"
         mode: '0640'
+        owner: root
+        group: nova
         backup: true
         no_extra_spaces: true
 
