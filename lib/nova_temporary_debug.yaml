@@ -1,0 +1,58 @@
+# Set debug=true in nova.conf temporarily, for testing purposes
+#
+# Example:
+#   ansible-playbook -e 'myhosts=osl-novactrl' nova_temporary_debug.yaml
+#
+# Author: trondham
+#
+---
+- hosts: "{{ myhosts }}"
+  gather_facts: false
+
+  vars:
+    my_file: /etc/nova/nova.conf
+  
+  tasks:
+    - name: Disable puppet
+      command: "puppet agent --disable 'Disabled by ansible playbook nova_temporary_debug.yaml'"
+
+    - name: Ensure "debug=true" is in section "[DEFAULT]" in nova.conf
+      community.general.ini_file:
+        path: "{{ my_file }}"
+        section: DEFAULT
+        option: debug
+        value: "true"
+        mode: '0640'
+        backup: true
+        no_extra_spaces: true
+
+    - name: Pause until testing is done
+      ansible.builtin.pause:
+        prompt: Waiting for input to continue
+
+    - name: "Find all backups for {{ my_file }}"
+      ansible.builtin.find:
+        recurse: no
+        paths:
+          - "{{ my_file | dirname }}"
+        patterns:
+          - '{{ my_file | basename }}\..*~'
+        use_regex: true
+      register: find_backup
+
+    - name: Select the latest backup found on disk
+      ansible.builtin.set_fact:
+        latest_backup: "{{ (find_backup.files | sort(attribute='mtime') | last).path }}"
+
+    - name: Show the latest selected backup
+      ansible.builtin.debug:
+        var: latest_backup
+
+    - name: "Restore latest backup of {{ my_file }}"
+      ansible.builtin.copy:
+        src: "{{ latest_backup }}"
+        remote_src: true
+        dest: "{{ my_file }}"
+
+    - name: Enable puppet
+      command: "puppet agent --enable"
