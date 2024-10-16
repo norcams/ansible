@@ -7,11 +7,11 @@
 # * location (str): vagrant, test01 ...
 #
 # Example:
-# sudo ansible-playbook -e "=location=test01" lib/upgrade/volume.yaml
+# sudo ansible-playbook -e "location=test01" lib/upgrade/volume.yaml
 #
 # Last verified: never (ansible version 2.x)
 #
-# https://docs.openstack.org/cinder/victoria/upgrade.html
+# https://docs.openstack.org/cinder/wallaby/upgrade.html
 
 - name: stop puppet on all volume-nodes
   import_playbook: ../toggle_puppet.yaml
@@ -73,7 +73,7 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
         himlar_deployment: 'redeploy'
         puppet_ignore_errors: no
 
@@ -85,7 +85,7 @@
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
         himlar_deployment: 'redeploy'
         puppet_ignore_errors: no
 
