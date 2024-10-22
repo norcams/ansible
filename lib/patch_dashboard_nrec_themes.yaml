@@ -1,0 +1,36 @@
+#
+# Replaces a hard coded hex color value with a variable,
+# so that the openstack-dashboard-nrec-themes RPM package works 
+# as expected with the theme setting "Dark Blue" on wallaby
+#
+# httpd needs to be restarted in order for the patch to take effect.
+#
+# Specifically, by replacing the hard coded value,
+# table views will no longer be striped, but have
+# a homogenous background color. The hard coded color
+# value sets the color on even numbered rows in tables.
+# This value is replaced with the variable that is used for
+# the color on odd numbered rows in tables.
+# As an effect of this change, the patch will affect both NREC themes.
+# The table background color will be for the themes:
+#
+# - Light (default): white
+# - Dark blue: dark blue
+#
+# The patch should do the equivalent of the the sed command in the README.md of
+# https://github.com/norcams/openstack-dashboard-nrec-themes/
+#
+# Run example:
+# sudo ansible-playbook -e 'myhosts=vagrant-dashboard' lib/patch_dashboard_nrec_themes.yaml
+
+---
+- hosts: "{{ myhosts }}"
+  tasks:
+
+    - import_tasks: tasks/patch.yaml
+      vars:
+        patchfile: ../files/patches/dashboard/0004-nrec-themes.diff
+        dest: /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/scss/_variables.scss
+
+#- name: 'Restart httpd'
+#     systemd: name=httpd state=restarted

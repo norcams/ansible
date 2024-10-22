@@ -1,0 +1,4 @@
+17c17
+< $table-bg-even: #ffffff;
+---
+> $table-bg-even: $table-bg-accent !default;
