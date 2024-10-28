@@ -12,6 +12,7 @@ bgo-compute-alice2
 bgo-compute-clarino
 bgo-compute-epyc
 bgo-compute-vgpu
+bgo-compute-vgpul40s
 bgo-console
 bgo-controller
 bgo-dashboard
@@ -193,11 +194,14 @@ bgo-compute-epyc-51
 bgo-compute-epyc-55
 bgo-compute-epyc-56
 bgo-compute-epyc-57
-bgo-compute-vgpu-54
 bgo-compute-vgpu-35
 bgo-compute-vgpu-52
 bgo-compute-vgpu-53
+bgo-compute-vgpu-54
 bgo-compute-vgpu-88
+bgo-compute-vgpul40s-89
+bgo-compute-vgpul40s-90
+bgo-compute-vgpul40s-91
 
 [bgo-compute-alice]
 bgo-compute-alice-11
@@ -274,6 +278,11 @@ bgo-compute-vgpu-53
 bgo-compute-vgpu-54
 bgo-compute-vgpu-88
 
+[bgo-compute-vgpul40s]
+bgo-compute-vgpul40s-89
+bgo-compute-vgpul40s-90
+bgo-compute-vgpul40s-91
+
 [bgo-console]
 bgo-console-01
 
@@ -330,17 +339,17 @@ bgo-logger-01
 
 [bgo-login]
 bgo-login-01
+bgo-login-01old
 bgo-login-02
+bgo-login-03
 
 [bgo-metric]
 bgo-metric-01
 
 [bgo-mgmt]
-bgo-mgmt-08
 bgo-mgmt-opx-01
 bgo-mgmt-opx-02
 bgo-mgmt-opx-03
-bgo-mgmt-opx-04
 bgo-mgmt-opx-05
 bgo-mgmt-opx-06
 bgo-mgmt-opx-07
@@ -350,7 +359,6 @@ bgo-mgmt-opx-09
 bgo-mgmt-opx-01
 bgo-mgmt-opx-02
 bgo-mgmt-opx-03
-bgo-mgmt-opx-04
 bgo-mgmt-opx-05
 bgo-mgmt-opx-06
 bgo-mgmt-opx-07
@@ -560,3 +568,4 @@ bgo-telemetry-01
 bgo-volume-01
 bgo-volume-02
 bgo-volume-03
+
