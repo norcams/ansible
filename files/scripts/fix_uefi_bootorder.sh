@@ -18,8 +18,8 @@ fi
 servermodel=$(dmidecode -s system-product-name)
 
 # Exit if not Dell PowerEdge 13th gen or newer
-if [[ ! $servermodel =~ .(FC|[RTM])[1-9][3-5]. ]]; then
-    echo "This is not a Dell 13G / 14G / 15G Server"
+if [[ ! $servermodel =~ .(FC|[RTM])[1-9][3-6]. ]]; then
+    echo "This is not a Dell 13G / 14G / 15G / R16 Server"
     exit 0
 fi
 
