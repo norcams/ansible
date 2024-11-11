@@ -19,7 +19,7 @@ GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0xca77951d23b66a9d.asc'
 GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0x3CA66B4946770C59.asc'
 GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0x274E9C32857A9594.asc'
 GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0x076B95DB2FFC7F4A.asc'
-
+GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='3022882DE02EE5CC.asc'
 
 ##############################################################################
 #  Should not need to edit anything below this point
