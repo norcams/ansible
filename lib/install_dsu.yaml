@@ -6,6 +6,7 @@
 ---
 
 - hosts: "{{ myhosts }}"
+  # remember to update files/scripts/cp_dell_gpg_keys.sh
   vars:
     gpgkeys:
       - 0x1285491434D8786F.asc
@@ -13,6 +14,7 @@
       - 0xca77951d23b66a9d.asc
       - 0x3CA66B4946770C59.asc
       - 0x274E9C32857A9594.asc
+      - 0x076B95DB2FFC7F4A.asc
     gpgsource: "https://iaas-repo.uio.no/nrec/nrec-resources/files/dell/keys/"
 
   tasks:

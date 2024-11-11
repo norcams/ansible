@@ -1,10 +1,10 @@
 #!/bin/sh
 # vim:tw=0:et:sw=4:ts=4
 
-# The purpose of this script is to copy the Dell Public GPG keys to Linux 
+# The purpose of this script is to copy the Dell Public GPG keys to Linux
 # DSU default install location.
 
-# these two variables are replaced by the perl script 
+# these two variables are replaced by the perl script
 # with the actual server name and directory.
 SERVER="https://linux.dell.com"
 # mind the trailing slash here...
@@ -18,7 +18,9 @@ GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0x1285491434D8786F.asc'
 GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0xca77951d23b66a9d.asc'
 GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0x3CA66B4946770C59.asc'
 GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0x274E9C32857A9594.asc'
-                                     
+GPG_KEY_NAME[${#GPG_KEY_NAME[*]}]='0x076B95DB2FFC7F4A.asc'
+
+
 ##############################################################################
 #  Should not need to edit anything below this point
 ##############################################################################
