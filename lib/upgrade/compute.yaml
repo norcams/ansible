@@ -107,6 +107,11 @@
 #        himlar_puppet_env: "{{ himlar_puppet_env }}"
 #        puppet_ignore_errors: no
 
+    - import_tasks: ../tasks/patch.yaml
+      vars:
+        patchfile: ../../files/patches/nova-libvirt-rebuild.diff
+        dest: /usr/lib/python3.6/site-packages/nova/virt/libvirt/guest.py
+
     - name: 'Restart metadata-api'
       systemd: name=openstack-nova-metadata-api state=restarted
 
