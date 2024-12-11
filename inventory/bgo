@@ -194,6 +194,7 @@ bgo-compute-epyc-51
 bgo-compute-epyc-55
 bgo-compute-epyc-56
 bgo-compute-epyc-57
+bgo-compute-l40s-88
 bgo-compute-l40s-89
 bgo-compute-l40s-90
 bgo-compute-l40s-91
@@ -201,7 +202,6 @@ bgo-compute-vgpu-35
 bgo-compute-vgpu-52
 bgo-compute-vgpu-53
 bgo-compute-vgpu-54
-bgo-compute-vgpu-88
 
 [bgo-compute-alice]
 bgo-compute-alice-11
@@ -275,13 +275,13 @@ bgo-compute-epyc-57
 bgo-compute-l40s-89
 bgo-compute-l40s-90
 bgo-compute-l40s-91
+bgo-compute-l40s-88
 
 [bgo-compute-vgpu]
 bgo-compute-vgpu-35
 bgo-compute-vgpu-52
 bgo-compute-vgpu-53
 bgo-compute-vgpu-54
-bgo-compute-vgpu-88
 
 [bgo-console]
 bgo-console-01
