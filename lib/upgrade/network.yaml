@@ -29,10 +29,7 @@
         # these are only used by vagrant
         himlar_deployment: 'redeploy'
     - name: 'Stop neutron server'
-      systemd: name=neutron-server state=stopped
-      ignore_errors: yes
-    - name: 'disabled neutron server'
-      systemd: name=neutron-server state=disabled
+      systemd: name=neutron-server state=stopped enable=false
       ignore_errors: yes
     - name: 'Clear problematic packages'
       package:
