@@ -1,4 +1,18 @@
 # Simple task to enable or disable puppet
 
-- name: "{{ action | default('enable')}} puppet agent"
-  command: /opt/puppetlabs/bin/puppet agent --{{ action | default('enable') }}
+# default action is enable
+# optionals:
+#   action: enable or disable
+#   reason: string, default "disabled by ansible"
+
+- name: set default reason
+  set_fact:
+    reason: "disabled by ansible"
+
+- name: "Enable puppet agent"
+  ansible.builtin.command: /opt/puppetlabs/bin/puppet agent --enable
+  when: action != "disable"
+
+- name: "Disable puppet agent with reason: {{reason}}"
+  ansible.builtin.command: /opt/puppetlabs/bin/puppet agent --disable '{{ reason }}'
+  when: action == "disable"
