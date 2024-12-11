@@ -9,6 +9,6 @@
       vars:
         runmode: 'kickstart'
         himlar_deployment: 'redeploy'
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: 'wallaby'
 
 
