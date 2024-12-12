@@ -7,7 +7,7 @@
 # * myhosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test02-telemetry-01" lib/upgrade/telemetry.yaml
+# sudo ansible-playbook -e "myhosts=test02-telemetry-01 himlar_puppet_env=wallaby" lib/upgrade/telemetry.yaml
 #
 # Last verified: 2018-07-18 (ansible version 2.4.2.0)
 #
@@ -41,7 +41,13 @@
       yum: name=* state=latest update_cache=yes
       when: '"telemetry" in inventory_hostname'
     - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ himlar_puppet_env }}"
+        puppet_ignore_errors: no
     - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ himlar_puppet_env }}"
+        puppet_ignore_errors: no
     - name: 'Restart ceilometer polling service'
       systemd: name=openstack-ceilometer-polling.service state=restarted
     - name: 'Restart ceilometer notification service'

@@ -7,7 +7,7 @@
 # * myhosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test02-metric-01" lib/upgrade/metric.yaml
+# sudo ansible-playbook -e "myhosts=test02-metric-01 himlar_puppet_env=wallaby" lib/upgrade/metric.yaml
 #
 # Last verified: 2019-02-07 (ansible version 2.7.5)
 #
@@ -36,11 +36,13 @@
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
-    - import_tasks: ../tasks/puppetrun.yaml
-    - import_tasks: ../tasks/patch.yaml
       vars:
-        patchfile: ../../files/patches/metricd.py.diff 
-        dest: /usr/lib/python2.7/site-packages/gnocchi/cli/metricd.py
+        himlar_puppet_env: "{{ himlar_puppet_env }}"
+        puppet_ignore_errors: no
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ himlar_puppet_env }}"
+        puppet_ignore_errors: no
     - name: 'Restart gnocchi metricd service'
       systemd: name=gnocchi-metricd.service state=restarted
     - name: 'Restart gnocchi statsd service'
