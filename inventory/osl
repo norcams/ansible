@@ -12,6 +12,7 @@ osl-compute-epyc
 osl-compute-hpc
 osl-compute-robin
 osl-compute-vgpu
+osl-compute-l40s
 osl-console
 osl-controller
 osl-dashboard
@@ -171,6 +172,8 @@ osl-compute-robin-18
 osl-compute-vgpu-17
 osl-compute-vgpu-19
 osl-compute-vgpu-20
+osl-compute-l40s-67
+osl-compute-l40s-68
 
 [osl-compute-atlas]
 osl-compute-atlas-21
@@ -216,6 +219,10 @@ osl-compute-robin-18
 osl-compute-vgpu-17
 osl-compute-vgpu-19
 osl-compute-vgpu-20
+
+[osl-compute-l40s]
+osl-compute-l40s-67
+osl-compute-l40s-68
 
 [osl-console]
 osl-console-01
