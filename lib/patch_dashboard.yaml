@@ -7,9 +7,9 @@
 - hosts: "{{ myhosts }}"
   tasks:
 
-    - import_tasks: ../tasks/patch.yaml
+    - import_tasks: tasks/patch.yaml
       vars:
-        patchfile: ../../files/patches/dashboard/0002-custom-flavor-help.patch
+        patchfile: ../files/patches/dashboard/0002-custom-flavor-help.patch
         basedir: /usr/share/openstack-dashboard
     - import_tasks: tasks/patch.yaml
       vars:
