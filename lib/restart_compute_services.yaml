@@ -1,16 +1,31 @@
-# Restart all of the services when etcd-cluster is on netwerk
+# Restart all of the services when etcd-cluster is on network
 - hosts: "{{ myhosts }}"
   gather_facts: False
-  tasks:
-    - systemd: name=etcd state=restarted
-    - pause: seconds=20
-    - systemd: name=etcd-grpc-proxy state=restarted
-    - pause: seconds=20
-    - systemd: name=openstack-nova-compute state=restarted
-    - pause: seconds=20
-    - systemd: name=calico-felix state=restarted
-    - pause: seconds=20
-    - systemd: name=openstack-nova-metadata-api state=restarted
-    - pause: seconds=40
-    - systemd: name=calico-dhcp-agent state=restarted
 
+  vars:
+
+    services_to_restart:
+      - etcd
+      - etcd-grpc-proxy
+      - openstack-nova-compute
+      - calico-felix
+      - openstack-nova-metadata-api
+
+  tasks:
+
+    - name: "Restart compute services"
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        state: restarted
+      loop: "{{ services_to_restart }}"
+      loop_control:
+        pause: 20
+
+    - name: Pause for 40 seconds before restarting calico-dhcp-agent
+      ansible.builtin.pause:
+        seconds: 40
+
+    - name: Restart calico-dhcp-agent service
+      ansible.builtin.systemd_service:
+        name: calico-dhcp-agent
+        state: restarted
