@@ -4,12 +4,22 @@
 #
 # Last verified: 2018-03-23 (ansible version 2.4.2.0)
 #
+
 - hosts: "{{ myhosts }}"
+
   tasks:
+
     - name: "Check for instances on {{ myhosts }}"
-      virt: command=list_vms
+      community.libvirt.virt:
+        command: list_vms
       register: instances
-    #- debug: var=instances.list_vms
-    - fail:
-        msg: "{{ myhosts }} has running instances!!!"
+
+    - ansible.builtin.debug:
+        msg:
+          - "{{ myhosts }} has defined instances!!!"
+          - "{{ instances.list_vms }}"
+      when: instances.list_vms | length > 0
+
+    - ansible.builtin.fail:
+        msg: "FAILING for {{ myhosts }}..."
       when: instances.list_vms | length > 0
