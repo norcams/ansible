@@ -9,6 +9,15 @@
 # Last verified: 2020-08-18 (ansible version 2.9.10)
 #
 
+# Sanity check: himlar_puppet_env must be defined
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Check if himlar_puppet_env is defined
+      ansible.builtin.fail:
+        msg: "Variable himlar_puppet_env is not defined"
+      when: himlar_puppet_env is not defined
+
 # Stop puppet on all novactrl nodes
 - import_playbook: ../toggle_puppet.yaml
   vars:
