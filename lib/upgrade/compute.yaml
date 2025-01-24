@@ -1,7 +1,7 @@
 # This will try to upgrade nova without downtime
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-compute-01 himlar_puppet_env=victoria" lib/upgrade/compute.yaml
+# sudo ansible-playbook -e "myhosts=test01-compute-01 himlar_puppet_env=xena" lib/upgrade/compute.yaml
 #
 # Variables:
 #   myhosts: name of host(s) to upgrade (mandatory)
