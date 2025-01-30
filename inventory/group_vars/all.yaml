@@ -29,6 +29,7 @@ puppet_environments:
   - ussuri
   - victoria
   - wallaby
+  - xena
 
 # Secrets to sync
 secret_files: {}
