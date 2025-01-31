@@ -17,6 +17,10 @@
   gather_facts: no
 
   tasks:
+    - name: Puppet environment
+      ansible.builtin.debug:
+        msg: "Upgrading to: {{ upgrade_puppet_env.designate }}"
+
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -28,7 +32,7 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.designate }}"
 
     - name: 'Stop designate API service'
       systemd: name=designate-api state=stopped
@@ -65,7 +69,7 @@
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.designate }}"
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.designate }}"

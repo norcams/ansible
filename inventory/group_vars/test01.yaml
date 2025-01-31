@@ -5,7 +5,6 @@ himlar_ref: xena/testing
 himlar_repo: https://github.com/norcams/himlar.git
 #himlarcli_ref: image_rewrite
 
-
 himlarcli_packages:
   - python3.11
   - python3.11-devel
@@ -13,3 +12,14 @@ himlarcli_packages:
   - openldap-devel
 #himlarcli_python_command: python3.11
 himlarcli_virutalenv_command: 'python3.11 -m venv'
+
+# This is used by the upgrade playbooks (lib/upgrade/<component>.yaml)
+upgrade_puppet_env:
+  keystone:   'xena'
+  neutron:    'xena'
+  nova:       'wallaby'
+  cinder:     'wallaby'
+  glance:     'wallaby'
+  horizon:    'wallaby'
+  ceilometer: 'wallaby'
+  designate:  'wallaby'
