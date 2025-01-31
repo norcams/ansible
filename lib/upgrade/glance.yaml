@@ -5,55 +5,72 @@
 # * myhosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-image-01" lib/upgrade/image.yaml
+# sudo ansible-playbook -e "myhosts=test01-image" lib/upgrade/glance.yaml
 #
 # Last verified: 2024-05-24 (ansible version 2.16.6)
 #
 - hosts: "{{ myhosts }}"
   gather_facts: no
+
   tasks:
+    - name: Puppet environment
+      ansible.builtin.debug:
+        msg: "Upgrading to: {{ upgrade_puppet_env.designate }}"
+
     - name: Run db expand
       command: glance-manage db expand
       run_once: true
+
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
+
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
+
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.glance }}"
         # these are only used by vagrant
         himlar_deployment: 'redeploy'
+
     - name: 'Stop image api'
       systemd: name=openstack-glance-api state=stopped
       ignore_errors: yes
+
     - name: Upgrade Openstack Glance
       ansible.builtin.package:
         name:
           - openstack-glance
         state: latest
+
     - name: Run db migrate
       command: glance-manage db migrate
       run_once: true
+
     - name: Purge Glance package
       yum: name=openstack-glance state=absent
+
     - name: 'Remove /etc/glance/'
       file: name=/etc/glance state=absent
+
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
+
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.glance }}"
         # this is only used by vagrant
         himlar_deployment: 'redeploy'
+
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.glance }}"
         # this is only used by vagrant
         himlar_deployment: 'redeploy'
+
     - name: Run db contract
       command: glance-manage db contract
       run_once: true
