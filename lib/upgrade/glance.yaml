@@ -15,7 +15,7 @@
   tasks:
     - name: Puppet environment
       ansible.builtin.debug:
-        msg: "Upgrading to: {{ upgrade_puppet_env.designate }}"
+        msg: "Upgrading to: {{ upgrade_puppet_env.glance }}"
 
     - name: Run db expand
       command: glance-manage db expand
