@@ -7,7 +7,7 @@
 # * myhosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test02-network-01" lib/upgrade/network.yaml
+# sudo ansible-playbook -e "myhosts=test01-network" lib/upgrade/neutron.yaml
 #
 # Last verified: 2024-06-28 (ansible version 2.16.6)
 #

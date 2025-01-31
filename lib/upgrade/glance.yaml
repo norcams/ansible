@@ -4,6 +4,9 @@
 # Mandatory input variables:
 # * myhosts (str): ansible node(s)
 #
+# IMPORTANT: Remember to edit inventory/group_vars/<region>.yaml to set
+#            the upgrade_puppet_env.glance variable
+#
 # Example:
 # sudo ansible-playbook -e "myhosts=test01-image" lib/upgrade/glance.yaml
 #

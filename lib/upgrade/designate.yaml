@@ -7,8 +7,11 @@
 # Mandatory input variables:
 # * myhosts (str): ansible node(s)
 #
+# IMPORTANT: Remember to edit inventory/group_vars/<region>.yaml to set
+#            the upgrade_puppet_env.designate variable
+#
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-dns-01" lib/upgrade/designate.yaml
+# sudo ansible-playbook -e "myhosts=test01-dns" lib/upgrade/designate.yaml
 #
 # Last verified: 2019-07-09 (ansible version 2.8.1)
 #
