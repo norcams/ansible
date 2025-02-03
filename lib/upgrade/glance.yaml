@@ -43,11 +43,13 @@
       systemd: name=openstack-glance-api state=stopped
       ignore_errors: yes
 
-    - name: Upgrade Openstack Glance
-      ansible.builtin.package:
-        name:
-          - openstack-glance
+    - name: Upgrade RDO packages
+      ansible.builtin.dnf:
+        name: '*'
         state: latest
+        update_cache: yes
+        disablerepo: '*'
+        enablerepo: rdo-release
 
     - name: Run db migrate
       command: glance-manage db migrate
@@ -58,9 +60,6 @@
 
     - name: 'Remove /etc/glance/'
       file: name=/etc/glance state=absent
-
-    - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
