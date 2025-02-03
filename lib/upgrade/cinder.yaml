@@ -6,66 +6,69 @@
 # Mandatory input variables:
 # * location (str): vagrant, test01 ...
 #
+# IMPORTANT: Remember to edit inventory/group_vars/<region>.yaml to set
+#            the upgrade_puppet_env.cinder variable
+#
 # Example:
-# sudo ansible-playbook -e "location=test01" lib/upgrade/volume.yaml
+# sudo ansible-playbook -e "location=test01-volume" lib/upgrade/cinder.yaml
 #
 # Last verified: never (ansible version 2.x)
 #
 # https://docs.openstack.org/cinder/wallaby/upgrade.html
 
-- name: stop puppet on all volume-nodes
-  import_playbook: ../toggle_puppet.yaml
-  vars:
-    myhosts: "{{ location }}-volume"
-    action: disable
-  when: location != 'vagrant'
-
-- name: upgrade volume
-  hosts: "{{ location }}-volume"
-  gather_facts: false 
+- hosts: "{{ myhosts }}"
 
   tasks:
+    - name: Puppet environment
+      ansible.builtin.debug:
+        msg: "Upgrading to: {{ upgrade_puppet_env.cinder }}"
   
-    - name: 'Register repo files'
+    - name: stop puppet on all volume-nodes
+      import_playbook: ../toggle_puppet.yaml
+      vars:
+        action: disable
+      when: location != 'vagrant'
+
+    - name: Register repo files
       ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
 
-    - name: 'Remove all old yum repo-files'
+    - name: Remove all old yum repo-files
       ansible.builtin.file:
         name: "/etc/yum.repos.d/{{item}}"
         state: absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
 
-    - name: 'Run kickstart'
+    - name: Run kickstart
       ansible.builtin.import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
         puppet_ignore_errors: no
 
-    - name: 'Stop httpd'
+    - name: Stop httpd
       ansible.builtin.systemd:
         name: httpd
         state: stopped
 
     # Assumed service upgrade order is cinder-scheduler, cinder-volume, N/A:backup and finally cinder-api
-    - name: 'Stop cinder scheduler service'
+    - name: Stop cinder scheduler service
       ansible.builtin.systemd:
         name: openstack-cinder-scheduler
         state: stopped
       ignore_errors: yes
 
-    - name: 'Stop cinder volume service'
+    - name: Stop cinder volume service
       ansible.builtin.systemd:
         name: openstack-cinder-volume
         state: stopped
       ignore_errors: yes
 
-    - name: 'Purge old package'
+    - name: Purge old package
       ansible.builtin.dnf:
         name: openstack-cinder
         state: absent
 
-    - name: 'Remove /etc/cinder/'
+    - name: Remove /etc/cinder
       ansible.builtin.file:
         name: /etc/cinder
         state: absent
@@ -73,26 +76,24 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.cinder }}"
         himlar_deployment: 'redeploy'
         puppet_ignore_errors: no
 
-    - name: 'dnf update'
+    - name: Upgrade RDO packages
       ansible.builtin.dnf:
         name: '*'
         state: latest
         update_cache: yes
+        disablerepo: '*'
+        enablerepo: rdo-release
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.cinder }}"
         himlar_deployment: 'redeploy'
         puppet_ignore_errors: no
 
-- name: restart volume api
-  hosts: "{{ location }}-volume"
-  gather_facts: no
-  tasks:
     - name: 'Restart httpd'
       systemd:
         name: httpd
