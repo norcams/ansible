@@ -49,7 +49,7 @@
         state: absent
 
     - name: Remove /etc/glance
-      antible.builtin.file:
+      ansible.builtin.file:
         name: /etc/glance
         state: absent
 
