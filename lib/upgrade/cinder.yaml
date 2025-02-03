@@ -10,11 +10,17 @@
 #            the upgrade_puppet_env.cinder variable
 #
 # Example:
-# sudo ansible-playbook -e "location=test01-volume" lib/upgrade/cinder.yaml
+# sudo ansible-playbook -e "myhosts=test01-volume" lib/upgrade/cinder.yaml
 #
 # Last verified: never (ansible version 2.x)
 #
 # https://docs.openstack.org/cinder/wallaby/upgrade.html
+
+# Step 0: stop puppet
+- import_playbook: ../toggle_puppet.yaml
+  vars:
+    action: disable
+  when: location != 'vagrant'
 
 - hosts: "{{ myhosts }}"
 
@@ -22,12 +28,6 @@
     - name: Puppet environment
       ansible.builtin.debug:
         msg: "Upgrading to: {{ upgrade_puppet_env.cinder }}"
-  
-    - name: stop puppet on all volume-nodes
-      import_playbook: ../toggle_puppet.yaml
-      vars:
-        action: disable
-      when: location != 'vagrant'
 
     - name: Register repo files
       ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
