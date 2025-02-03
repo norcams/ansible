@@ -24,12 +24,14 @@
       ansible.builtin.debug:
         msg: "Upgrading to: {{ upgrade_puppet_env.designate }}"
 
-    - name: 'Repo files'
-      command: 'ls -1 /etc/yum.repos.d/'
+    - name: Repo files
+      ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
 
-    - name: 'Remove all old yum repos'
-      file: name="/etc/yum.repos.d/{{item}}" state=absent
+    - name: Remove all old yum repos
+      ansible.builtin.file:
+        name: "/etc/yum.repos.d/{{item}}"
+        state: absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
 
     - import_tasks: ../tasks/puppetrun.yaml
@@ -37,42 +39,64 @@
         runmode: 'kickstart'
         himlar_puppet_env: "{{ upgrade_puppet_env.designate }}"
 
-    - name: 'Stop designate API service'
-      systemd: name=designate-api state=stopped
+    - name: Stop designate API service
+      ansible.builtin.systemd_service:
+        name: designate-api
+        state: stopped
       ignore_errors: yes
 
-    - name: 'Disable designate API service'
-      systemd: name=designate-api enabled=no
+    - name: Disable designate API service
+      ansible.builtin.systemd_service:
+        name: designate-api
+        enabled: no
       ignore_errors: yes
 
-    - name: 'Stop designate worker service'
-      systemd: name=designate-worker state=stopped
+    - name: Stop designate worker service
+      ansible.builtin.systemd_service:
+        name: designate-worker
+        state: stopped
       ignore_errors: yes
 
-    - name: 'Stop designate central service'
-      systemd: name=designate-central state=stopped
+    - name: Stop designate central service
+      ansible.builtin.systemd_service:
+        name: designate-central
+        state: stopped
       ignore_errors: yes
 
-    - name: 'Stop designate mdns service'
-      systemd: name=designate-mdns state=stopped
+    - name: Stop designate mdns service
+      ansible.builtin.systemd_service:
+        name: designate-mdns
+        state: stopped
       ignore_errors: yes
 
-    - name: 'Stop designate producer service'
-      systemd: name=designate-producer state=stopped
+    - name: Stop designate producer service
+      ansible.builtin.systemd_service:
+        name: designate-producer
+        state: stopped
       ignore_errors: yes
 
-    - name: 'Purge old package'
-      yum: name=openstack-designate-common state=absent
+    - name: Purge old package
+      ansible.builtin.dnf:
+        name: openstack-designate-common
+        state: absent
 
-    - name: 'Remove /etc/designate/'
-      file: name=/etc/designate state=absent
-
-    - name: 'Yum upgrade'
-      yum: name=* state=latest update_cache=yes
+    - name: Remove /etc/designate
+      ansible.builtin.file:
+        name: /etc/designate
+        state: absent
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ upgrade_puppet_env.designate }}"
+
+    - name: Upgrade RDO packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
+        disablerepo: '*'
+        enablerepo: rdo-release
+
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ upgrade_puppet_env.designate }}"
