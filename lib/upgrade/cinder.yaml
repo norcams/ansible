@@ -4,7 +4,7 @@
 # Before you start you need to deploy latest version of himlar.
 #
 # Mandatory input variables:
-# * location (str): vagrant, test01 ...
+# * myhosts (str): ansible node(s)
 #
 # IMPORTANT: Remember to edit inventory/group_vars/<region>.yaml to set
 #            the upgrade_puppet_env.cinder variable
