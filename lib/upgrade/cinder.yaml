@@ -80,6 +80,12 @@
         himlar_deployment: 'redeploy'
         puppet_ignore_errors: no
 
+    - name: Upgrade python3-cinder-common
+      ansible.builtin.dnf:
+        name: 'python3-cinder-common'
+        state: latest
+        update_cache: yes
+
     - name: Upgrade RDO packages
       ansible.builtin.dnf:
         name: '*'
