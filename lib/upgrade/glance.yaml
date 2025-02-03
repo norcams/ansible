@@ -43,11 +43,35 @@
       systemd: name=openstack-glance-api state=stopped
       ignore_errors: yes
 
-    - name: Upgrade Openstack Glance
-      ansible.builtin.package:
-        name:
-          - openstack-glance
+    - name: Purge old packages
+      ansible.builtin.dnf:
+        name: openstack-glance
+        state: absent
+
+    - name: Remove /etc/glance
+      antible.builtin.file:
+        name: /etc/glance
+        state: absent
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ upgrade_puppet_env.glance }}"
+        # this is only used by vagrant
+        himlar_deployment: 'redeploy'
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ upgrade_puppet_env.glance }}"
+        # this is only used by vagrant
+        himlar_deployment: 'redeploy'
+
+    - name: Upgrade RDO packages
+      ansible.builtin.dnf:
+        name: '*'
         state: latest
+        update_cache: yes
+        disablerepo: '*'
+        enablerepo: rdo-release
 
     - name: Run db migrate
       command: glance-manage db migrate
