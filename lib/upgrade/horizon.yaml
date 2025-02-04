@@ -6,8 +6,11 @@
 # Mandatory input variables:
 # * myhosts (str): ansible node(s)
 #
+# IMPORTANT: Remember to edit inventory/group_vars/<region>.yaml to set
+#            the upgrade_puppet_env.horizon variable
+#
 # Example:
-# sudo ansible-playbook -e "myhosts=test02-dashboard-01" lib/upgrade/dashboard.yaml
+# sudo ansible-playbook -e "myhosts=test01-dashboard" lib/upgrade/horizon.yaml
 #
 # Last verified: 2018-07-18 (ansible version 2.4.2.0)
 #
@@ -29,7 +32,7 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.horizon }}"
         # these are only used by vagrant
         himlar_deployment: 'redeploy'
     - name: 'Stop httpd'
@@ -44,10 +47,10 @@
       yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.horizon }}"
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.horizon }}"
     - import_tasks: ../tasks/patch.yaml
       vars:
         patchfile: ../../files/patches/dashboard/0002-custom-flavor-help.patch
