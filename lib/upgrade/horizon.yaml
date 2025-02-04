@@ -43,8 +43,16 @@
       file: name=/usr/share/openstack-dashboard state=absent
     - name: 'Remove /etc/openstack-dashboard'
       file: name=/etc/openstack-dashboard state=absent
-    - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ upgrade_puppet_env.horizon }}"
+    - name: Upgrade RDO packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
+        disablerepo: '*'
+        enablerepo: rdo-release
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ upgrade_puppet_env.horizon }}"
