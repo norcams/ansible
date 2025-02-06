@@ -65,7 +65,7 @@
         himlar_puppet_env: "{{ upgrade_puppet_env.keystone }}"
         # these are only used by vagrant
         himlar_deployment: 'redeploy'
-    - name: Upgrade RDO packages
+    - name: Upgrade ALL packages
       ansible.builtin.dnf:
         name: '*'
         state: latest
