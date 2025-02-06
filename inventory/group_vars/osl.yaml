@@ -1,3 +1,14 @@
 ---
 location: osl
 domain: mgmt.osl.uhdc.no
+
+# This is used by the upgrade playbooks (lib/upgrade/<component>.yaml)
+upgrade_puppet_env:
+  keystone:   'xena'
+  neutron:    'wallaby'
+  nova:       'wallaby'
+  cinder:     'wallaby'
+  glance:     'wallaby'
+  horizon:    'wallaby'
+  ceilometer: 'wallaby'
+  designate:  'wallaby'
