@@ -57,7 +57,7 @@
   tasks:
     - name: Puppet environment
       ansible.builtin.debug:
-        msg: "Upgrading to: {{ upgrade_puppet_env.neutron }}"
+        msg: "Upgrading to: {{ upgrade_puppet_env.keystone }}"
     - systemd: name=crond state=stopped
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
