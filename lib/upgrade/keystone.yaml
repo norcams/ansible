@@ -70,8 +70,6 @@
         name: '*'
         state: latest
         update_cache: yes
-        disablerepo: '*'
-        enablerepo: rdo-release
     - name: 'Stop keystone webserver'
       systemd: name=httpd state=stopped
     - name: Run db_sync expand
