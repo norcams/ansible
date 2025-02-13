@@ -11,4 +11,4 @@ upgrade_puppet_env:
   glance:     'xena'
   horizon:    'wallaby'
   ceilometer: 'xena'
-  designate:  'wallaby'
+  designate:  'xena'
