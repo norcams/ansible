@@ -10,5 +10,5 @@ upgrade_puppet_env:
   cinder:     'wallaby'
   glance:     'xena'
   horizon:    'wallaby'
-  ceilometer: 'wallaby'
+  ceilometer: 'xena'
   designate:  'wallaby'
