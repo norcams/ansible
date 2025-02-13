@@ -8,7 +8,7 @@ upgrade_puppet_env:
   neutron:    'wallaby'
   nova:       'wallaby'
   cinder:     'wallaby'
-  glance:     'wallaby'
+  glance:     'xena'
   horizon:    'wallaby'
   ceilometer: 'wallaby'
   designate:  'wallaby'
