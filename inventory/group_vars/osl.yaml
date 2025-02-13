@@ -9,6 +9,6 @@ upgrade_puppet_env:
   nova:       'wallaby'
   cinder:     'xena'
   glance:     'xena'
-  horizon:    'wallaby'
+  horizon:    'xena'
   ceilometer: 'xena'
   designate:  'xena'
