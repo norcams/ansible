@@ -7,7 +7,7 @@
 # * myhosts (str): ansible node(s)
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test02-metric-01 himlar_puppet_env=wallaby" lib/upgrade/metric.yaml
+# sudo ansible-playbook -e "myhosts=test01-metric-01 himlar_puppet_env=xena" lib/upgrade/metric.yaml
 #
 # Last verified: 2019-02-07 (ansible version 2.7.5)
 #
