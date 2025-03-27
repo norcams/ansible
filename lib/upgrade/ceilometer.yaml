@@ -20,6 +20,9 @@
 - hosts: "{{ myhosts }}"
   gather_facts: no
 
+  vars:
+    config_dir: '/etc/ceilometer'
+
   tasks:
     - name: Puppet environment
       ansible.builtin.debug:
@@ -57,10 +60,8 @@
         - openstack-ceilometer*
         - python-ceilometer
 
-    - name: Remove /etc/ceilometer
-      ansible.builtin.file:
-        name: /etc/ceilometer
-        state: absent
+    - name: Move away "{{ config_dir }}"
+      ansible.builtin.command: "mv -f {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
 
     - name: Upgrade RDO packages
       ansible.builtin.dnf:
