@@ -61,12 +61,14 @@
         name: openstack-ceilometer-polling.service
         state: stopped
 
-    - name: Purge old package
+    - name: Purge old packages
       ansible.builtin.dnf:
-        name: openstack-ceilometer-common
+        name: "{{ item }}"
         state: absent
       with_items:
-        - openstack-ceilometer*
+        - openstack-ceilometer-common
+        - openstack-ceilometer-polling
+        - openstack-ceilometer-notification
         - python3-ceilometer
 
     - name: "Remove {{ config_dir }}"
