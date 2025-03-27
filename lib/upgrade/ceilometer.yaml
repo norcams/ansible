@@ -28,6 +28,15 @@
       ansible.builtin.debug:
         msg: "Upgrading to: {{ upgrade_puppet_env.ceilometer }}"
 
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
+      register: check_config_backup
+
+    - name: Backup "{{ config_dir }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
+      when: check_config_backup.stat.exists == False
+
     - name: Repo files
       ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
@@ -60,8 +69,10 @@
         - openstack-ceilometer*
         - python3-ceilometer
 
-    - name: Move away "{{ config_dir }}"
-      ansible.builtin.command: "mv -f {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
+    - name: Remove "{{ config_dir }}"
+      ansible.builtin.file:
+        name: "{{ config_dir }}"
+        state: absent
 
     - name: Upgrade RDO packages
       ansible.builtin.dnf:
