@@ -69,7 +69,7 @@
         - openstack-ceilometer*
         - python3-ceilometer
 
-    - name: Remove "{{ config_dir }}"
+    - name: "Remove {{ config_dir }}"
       ansible.builtin.file:
         name: "{{ config_dir }}"
         state: absent
