@@ -33,7 +33,7 @@
         path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
       register: check_config_backup
 
-    - name: Backup "{{ config_dir }}"
+    - name: "Backup {{ config_dir }} to {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
       ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
       when: check_config_backup.stat.exists == False
 
