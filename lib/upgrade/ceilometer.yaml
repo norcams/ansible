@@ -58,7 +58,7 @@
         state: absent
       with_items:
         - openstack-ceilometer*
-        - python-ceilometer
+        - python3-ceilometer
 
     - name: Move away "{{ config_dir }}"
       ansible.builtin.command: "mv -f {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
