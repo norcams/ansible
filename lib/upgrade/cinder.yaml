@@ -24,10 +24,22 @@
 
 - hosts: "{{ myhosts }}"
 
+  vars:
+    config_dir: '/etc/cinder'
+
   tasks:
     - name: Puppet environment
       ansible.builtin.debug:
         msg: "Upgrading to: {{ upgrade_puppet_env.cinder }}"
+
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.cinder }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.cinder }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.cinder }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.cinder }}"
+      when: check_config_backup.stat.exists == False
 
     - name: Register repo files
       ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
@@ -68,9 +80,9 @@
         name: openstack-cinder
         state: absent
 
-    - name: Remove /etc/cinder
+    - name: "Remove {{ config_dir }}"
       ansible.builtin.file:
-        name: /etc/cinder
+        name: "{{ config_dir }}"
         state: absent
 
     - import_tasks: ../tasks/puppetrun.yaml
