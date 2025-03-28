@@ -18,7 +18,7 @@ upgrade_puppet_env:
   keystone:   'yoga'
   neutron:    'yoga'
   nova:       'xena'
-  cinder:     'xena'
+  cinder:     'yoga'
   glance:     'yoga'
   horizon:    'yoga'
   ceilometer: 'yoga'
