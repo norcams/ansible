@@ -51,9 +51,9 @@
         runmode: 'kickstart'
         himlar_puppet_env: "{{ upgrade_puppet_env.designate }}"
 
-    - name: Stop designate API service
+    - name: Stop designate WSGI API (httpd)
       ansible.builtin.systemd_service:
-        name: designate-api
+        name: httpd
         state: stopped
       ignore_errors: yes
 
@@ -112,3 +112,8 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ upgrade_puppet_env.designate }}"
+
+    - name: 'Restart httpd'
+      ansible.builtin.systemd_service:
+        name: httpd
+        state: restarted
