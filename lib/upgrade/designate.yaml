@@ -19,10 +19,22 @@
 - hosts: "{{ myhosts }}"
   gather_facts: no
 
+  vars:
+    config_dir: '/etc/designate'
+
   tasks:
     - name: Puppet environment
       ansible.builtin.debug:
         msg: "Upgrading to: {{ upgrade_puppet_env.designate }}"
+
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.designate }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.designate }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.designate }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.designate }}"
+      when: check_config_backup.stat.exists == False
 
     - name: Repo files
       ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
