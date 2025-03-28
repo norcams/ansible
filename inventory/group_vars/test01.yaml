@@ -22,4 +22,4 @@ upgrade_puppet_env:
   glance:     'yoga'
   horizon:    'yoga'
   ceilometer: 'yoga'
-  designate:  'xena'
+  designate:  'yoga'
