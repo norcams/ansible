@@ -18,10 +18,23 @@
 - hosts: "{{ myhosts }}"
   serial: 1
   gather_facts: no
+
+  vars:
+    config_dir: '/etc/neutron'
+
   tasks:
     - name: Puppet environment
       ansible.builtin.debug:
         msg: "Upgrading to: {{ upgrade_puppet_env.neutron }}"
+
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.neutron }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.neutron }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.neutron }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.neutron }}"
+      when: check_config_backup.stat.exists == False
 
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
