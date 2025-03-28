@@ -1,3 +1,4 @@
+
 #
 # This can be used to upgrade dashboard to new version of openstack
 #
@@ -18,7 +19,20 @@
 - import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ myhosts }}"
   gather_facts: no
+
+  vars:
+    config_dir: '/etc/openstack-dashboard'
+
   tasks:
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}"
+      when: check_config_backup.stat.exists == False
+
     - name: 'Stop crond to avoid puppet run'
       systemd:
         name: crond

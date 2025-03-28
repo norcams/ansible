@@ -23,13 +23,13 @@
       ansible.builtin.debug:
         msg: "Upgrading to: {{ upgrade_puppet_env.glance }}"
 
-    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}" exists
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.glance }}" exists
       ansible.builtin.stat:
-        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.glance }}"
       register: check_config_backup
 
-    - name: "Backup {{ config_dir }} to {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
-      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
+    - name: "Backup {{ config_dir }} to {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.glance }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.glance }}"
       when: check_config_backup.stat.exists == False
 
     - name: Run db expand
