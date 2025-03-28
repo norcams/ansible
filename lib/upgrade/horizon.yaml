@@ -29,7 +29,7 @@
         path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}"
       register: check_config_backup
 
-    - name: "Backup {{ config_dir }} to {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}"
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}"
       ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}"
       when: check_config_backup.stat.exists == False
 
@@ -95,7 +95,7 @@
         state: restarted
     - name: 'Restart httpd'
       systemd: name=httpd state=restarted
-    - name: 'Stop crond to avoid puppet run'
+    - name: 'Start crond'
       systemd:
         name: crond
         state: started

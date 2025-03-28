@@ -28,7 +28,7 @@
         path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.glance }}"
       register: check_config_backup
 
-    - name: "Backup {{ config_dir }} to {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.glance }}"
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.glance }}"
       ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.glance }}"
       when: check_config_backup.stat.exists == False
 
