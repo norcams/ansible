@@ -20,6 +20,6 @@ upgrade_puppet_env:
   nova:       'xena'
   cinder:     'xena'
   glance:     'xena'
-  horizon:    'xena'
+  horizon:    'yoga'
   ceilometer: 'yoga'
   designate:  'xena'
