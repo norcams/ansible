@@ -7,7 +7,7 @@
   gather_facts: False
 
   vars:
-    latest: 15
+    latest: 20
 
   pre_tasks:
     - name: gather packages
