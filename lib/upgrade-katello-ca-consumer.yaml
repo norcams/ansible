@@ -17,13 +17,13 @@
 #        var: ansible_facts['packages']['katello-ca-consumer-rhsat-prod01.uio.no']
 
     - name: check for proxy.sh
-      stat:
+      ansible.builtin.stat:
         path: /root/proxy.sh
       register: _check_proxy_sh
 
     - block:
         - name: get proxy settings
-          slurp:
+          ansible.builtin.slurp:
             path: /root/proxy.sh
           register: _proxy_sh
 
@@ -33,7 +33,7 @@
         # stripping the line (item) down to a key (\\1) and value (\\2) with the `regex_replace` function using `proxy_line`
 
         - name: create proxy_env fact
-          set_fact:
+          ansible.builtin.set_fact:
             proxy_env: "{{ proxy_env | default({}) |
               combine( { item | regex_replace(proxy_line, '\\1') : item | regex_replace(proxy_line, '\\2') } ) }}"
           with_items: "{{ (_proxy_sh.content | b64decode | trim).split('\n') | select('match', proxy_line) | list }}"
@@ -48,14 +48,15 @@
     - name: bug in katello package requires removing, then installing
       block:
         - name: Remove katello-ca-consumer
-          yum:
+          ansible.builtin.dnf:
             name: katello-ca-consumer-rhsat-prod01.uio.no
             state: absent
 
         - name: Install latest katello-ca-consumer
-          yum:
+          ansible.builtin.dnf:
             name: https://rhsat-prod01.uio.no/pub/katello-ca-consumer-latest.noarch.rpm
             state: present
+            disable_gpg_check: true
           environment: "{{ proxy_env | default({}) }}"
       when:
         - ansible_facts['packages']['katello-ca-consumer-rhsat-prod01.uio.no'] is defined
