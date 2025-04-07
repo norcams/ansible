@@ -4,9 +4,9 @@ domain: mgmt.bgo.uhdc.no
 
 # This is used by the upgrade playbooks (lib/upgrade/<component>.yaml)
 upgrade_puppet_env:
-  keystone:   'xena'
+  keystone:   'yoga'
   neutron:    'xena'
-  nova:       'wallaby'
+  nova:       'xena'
   cinder:     'xena'
   glance:     'xena'
   horizon:    'xena'
