@@ -88,6 +88,8 @@
     - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
       ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
       when: check_config_backup.stat.exists == False
+    - name: 'Remove {{ config_dir }}'
+      file: name="{{ config_dir }}" state=absent
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ upgrade_puppet_env.keystone }}"
@@ -146,6 +148,8 @@
     - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
       ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
       when: check_config_backup.stat.exists == False
+    - name: 'Remove {{ config_dir }}'
+      file: name="{{ config_dir }}" state=absent
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ upgrade_puppet_env.keystone }}"
