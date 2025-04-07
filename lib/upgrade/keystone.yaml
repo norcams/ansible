@@ -54,6 +54,7 @@
   gather_facts: false
   vars:
     multi_region: 'none'
+    config_dir: '/etc/keystone'
   tasks:
     - name: Puppet environment
       ansible.builtin.debug:
@@ -80,8 +81,13 @@
       when: (multi_region == 'none') or (multi_region == 'first')
     - name: Purge old package
       yum: name=openstack-keystone state=absent
-    - name: 'Backup and remove /etc/keystone/'
-      command: "mv /etc/keystone /etc/keystone.{{ upgrade_puppet_env.keystone }}"
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      register: check_config_backup
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      when: check_config_backup.stat.exists == False
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ upgrade_puppet_env.keystone }}"
@@ -117,6 +123,8 @@
 # Step 7: upgrade the rest of the identity nodes
 - hosts: "{{ location }}-identity,!{{ location }}-identity-01"
   gather_facts: false
+  vars:
+    config_dir: '/etc/keystone'
   tasks:
     - systemd: name=crond state=stopped
     - import_tasks: ../tasks/puppetrun.yaml
@@ -131,8 +139,13 @@
       systemd: name=httpd state=stopped
     - name: Purge old package
       yum: name=openstack-keystone state=absent
-    - name: 'Backup and remove /etc/keystone/'
-      command: "mv /etc/keystone /etc/keystone.{{ upgrade_puppet_env.keystone }}"
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      register: check_config_backup
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      when: check_config_backup.stat.exists == False
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ upgrade_puppet_env.keystone }}"
