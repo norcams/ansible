@@ -1,7 +1,7 @@
 # This will try to upgrade nova without downtime
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-compute-01 himlar_puppet_env=xena" lib/upgrade/compute.yaml
+# sudo ansible-playbook -e "myhosts=test01-compute-01 himlar_puppet_env=yoga" lib/upgrade/compute.yaml
 #
 # Variables:
 #   myhosts: name of host(s) to upgrade (mandatory)
@@ -28,7 +28,21 @@
 # Upgrade compute host(s)
 - hosts: "{{ myhosts }}"
   gather_facts: false
+
+  vars:
+    config_dir: '/etc/nova'
+
   tasks:
+
+    - name: Check if "{{ config_dir }}_pre_{{ himlar_puppet_env }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ himlar_puppet_env }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ himlar_puppet_env }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ himlar_puppet_env }}"
+      when: check_config_backup.stat.exists == False
+
     - name: 'Stop crond to avoid puppet run'
       systemd:
         name: crond

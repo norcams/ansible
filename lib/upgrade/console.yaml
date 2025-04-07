@@ -1,5 +1,5 @@
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-console-01 himlar_puppet_env=xena" lib/upgrade/console.yaml
+# sudo ansible-playbook -e "myhosts=test01-console-01 himlar_puppet_env=yoga" lib/upgrade/console.yaml
 #
 # Last verified: 2024-05-27 (ansible version 2.14.14)
 #
@@ -7,7 +7,21 @@
 
 - hosts: "{{ myhosts }}"
   gather_facts: false
+
+  vars:
+    config_dir: '/etc/nova'
+
   tasks:
+
+    - name: Check if "{{ config_dir }}_pre_{{ himlar_puppet_env }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ himlar_puppet_env }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ himlar_puppet_env }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ himlar_puppet_env }}"
+      when: check_config_backup.stat.exists == False
+
     - systemd: name=crond state=stopped
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
