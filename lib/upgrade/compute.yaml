@@ -92,7 +92,8 @@
         state: stopped
       ignore_errors: yes
 
-    - import_tasks: ../tasks/puppetrun.yaml
+    - name: Run Puppet (kickstart)
+      ansible.builtin.import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
         puppet_ignore_errors: no
@@ -124,23 +125,27 @@
         disablerepo: "*"
         enablerepo: "rdo-release"
 
-    - ansible.builtin.import_tasks: ../tasks/puppetrun.yaml
+    - name: Run Puppet
+      ansible.builtin.import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ himlar_puppet_env }}"
         puppet_ignore_errors: no
 
-    - ansible.builtin.import_tasks: ../tasks/patch.yaml
+    - name: Patch guest.py for NVRAM bug
+      ansible.builtin.import_tasks: ../tasks/patch.yaml
       vars:
         patchfile: ../../files/patches/nova-libvirt-rebuild.diff
         dest: /usr/lib/python3.6/site-packages/nova/virt/libvirt/guest.py
 
-    - ansible.builtin.import_tasks: ../tasks/restart_compute_services.yaml
+    - name: Restart compute services
+      ansible.builtin.import_tasks: ../tasks/restart_compute_services.yaml
       vars:
         myhosts:  "{{ myhosts }}"
         services_to_restart: "{{ etcd_services_to_restart }} {{ compute_services_to_restart }}"
       when: location != 'vagrant'
 
-    - ansible.builtin.import_tasks: ../tasks/restart_compute_services.yaml
+    - name: Restart compute services (vagrant)
+      ansible.builtin.import_tasks: ../tasks/restart_compute_services.yaml
       vars:
         myhosts:  "{{ myhosts }}"
         services_to_restart: "{{ compute_services_to_restart }}"
