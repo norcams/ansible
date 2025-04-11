@@ -179,3 +179,9 @@
     - name: Enable hypervisor
       ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} compute service set {{ ansible_fqdn }} nova-compute --enable"
       when: initial_host_status.stdout == "enabled"
+
+
+# Display RDO repository name and Puppet environment
+- ansible.builtin.import_playbook: ../display_rdo_repo_and_puppet_env.yaml
+  vars:
+    myhosts:  "{{ myhosts }}"
