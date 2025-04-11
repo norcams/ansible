@@ -59,7 +59,9 @@
       register: repo_files
 
     - name: 'Remove all old yum repos'
-      ansible.builtin.file: name="/etc/yum.repos.d/{{item}}" state=absent
+      ansible.builtin.file:
+        name: "/etc/yum.repos.d/{{item}}"
+        state: absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
 
     - name: 'Stop openstack-nova-compute'
