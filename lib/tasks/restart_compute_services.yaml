@@ -1,0 +1,16 @@
+- name: "Restart compute services"
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: restarted
+  loop: "{{ services_to_restart }}"
+  loop_control:
+    pause: 20
+
+- name: Pause for 40 seconds before restarting calico-dhcp-agent
+  ansible.builtin.pause:
+    seconds: 40
+
+- name: Restart calico-dhcp-agent service
+  ansible.builtin.systemd_service:
+    name: calico-dhcp-agent
+    state: restarted

@@ -32,6 +32,12 @@
 
   vars:
     config_dir: '/etc/nova'
+    services_to_restart:
+      - etcd
+      - etcd-grpc-proxy
+      - openstack-nova-compute
+      - calico-felix
+      - openstack-nova-metadata-api
 
   tasks:
 
@@ -160,9 +166,10 @@
         state: started
 
     # Restart compute services
-    - import_playbook: ../restart_compute_services.yaml
+    - import_tasks: ../tasks/restart_compute_services.yaml
       vars:
         myhosts:  "{{ myhosts }}"
+        services_to_restart: "{{ services_to_restart }}"
 
     - name: Enable hypervisor
       ansible.builtin.shell: "source /root/openrc ; export OS_AUTH_URL=http://identity.test01.uhdc.no:35357 ; openstack compute service set {{ ansible_fqdn }} nova-compute --enable"
