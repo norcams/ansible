@@ -16,13 +16,13 @@
     - name: Restart compute services
       ansible.builtin.import_tasks: tasks/restart_compute_services.yaml
       vars:
-        myhosts:  "{{ ansible_nodename }}"
+        myhosts:  "{{ myhosts }}"
         services_to_restart: "{{ etcd_services_to_restart + compute_services_to_restart }}"
       when: location != 'vagrant'
 
     - name: Restart compute services (vagrant)
       ansible.builtin.import_tasks: tasks/restart_compute_services.yaml
       vars:
-        myhosts:  "{{ ansible_nodename }}"
+        myhosts:  "{{ myhosts }}"
         services_to_restart: "{{ compute_services_to_restart }}"
       when: location == 'vagrant'
