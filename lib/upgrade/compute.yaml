@@ -6,7 +6,7 @@
 # Variables:
 #   myhosts: name of host(s) to upgrade (mandatory)
 #
-# Last verified: 2020-08-18 (ansible version 2.9.10)
+# Last verified: 2025-04-11 (ansible core 2.16.3)
 #
 
 # Sanity check: himlar_puppet_env must be defined
