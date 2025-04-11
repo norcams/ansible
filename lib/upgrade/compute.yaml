@@ -44,30 +44,34 @@
       when: check_config_backup.stat.exists == False
 
     - name: 'Stop crond to avoid puppet run'
-      systemd:
+      ansible.builtin.systemd_service:
         name: crond
         state: stopped
 
     - name: Update release package to get new gpg keys first
-      yum:
+      ansible.builtin.dnf:
         name: 'almalinux-release'
         state: latest
         update_cache: yes
 
     - name: 'Repo files'
-      command: 'ls -1 /etc/yum.repos.d/'
+      ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
 
     - name: 'Remove all old yum repos'
-      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      ansible.builtin.file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
 
     - name: 'Stop openstack-nova-compute'
-      systemd: name=openstack-nova-compute state=stopped
+      ansible.builtin.systemd_service:
+        name: openstack-nova-compute
+        state: stopped
       ignore_errors: yes
 
     - name: 'Stop nova metadata-api service'
-      systemd: name=openstack-nova-metadata-api state=stopped
+      ansible.builtin.systemd_service:
+        name: openstack-nova-metadata-api
+        state: stopped
       ignore_errors: yes
 
     - import_tasks: ../tasks/puppetrun.yaml
@@ -76,7 +80,7 @@
         puppet_ignore_errors: no
 
     - name: 'Purge old package'
-      dnf:
+      ansible.builtin.dnf:
         name:
           - python3-nova
           - python3-novaclient
@@ -103,17 +107,16 @@
 #        state: absent
 
     - name: 'Autoremove unneeded packages installed as dependencies'
-      dnf:
+      ansible.builtin.dnf:
         autoremove: yes
 
-    - name: 'Remove /etc/nova/'
-      file: name=/etc/nova state=absent
-
-    - name: 'Remove /etc/placement/'
-      file: name=/etc/placement state=absent
+    - name: "Remove {{ config_dir }}"
+      ansible.builtin.file:
+        name: "{{ config_dir }}"
+        state: absent
 
     - name: 'Updated the rest of RDO packages'
-      dnf:
+      ansible.builtin.dnf:
         name: "*"
         state: latest
         update_cache: true
@@ -136,10 +139,12 @@
         dest: /usr/lib/python3.6/site-packages/nova/virt/libvirt/guest.py
 
     - name: 'Restart metadata-api'
-      systemd: name=openstack-nova-metadata-api state=restarted
+      ansible.builtin.systemd_service:
+        name: openstack-nova-metadata-api
+        state: restarted
 
     - name: 'Start crond again'
-      systemd:
+      ansible.builtin.systemd_service:
         name: crond
         state: started
 
