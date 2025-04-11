@@ -57,6 +57,11 @@
         auth_url: 'http://identity.test01.uhdc.no:5000'
       when: location == 'test01'
 
+    - name: Define auth_url variable (vagrant)
+      ansible.builtin.set_fact:
+        auth_url: 'http://identity.trp.vagrant.iaas.intern:5000'
+      when: location == 'vagrant'
+
     - name: Check if "{{ config_dir }}_pre_{{ himlar_puppet_env }}" exists
       ansible.builtin.stat:
         path: "{{ config_dir }}_pre_{{ himlar_puppet_env }}"
