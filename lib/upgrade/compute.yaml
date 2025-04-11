@@ -42,6 +42,21 @@
 
   tasks:
 
+    - name: Define auth_url variable (bgo)
+      ansible.builtin.set_fact:
+        auth_url: 'http://identity.bgo.uhdc.no:5000'
+      when: location == 'bgo'
+
+    - name: Define auth_url variable (osl)
+      ansible.builtin.set_fact:
+        auth_url: 'http://identity.osl.uhdc.no:5000'
+      when: location == 'osl'
+
+    - name: Define auth_url variable (test01)
+      ansible.builtin.set_fact:
+        auth_url: 'http://identity.test01.uhdc.no:5000'
+      when: location == 'test01'
+
     - name: Check if "{{ config_dir }}_pre_{{ himlar_puppet_env }}" exists
       ansible.builtin.stat:
         path: "{{ config_dir }}_pre_{{ himlar_puppet_env }}"
@@ -57,11 +72,11 @@
         state: stopped
 
     - name: Get hypervisor status
-      ansible.builtin.shell: "source /root/openrc ; export OS_AUTH_URL=http://identity.test01.uhdc.no:35357 ; openstack hypervisor show {{ ansible_fqdn }} -c status -f value"
+      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} hypervisor show {{ ansible_fqdn }} -c status -f value"
       register: initial_host_status
 
     - name: Disable hypervisor
-      ansible.builtin.shell: "source /root/openrc ; export OS_AUTH_URL=http://identity.test01.uhdc.no:35357 ; openstack compute service set {{ ansible_fqdn }} nova-compute --disable"
+      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} compute service set {{ ansible_fqdn }} nova-compute --disable"
       when: initial_host_status.stdout == "enabled"
 
     - name: Update release package to get new gpg keys first
@@ -157,5 +172,5 @@
         state: started
 
     - name: Enable hypervisor
-      ansible.builtin.shell: "source /root/openrc ; export OS_AUTH_URL=http://identity.test01.uhdc.no:35357 ; openstack compute service set {{ ansible_fqdn }} nova-compute --enable"
+      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} compute service set {{ ansible_fqdn }} nova-compute --enable"
       when: initial_host_status.stdout == "enabled"
