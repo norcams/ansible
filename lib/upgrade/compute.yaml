@@ -19,7 +19,7 @@
       when: himlar_puppet_env is not defined
 
 # Stop puppet on all novactrl nodes
-- import_playbook: ../toggle_puppet.yaml
+- ansible.builtin.import_playbook: ../toggle_puppet.yaml
   vars:
     myhosts:  "{{ myhosts }}"
     action:   disable
@@ -32,9 +32,10 @@
 
   vars:
     config_dir: '/etc/nova'
-    services_to_restart:
+    etcd_services_to_restart:
       - etcd
       - etcd-grpc-proxy
+    compute_services_to_restart:
       - openstack-nova-compute
       - calico-felix
       - openstack-nova-metadata-api
@@ -106,23 +107,6 @@
           - openstack-nova-compute
         state: absent
 
-# Trengs kanskje ikke?
-#    - name: 'Purge old package'
-#      dnf:
-#        name:
-#          - python3-placement
-#          - openstack-placement-common
-#          - openstack-placement-api
-#        state: absent
-
-#    - name: 'Clear problematic packages'
-#      dnf:
-#        name:
-#        - openvswitch
-#        - network-scripts-openvswitch
-#        - rdo-network-scripts-openvswitch
-#        state: absent
-
     - name: 'Autoremove unneeded packages installed as dependencies'
       ansible.builtin.dnf:
         autoremove: yes
@@ -132,7 +116,7 @@
         name: "{{ config_dir }}"
         state: absent
 
-    - name: 'Updated the rest of RDO packages'
+    - name: 'Update RDO packages'
       ansible.builtin.dnf:
         name: "*"
         state: latest
@@ -140,36 +124,32 @@
         disablerepo: "*"
         enablerepo: "rdo-release"
 
-    - import_tasks: ../tasks/puppetrun.yaml
+    - ansible.builtin.import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ himlar_puppet_env }}"
         puppet_ignore_errors: no
 
-#    - import_tasks: ../tasks/puppetrun.yaml
-#      vars:
-#        himlar_puppet_env: "{{ himlar_puppet_env }}"
-#        puppet_ignore_errors: no
-
-    - import_tasks: ../tasks/patch.yaml
+    - ansible.builtin.import_tasks: ../tasks/patch.yaml
       vars:
         patchfile: ../../files/patches/nova-libvirt-rebuild.diff
         dest: /usr/lib/python3.6/site-packages/nova/virt/libvirt/guest.py
 
-    - name: 'Restart metadata-api'
-      ansible.builtin.systemd_service:
-        name: openstack-nova-metadata-api
-        state: restarted
+    - ansible.builtin.import_tasks: ../tasks/restart_compute_services.yaml
+      vars:
+        myhosts:  "{{ myhosts }}"
+        services_to_restart: "{{ etcd_services_to_restart }} {{ compute_services_to_restart }}"
+      when: location != 'vagrant'
 
-    - name: 'Start crond again'
+    - ansible.builtin.import_tasks: ../tasks/restart_compute_services.yaml
+      vars:
+        myhosts:  "{{ myhosts }}"
+        services_to_restart: "{{ compute_services_to_restart }}"
+      when: location == 'vagrant'
+
+    - name: 'Start crond'
       ansible.builtin.systemd_service:
         name: crond
         state: started
-
-    # Restart compute services
-    - import_tasks: ../tasks/restart_compute_services.yaml
-      vars:
-        myhosts:  "{{ myhosts }}"
-        services_to_restart: "{{ services_to_restart }}"
 
     - name: Enable hypervisor
       ansible.builtin.shell: "source /root/openrc ; export OS_AUTH_URL=http://identity.test01.uhdc.no:35357 ; openstack compute service set {{ ansible_fqdn }} nova-compute --enable"
