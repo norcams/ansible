@@ -27,6 +27,7 @@
 
 # Upgrade compute host(s)
 - hosts: "{{ myhosts }}"
+  serial: 1
   gather_facts: false
 
   vars:
