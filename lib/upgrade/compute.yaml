@@ -28,7 +28,7 @@
 # Upgrade compute host(s)
 - hosts: "{{ myhosts }}"
   serial: 1
-  gather_facts: false
+  gather_facts: true
 
   vars:
     config_dir: '/etc/nova'
@@ -48,6 +48,14 @@
       ansible.builtin.systemd_service:
         name: crond
         state: stopped
+
+    - name: Get hypervisor status
+      ansible.builtin.shell: "source /root/openrc ; export OS_AUTH_URL=http://identity.test01.uhdc.no:35357 ; openstack hypervisor show {{ ansible_fqdn }} -c status -f value"
+      register: initial_host_status
+
+    - name: Disable hypervisor
+      ansible.builtin.shell: "source /root/openrc ; export OS_AUTH_URL=http://identity.test01.uhdc.no:35357 ; openstack compute service set {{ ansible_fqdn }} nova-compute --disable"
+      when: initial_host_status.stdout == "enabled"
 
     - name: Update release package to get new gpg keys first
       ansible.builtin.dnf:
@@ -155,3 +163,7 @@
     - import_playbook: ../restart_compute_services.yaml
       vars:
         myhosts:  "{{ myhosts }}"
+
+    - name: Enable hypervisor
+      ansible.builtin.shell: "source /root/openrc ; export OS_AUTH_URL=http://identity.test01.uhdc.no:35357 ; openstack compute service set {{ ansible_fqdn }} nova-compute --enable"
+      when: initial_host_status.stdout == "enabled"
