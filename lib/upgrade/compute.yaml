@@ -160,7 +160,7 @@
         state: started
 
     # Restart compute services
-    - import_playbook: ../restart_compute_services.yaml
+    - import_tasks: ../restart_compute_services.yaml
       vars:
         myhosts:  "{{ myhosts }}"
 
