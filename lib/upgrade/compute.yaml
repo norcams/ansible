@@ -77,11 +77,11 @@
         state: stopped
 
     - name: Get hypervisor status
-      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} hypervisor show {{ ansible_fqdn }} -c status -f value"
+      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} hypervisor show {{ ansible_nodename }} -c status -f value"
       register: initial_host_status
 
     - name: Disable hypervisor
-      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} compute service set {{ ansible_fqdn }} nova-compute --disable"
+      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} compute service set {{ ansible_nodename }} nova-compute --disable"
       when: initial_host_status.stdout == "enabled"
 
     - name: Update release package to get new gpg keys first
@@ -177,7 +177,7 @@
         state: started
 
     - name: Enable hypervisor
-      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} compute service set {{ ansible_fqdn }} nova-compute --enable"
+      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} compute service set {{ ansible_nodename }} nova-compute --enable"
       when: initial_host_status.stdout == "enabled"
 
 
