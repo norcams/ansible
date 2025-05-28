@@ -104,6 +104,7 @@ test01-console-01
 test01-controller-01
 test01-controller-02
 test01-controller-03
+test01-controller-04
 
 [test01-dashboard]
 test01-dashboard-01
