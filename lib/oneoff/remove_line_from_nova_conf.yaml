@@ -1,0 +1,12 @@
+---
+- hosts: "{{ myhosts }}"
+  tasks:
+  - name: Remove a line from an INI file
+    lineinfile:
+      path: /etc/nova/nova.conf
+      regexp: '^connection=mysql\+pymysql://nova'  # Match the line to be removed
+      state: absent
+  - name: Restart nova compute
+    systemd:
+      name: "openstack-nova-compute.service"
+      state: restarted
