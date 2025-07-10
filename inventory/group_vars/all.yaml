@@ -26,8 +26,8 @@ himlarcli_packages:
 
 puppet_environments:
   - admin
-  - ussuri
-  - victoria
+  - monitor
+  - controller
   - wallaby
   - xena
   - yoga
