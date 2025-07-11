@@ -1,0 +1,174 @@
+# Start me up with `podman kube play waldur-pod.yaml`,
+# Or tear me down with `podman kube play --down waldur-pod.yaml`
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-override-config
+data:
+  override.conf.py: |
+    # this works!
+    import os
+
+    WALDUR_CORE['AUTHENTICATION_METHODS'] = ["LOCAL_SIGNIN", "SOCIAL_SIGNUP"]
+    WALDUR_CORE['CREATE_DEFAULT_PROJECT_ON_ORGANIZATION_CREATION'] = True
+    WALDUR_CORE['HOMEPORT_SENTRY_ENVIRONMENT'] = env.get('SENTRY_ENVIRONMENT', 'waldur-production')
+
+    RABBITMQ_USER = os.environ.get('RABBITMQ_USERNAME')
+    RABBITMQ_PASSWORD = os.environ.get('RABBITMQ_PASSWORD')
+    RABBITMQ_HOST = os.environ.get('RABBITMQ_HOST', 'waldur-queue')
+    RABBITMQ_PORT = "5672"
+
+    POSTGRESQL_USER = os.environ.get('POSTGRESQL_USER', 'waldur')
+    POSTGRESQL_PASSWORD = os.environ.get('POSTGRESQL_PASSWORD')
+    POSTGRESQL_HOST = os.environ.get('POSTGRESQL_HOST')
+    POSTGRESQL_PORT = "5432"
+    POSTGRESQL_NAME = 'celery_results'
+
+    CELERY_BROKER_URL = f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASSWORD}@{RABBITMQ_HOST}:{RABBITMQ_PORT}'
+    CELERY_RESULT_BACKEND = f'db+postgresql+psycopg://{POSTGRESQL_USER}:{POSTGRESQL_PASSWORD}@{POSTGRESQL_HOST}:{POSTGRESQL_PORT}/{POSTGRESQL_NAME}'
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+            'LOCATION': 'waldur_cache',
+        }
+    }
+
+    RABBITMQ = {
+        "USER": RABBITMQ_USER,
+        "PASSWORD": RABBITMQ_PASSWORD,
+        "HOST": RABBITMQ_HOST,
+        "MQTT_PORT": 1883,
+        "MANAGEMENT_PORT": 15672,
+        "STOMP_PORT": 61613,
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: waldur-mastermind-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: waldur-mastermind-worker
+  template:
+    metadata:
+      labels:
+        app: waldur-mastermind-worker
+    spec:
+      containers:
+      - name: waldur-mastermind-worker
+        image: "docker.io/opennode/waldur-mastermind:{{ waldur_mastermind_tag }}"
+        args: [ worker ]
+        env:
+        - { name: GLOBAL_SECRET_KEY,   value: "changeme" }
+        - { name: POSTGRESQL_USER,     value: "waldur" }
+        - { name: POSTGRESQL_PASSWORD, value: "default" }
+        - { name: POSTGRESQL_HOST,     value: "waldur-db" }
+        - { name: RABBITMQ_USERNAME,   value: "waldur" }
+        - { name: RABBITMQ_PASSWORD,   value: "waldur" }
+        - { name: RABBITMQ_HOST,       value: "waldur-queue" }
+        volumeMounts:
+        - { name: api-override, subPath: override.conf.py, mountPath: "/etc/waldur/override.conf.py:z" }
+      volumes:
+      - name: api-override
+        configMap:
+          name: api-override-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: waldur-mastermind-beat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: waldur-mastermind-beat
+  template:
+    metadata:
+      labels:
+        app: waldur-mastermind-beat
+    spec:
+      initContainers:
+      - name: waldur-mastermind-migrate
+        image: "docker.io/opennode/waldur-mastermind:{{ waldur_mastermind_tag }}"
+        args: [ initdb ]
+        volumeMounts:
+        - { name: api-override, subPath: override.conf.py, mountPath: "/etc/waldur/override.conf.py:z" }
+        env:
+        - { name: GLOBAL_SECRET_KEY,   value: "changeme" }
+        - { name: POSTGRESQL_USER,     value: "waldur" }
+        - { name: POSTGRESQL_PASSWORD, value: "default" }
+        - { name: POSTGRESQL_HOST,     value: "waldur-db" }
+      containers:
+      - name: waldur-mastermind-beat
+        image: "docker.io/opennode/waldur-mastermind:{{ waldur_mastermind_tag }}"
+        args: [ beat ]
+        env:
+        - { name: GLOBAL_SECRET_KEY, value: "changeme" }
+        - { name: RABBITMQ_USERNAME, value: "waldur" }
+        - { name: RABBITMQ_PASSWORD, value: "waldur" }
+        - { name: RABBITMQ_HOST,     value: "waldur-queue" }
+        volumeMounts:
+        - { name: api-override, subPath: override.conf.py, mountPath: "/etc/waldur/override.conf.py:z" }
+      volumes:
+      - name: api-override
+        configMap:
+          name: api-override-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: waldur-mastermind-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: waldur-mastermind-api
+  template:
+    metadata:
+      labels:
+        app: waldur-mastermind-api
+    spec:
+      containers:
+      - name: waldur-mastermind-api
+        image: "docker.io/opennode/waldur-mastermind:{{ waldur_mastermind_tag }}"
+        args: [ mastermind ]
+        env:
+        - { name: GLOBAL_SECRET_KEY, value: "changeme" }
+        - { name: POSTGRESQL_USER,     value: "waldur" }
+        - { name: POSTGRESQL_PASSWORD, value: "default" }
+        - { name: POSTGRESQL_HOST,     value: "waldur-db" }
+        volumeMounts:
+        - { name: api-override, subPath: override.conf.py, mountPath: "/etc/waldur/override.conf.py:z" }
+        #ports:
+        #- { hostPort: 8000, containerPort: 8080, protocol: TCP }
+      volumes:
+      - name: api-override
+        configMap:
+          name: api-override-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: waldur-homeport
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: waldur-homeport
+  template:
+    metadata:
+      labels:
+        app: waldur-homeport
+    spec:
+      containers:
+      - name: waldur-homeport
+        image: "docker.io/opennode/waldur-homeport:{{ waldur_homeport_tag }}"
+        env:
+        - { name: API_URL, value: "{{ waldur_api_url }}" }
+        - { name: TITLE, value: "Waldur | Cloud Service Management" }
+        #ports:
+        #- { hostPort: 8080, containerPort: 8080, protocol: TCP }

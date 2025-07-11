@@ -1,0 +1,110 @@
+# Requirements;
+# ansible-galaxy collection install ansible.posix community.general containers.podman
+
+# Run this playbook with with -e create_admin_user=True on the first run.
+---
+- name: Prepare portal hosts
+  hosts:
+    - vagrant-portal
+  become_user: "{{ ansible_user }}"
+
+  vars:
+    home_dir: "/home/{{ ansible_user }}"
+
+    waldur_homeport_tag: 7.6.4
+    waldur_mastermind_tag: 7.6.4
+    waldur_api_url: "http://{{ inventory_hostname }}.{{ domain }}:8080"
+
+  pre_tasks:
+    - name: Install packages
+      become_user: root
+      package:
+        name:
+          - podman
+
+    - name: Allow pods to remain after user logs out
+      command: loginctl enable-linger
+      args:
+        creates: "/var/lib/systemd/linger/{{ ansible_user }}"
+
+    - name: Create system dir
+      file:
+        state: directory
+        path: "{{ home_dir }}/.config/containers/systemd"
+
+  tasks:
+    - name: Dump the manifests
+      template:
+        src: "waldur/{{ item }}.yaml.j2"
+        dest: "{{ home_dir }}/{{ item }}.yaml"
+      loop:
+        - postgres-pod
+        - rabbitmq-pod
+        - caddy-pod
+        - waldur-deployment
+      register: _waldur_manifests
+      notify: Restart deployment
+
+    - name: Install podman quadlets
+      copy:
+        content: |
+          {% if item == "waldur-deployment" %}
+          [Service]
+          TimeoutStartSec=600
+
+          {% endif -%}
+          [Kube]
+          Yaml=%h/{{ item }}.yaml
+        dest: "{{ home_dir }}/.config/containers/systemd/{{ item }}.kube"
+      loop:
+        - postgres-pod
+        - rabbitmq-pod
+        - caddy-pod
+        - waldur-deployment
+      register: _waldur_quadlets
+      notify: Restart deployment
+
+    - meta: flush_handlers
+
+    - name: Ensure pods are running
+      systemd_service:
+        scope: user
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - postgres-pod
+        - rabbitmq-pod
+        - caddy-pod
+        - waldur-deployment
+
+    - name: Create admin user
+      when: create_admin_user | default(false)
+      containers.podman.podman_container_exec:
+        name: waldur-mastermind-worker-pod-waldur-mastermind-worker
+        command: waldur createstaffuser -u admin -p password -e admin@example.com
+
+    - name: Open for business
+      become_user: root
+      ansible.posix.firewalld:
+        port: 8080/tcp
+        state: enabled
+        immediate: true
+        permanent: true
+
+  handlers:
+    - name: Restart deployment
+      when: _waldur_manifests.results | json_query(_item_is_changed) or
+        _waldur_quadlets.results | json_query(_item_is_changed)
+      vars:
+        _item_is_changed: "[?item=='{{ item }}'].changed | [0]"
+      systemd_service:
+        scope: user
+        name: "{{ item }}"
+        state: restarted
+        daemon_reload: true
+      loop:
+        - postgres-pod
+        - rabbitmq-pod
+        - caddy-pod
+        - waldur-deployment

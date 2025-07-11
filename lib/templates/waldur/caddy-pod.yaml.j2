@@ -1,0 +1,103 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caddyfile
+data:
+  Caddyfile: |
+    (cors) {
+    	@cors_preflight method OPTIONS
+    	header {
+    		Access-Control-Allow-Origin "{args.0}"
+    		Vary Origin
+    		Access-Control-Allow-Headers "*"
+    		Access-Control-Expose-Headers "Authorization, Link, X-Result-Count"
+    		Access-Control-Allow-Credentials "true"
+    	}
+    	handle @cors_preflight {
+    		header {
+    			Access-Control-Allow-Methods "GET, POST, PUT, PATCH, DELETE"
+    			Access-Control-Allow-Headers "*"
+    			Access-Control-Max-Age "3600"
+    		}
+    		respond "" 204
+    	}
+    }
+
+    :8080 {
+    	handle_errors {
+    		header {
+    			Access-Control-Allow-Origin "{header.origin}"
+    			Access-Control-Allow-Credentials "true"
+    			Vary Origin
+    		}
+    		respond "{http.error.status_code} {http.error.status_text}" {http.error.status_code}
+    	}
+
+    	import cors {header.origin}
+
+    	reverse_proxy /* http://waldur-homeport:8080 {
+    		header_down X-Frame-Options DENY
+    		header_down Content-Security-Policy "base-uri 'self'; object-src 'none'; media-src 'none'; script-src 'self' www.google-analytics.com sentry.opnd.org; style-src 'self' 'unsafe-inline'; img-src 'self' www.google-analytics.com *.gravatar.com *.tile.openstreetmap.org {$VIRTUAL_HOST} blob: data: ; connect-src 'self' {$VIRTUAL_HOST} nominatim.openstreetmap.org:443 sentry.opnd.org:443 sentry.opnd.org:80; font-src 'self' data: ; frame-src 'none'; frame-ancestors 'none'"
+    		header_down Strict-Transport-Security max-age=31536000 always
+    		header_down -Server
+    	}
+
+    	reverse_proxy /api/* http://waldur-mastermind-api:8080
+    	reverse_proxy /api-auth/* http://waldur-mastermind-api:8080
+    	reverse_proxy /docs/* http://waldur-mastermind-api:8080
+    	reverse_proxy /admin/* http://waldur-mastermind-api:8080
+    	reverse_proxy /static/* http://waldur-mastermind-api:8080
+    	reverse_proxy /media/* http://waldur-mastermind-api:8080
+    	reverse_proxy /apidocs/* http://waldur-mastermind-api:8080
+    	reverse_proxy /health-check/* http://waldur-mastermind-api:8080
+    	reverse_proxy /auth/* http://keycloak:8080
+
+    	route /rmqws-stomp {
+    		rewrite /rmqws-stomp /ws
+    		reverse_proxy http://waldur-queue:15674 {
+    			header_up Host {host}
+    			header_up X-Forwarded-For {remote}
+    			header_up X-Real-IP {remote}
+    		}
+    	}
+
+    	route /rmqws {
+    		rewrite /rmqws /ws
+    		reverse_proxy http://waldur-queue:15675 {
+    			header_up Host {host}
+    			header_up X-Forwarded-For {remote}
+    			header_up X-Real-IP {remote}
+    		}
+    	}
+
+    	import /etc/caddy-includes/*.conf
+    }
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ingress
+spec:
+  containers:
+  - name: caddy
+    image: "docker.io/caddy:2"
+    env:
+    - { name: VIRTUAL_HOST, value: "localhost" }
+    - { name: TLS, value: "internal" }
+    volumeMounts:
+    - { name: caddyfile, subPath: Caddyfile, mountPath: "/etc/caddy/Caddyfile:z" }
+    - { name: caddy-config, mountPath: "/config" }
+    - { name: caddy-data, mountPath: "/data" }
+    ports:
+    - { hostPort: 8080, containerPort: 8080, protocol: TCP }
+  volumes:
+  - name: caddy-config
+    persistentVolumeClaim:
+      claimName: caddy-config-pvc
+  - name: caddy-data
+    persistentVolumeClaim:
+      claimName: caddy-data-pvc
+  - name: caddyfile
+    configMap:
+      name: caddyfile

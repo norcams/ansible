@@ -45,6 +45,9 @@ vagrant-novactrl-01 ansible_host=172.31.0.66
 [vagrant-network]
 vagrant-network-01 ansible_host=172.31.0.71
 
+[vagrant-portal]
+vagrant-portal-01 ansible_host=172.31.0.79
+
 [vagrant-proxy]
 vagrant-proxy-01 ansible_host=172.31.0.12
 
@@ -95,6 +98,7 @@ vagrant-monitor
 vagrant-novactrl
 vagrant-network
 vagrant-identity
+vagrant-portal
 vagrant-proxy
 vagrant-report
 vagrant-image

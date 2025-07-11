@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: waldur-sql-init
+data:
+  createdb-celery_results.sql: |
+    CREATE DATABASE celery_results;
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: waldur-db
+spec:
+  containers:
+  - name: postgres
+    image: "docker.io/postgres:15"
+    env:
+    - { name: POSTGRES_USER, value: "waldur" }
+    - { name: POSTGRES_PASSWORD, value: "default" } # changeme
+    - { name: POSTGRES_HOST_AUTH_METHOD, value: "scram-sha-256" }
+    - { name: POSTGRES_INITDB_ARGS, value: "--auth-host=scram-sha-256" }
+    volumeMounts:
+    - { name: waldur-sql-data, mountPath: "/var/lib/postgresql/data:Z" }
+    - { name: waldur-sql-init, mountPath: "/docker-entrypoint-initdb.d:Z" }
+  volumes:
+  - name: waldur-sql-data
+    persistentVolumeClaim:
+      claimName: waldur-sql-pvc
+  - name: waldur-sql-init
+    configMap:
+      name: waldur-sql-init
