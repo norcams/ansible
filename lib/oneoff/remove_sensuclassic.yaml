@@ -15,3 +15,21 @@
       file:
         state: absent
         path: /etc/sensu
+
+    - name: Remove cache dir
+      file:
+        state: absent
+        path: /var/cache/sensu
+
+    - name: Remove systemd script
+      file:
+        state: absent
+        path: /etc/systemd/system/multi-user.target.wants/sensu-client.service
+
+    - name: Remove old defaults
+      file:
+        state: absent
+        path: /etc/default/sensu.rpmsave
+
+    - name: Run puppet
+      import_tasks: ../tasks/puppetrun.yaml
