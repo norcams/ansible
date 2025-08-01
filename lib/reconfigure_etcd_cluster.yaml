@@ -1,8 +1,10 @@
 #
 # This will re-add a member to an existing etcd cluster
-# Read this http://iaas.readthedocs.io/en/latest/team/operations/etcd.htm
-# before running.
+# Read this before running:
 #
+#   https://iaas.readthedocs.io/team/operations/etcd.html
+#
+
 - hosts: "{{ manage_from }}"
   gather_facts: False
   tasks:
@@ -19,8 +21,13 @@
     ansible.builtin.command: etcdctl member remove {{ member_id.stdout }}
     when: member_id.stdout | length > 0
 
+  # For el8/etcd
+  #- name: "Add new member"
+  #  ansible.builtin.command: etcdctl member add {{ member }} {{ member_trp_ip.stdout }}
+
+  # For el9/etcd
   - name: "Add new member"
-    ansible.builtin.command: etcdctl member add {{ member }} {{ member_trp_ip.stdout }}
+    ansible.builtin.command: etcdctl member add {{ member }} --peer-urls={{ member_trp_ip.stdout }}
 
 
 - hosts: "{{ member }}"
