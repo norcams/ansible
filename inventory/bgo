@@ -7,6 +7,7 @@ bgo-cephmds
 bgo-cephmon
 bgo-cephmon-object
 bgo-compute
+bgo-compute-central
 bgo-compute-alice
 bgo-compute-alice2
 bgo-compute-clarino
@@ -202,6 +203,28 @@ bgo-compute-vgpu-35
 bgo-compute-vgpu-52
 bgo-compute-vgpu-53
 bgo-compute-vgpu-54
+
+[bgo-compute-central]
+bgo-compute-01
+bgo-compute-02
+bgo-compute-03
+bgo-compute-04
+bgo-compute-05
+bgo-compute-06
+bgo-compute-07
+bgo-compute-08
+bgo-compute-09
+bgo-compute-10
+bgo-compute-38
+bgo-compute-39
+bgo-compute-40
+bgo-compute-58
+bgo-compute-59
+bgo-compute-60
+bgo-compute-81
+bgo-compute-82
+bgo-compute-83
+bgo-compute-84
 
 [bgo-compute-alice]
 bgo-compute-alice-11
