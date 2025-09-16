@@ -1,4 +1,14 @@
-17c17
-< $table-bg-even: #ffffff;
----
-> $table-bg-even: $table-bg-accent !default;
+diff --git a/_variables.scss.bak b/_variables.scss
+index 0b7cfbe..69cef10 100644
+--- a/_variables.scss.bak
++++ b/_variables.scss
+@@ -13,8 +13,7 @@ $static_url: "/static/" !default;
+ $main-content-min-width: 900px !default;
+ $sidebar-width: 220px !default;
+ $border-color: #dddddd !default;
+-$table-bg-odd: $table-bg-accent !default;
+-$table-bg-even: #ffffff !default;
++$table-bg-even: $table-bg-accent !default;
+
+ /* Resource Browser */
+
