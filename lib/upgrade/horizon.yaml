@@ -89,6 +89,10 @@
 #      vars:
 #        patchfile: ../../files/patches/horizon-tables-size.diff
 #        basedir: /usr/share/openstack-dashboard
+    - import_tasks: ../tasks/patch.yaml
+      vars:
+        patchfile: ../../files/patches/dashboard/0004-nrec-themes.diff
+        basedir: /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/scss
     - name: 'Restart memcache to avoid stale data'
       systemd:
         name: memcached
