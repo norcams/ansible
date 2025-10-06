@@ -55,6 +55,8 @@
       ansible.builtin.import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
+        himlar_puppet_env: "{{ upgrade_puppet_env.cinder }}"
+        himlar_deployment: 'redeploy'
         puppet_ignore_errors: no
 
     - name: Stop httpd
@@ -89,7 +91,6 @@
       vars:
         runmode: 'kickstart'
         himlar_puppet_env: "{{ upgrade_puppet_env.cinder }}"
-        himlar_deployment: 'redeploy'
         puppet_ignore_errors: no
 
     - name: Upgrade python3-cinder-common
@@ -109,7 +110,6 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ upgrade_puppet_env.cinder }}"
-        himlar_deployment: 'redeploy'
         puppet_ignore_errors: no
 
     - name: 'Restart httpd'
