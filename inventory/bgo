@@ -11,6 +11,7 @@ bgo-compute-central
 bgo-compute-alice
 bgo-compute-alice2
 bgo-compute-clarino
+bgo-compute-elixir1
 bgo-compute-epyc
 bgo-compute-l40s
 bgo-compute-vgpu
@@ -43,6 +44,7 @@ bgo-proxy
 bgo-report
 bgo-resolver
 bgo-rgw
+bgo-sensugo
 bgo-spine
 bgo-status
 bgo-storage
@@ -50,6 +52,7 @@ bgo-storage-dcache
 bgo-storage-dcache2
 bgo-storage-v2d
 bgo-telemetry
+bgo-tsdb
 bgo-volume
 
 [bgo-nodes:children]
@@ -80,8 +83,10 @@ bgo-proxy
 bgo-report
 bgo-resolver
 bgo-rgw
+bgo-sensugo
 bgo-status
 bgo-telemetry
+bgo-tsdb
 bgo-volume
 
 [bgo-access]
@@ -181,6 +186,7 @@ bgo-compute-alice-33
 bgo-compute-alice-34
 bgo-compute-clarino-36
 bgo-compute-clarino-37
+bgo-compute-elixir1-92
 bgo-compute-epyc-41
 bgo-compute-epyc-42
 bgo-compute-epyc-43
@@ -278,6 +284,9 @@ bgo-compute-alice2-80
 bgo-compute-clarino-36
 bgo-compute-clarino-37
 
+[bgo-compute-elixir1]
+bgo-compute-elixir1-92
+
 [bgo-compute-epyc]
 bgo-compute-epyc-41
 bgo-compute-epyc-42
@@ -295,10 +304,10 @@ bgo-compute-epyc-56
 bgo-compute-epyc-57
 
 [bgo-compute-l40s]
+bgo-compute-l40s-88
 bgo-compute-l40s-89
 bgo-compute-l40s-90
 bgo-compute-l40s-91
-bgo-compute-l40s-88
 
 [bgo-compute-vgpu]
 bgo-compute-vgpu-35
@@ -377,16 +386,18 @@ bgo-mgmt-opx-04
 bgo-mgmt-opx-05
 bgo-mgmt-opx-06
 bgo-mgmt-opx-07
+bgo-mgmt-opx-08
 bgo-mgmt-opx-09
 
 [bgo-mgmt-opx]
 bgo-mgmt-opx-01
 bgo-mgmt-opx-02
 bgo-mgmt-opx-03
-bgo-mgmt-opx-04
 bgo-mgmt-opx-05
+bgo-mgmt-opx-04
 bgo-mgmt-opx-06
 bgo-mgmt-opx-07
+bgo-mgmt-opx-08
 bgo-mgmt-opx-09
 
 [bgo-monitor]
@@ -428,6 +439,7 @@ bgo-object-ceph-04
 bgo-object-ceph-05
 
 [bgo-proxy]
+bgo-proxy-01
 bgo-proxy-02
 
 [bgo-report]
@@ -441,6 +453,11 @@ bgo-resolver-02
 bgo-rgw-01
 bgo-rgw-02
 bgo-rgw-03
+
+[bgo-sensugo]
+bgo-sensugo-01
+bgo-sensugo-02
+bgo-sensugo-03
 
 [bgo-spine]
 bgo-spine-01
@@ -587,6 +604,9 @@ bgo-storage-v2d-43
 
 [bgo-telemetry]
 bgo-telemetry-01
+
+[bgo-tsdb]
+bgo-tsdb-01
 
 [bgo-volume]
 bgo-volume-01
