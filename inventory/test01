@@ -130,6 +130,7 @@ test01-dns-01
 [test01-identity]
 test01-identity-01
 test01-identity-02
+test01-identity-03
 
 [test01-image]
 test01-image-01
