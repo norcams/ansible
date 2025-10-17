@@ -20,6 +20,6 @@ upgrade_puppet_env:
   nova:       'yoga'
   cinder:     'zed'
   glance:     'zed'
-  horizon:    'yoga'
+  horizon:    'zed'
   ceilometer: 'zed'
   designate:  'zed'
