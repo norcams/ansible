@@ -1,7 +1,7 @@
 ---
 location: test01
 domain: mgmt.test01.uhdc.no
-himlar_ref: master
+himlar_ref: zed/testing
 himlar_repo: https://github.com/norcams/himlar.git
 #himlarcli_ref: image_rewrite
 
@@ -15,9 +15,9 @@ himlarcli_virutalenv_command: 'python3.11 -m venv'
 
 # This is used by the upgrade playbooks (lib/upgrade/<component>.yaml)
 upgrade_puppet_env:
-  keystone:   'yoga'
+  keystone:   'zed'
   neutron:    'yoga'
-  nova:       'xena'
+  nova:       'yoga'
   cinder:     'yoga'
   glance:     'yoga'
   horizon:    'yoga'

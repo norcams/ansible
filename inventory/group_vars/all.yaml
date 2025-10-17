@@ -32,6 +32,7 @@ puppet_environments:
   - xena
   - yoga
   - yoga_el9
+  - zed
 
 # Secrets to sync
 secret_files: {}
