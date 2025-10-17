@@ -22,4 +22,4 @@ upgrade_puppet_env:
   glance:     'zed'
   horizon:    'yoga'
   ceilometer: 'zed'
-  designate:  'yoga'
+  designate:  'zed'
