@@ -18,7 +18,7 @@ upgrade_puppet_env:
   keystone:   'zed'
   neutron:    'yoga'
   nova:       'yoga'
-  cinder:     'yoga'
+  cinder:     'zed'
   glance:     'yoga'
   horizon:    'yoga'
   ceilometer: 'yoga'
