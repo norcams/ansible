@@ -62,3 +62,5 @@ sudo ansible-playbook -e "myhosts=${host} patchfile=../files/patches/nova-comput
 sudo ansible-playbook -e "myhosts=${host} patchfile=../files/patches/nova-libvirt-rebuild.diff dest=/usr/lib/python3.9/site-packages/nova/virt/libvirt/guest.py" lib/patch.yaml
 
 #sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-compute" lib/systemd_restart.yaml
+# This will fix this: https://access.redhat.com/solutions/7024764
+sudo ansible-playbook -e "myhosts=${host} name=iscsid" lib/systemd_restart.yaml
