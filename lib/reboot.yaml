@@ -1,6 +1,8 @@
 ---
 
 - hosts: "{{ myhosts }}"
+  vars:
+    silence_sensu: true
   tasks:
 
     - name: Silence sensu using <loc>-proxy-02
@@ -8,6 +10,7 @@
         cmd: "bin/python manage_sensu.py silence -C '*' -H  {{ inventory_hostname }}  -r 'reboot by the power of ansible'"
         chdir: "{{ himlarcli_path }}"
       delegate_to: "{{ inventory_hostname.split('-') | first }}-proxy-02"
+      when: silence_sensu == true
 
     - name: Rebooting...
       ansible.builtin.reboot:
