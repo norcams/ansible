@@ -201,6 +201,8 @@ bgo-compute-epyc-51
 bgo-compute-epyc-55
 bgo-compute-epyc-56
 bgo-compute-epyc-57
+bgo-compute-epyc-86
+bgo-compute-epyc-87
 bgo-compute-l40s-88
 bgo-compute-l40s-89
 bgo-compute-l40s-90
@@ -302,6 +304,8 @@ bgo-compute-epyc-51
 bgo-compute-epyc-55
 bgo-compute-epyc-56
 bgo-compute-epyc-57
+bgo-compute-epyc-86
+bgo-compute-epyc-87
 
 [bgo-compute-l40s]
 bgo-compute-l40s-88
