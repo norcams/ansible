@@ -89,6 +89,19 @@ bgo-telemetry
 bgo-tsdb
 bgo-volume
 
+[bgo-openstack:children]
+bgo-console
+bgo-dashboard
+bgo-dashboard-mgmt
+bgo-dns
+bgo-identity
+bgo-image
+bgo-metric
+bgo-network
+bgo-novactrl
+bgo-telemetry
+bgo-volume
+
 [bgo-access]
 bgo-access-01
 
