@@ -82,6 +82,19 @@ osl-status
 osl-telemetry
 osl-volume
 
+[osl-openstack:children]
+osl-console
+osl-dashboard
+osl-dashboard-mgmt
+osl-dns
+osl-identity
+osl-image
+osl-metric
+osl-network
+osl-novactrl
+osl-telemetry
+osl-volume
+
 [osl-access]
 osl-access-01
 
