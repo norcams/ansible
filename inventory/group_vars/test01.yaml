@@ -17,7 +17,7 @@ himlarcli_virutalenv_command: 'python3.11 -m venv'
 upgrade_puppet_env:
   keystone:   'zed'
   neutron:    'zed'
-  nova:       'yoga'
+  nova:       'zed'
   cinder:     'zed'
   glance:     'zed'
   horizon:    'zed'
