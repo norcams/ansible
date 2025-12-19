@@ -28,6 +28,7 @@ puppet_environments:
   - admin
   - monitor
   - controller
+  - el9
   - wallaby
   - xena
   - yoga
