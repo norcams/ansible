@@ -47,6 +47,8 @@ sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/push_secrets.yaml
 sudo ansible-playbook -e "myhosts=${host} ip_version=ipv6" lib/flush_iptables.yaml
 sudo ansible-playbook -e "myhosts=${host}" lib/puppetrun.yaml
+# Need to restart metadata api to get it to work
+sudo ansible-playbook -e "myhosts=${host} name=openstack-nova-metadata-api.service" lib/systemd_restart.yaml
 # Fix for nova missing nvram flag when rebuilding from a uefi image
 sudo ansible-playbook -e "myhosts=${host} patchfile=../files/patches/nova-libvirt-rebuild.diff dest=/usr/lib/python3.9/site-packages/nova/virt/libvirt/guest.py" lib/patch.yaml
 # Fix for newer libvirt, we need to not manage the tap interface in nova
