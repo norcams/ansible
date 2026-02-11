@@ -23,11 +23,11 @@
     vars:
       action: disable
 
-  - name: Update all release packages to get new gpg keys first
-    yum:
-      name: '*-release'
-      state: latest
-      update_cache: yes
+      #  - name: Update all release packages to get new gpg keys first
+      #    yum:
+      #      name: '*-release'
+      #      state: latest
+      #      update_cache: yes
 
   - name: Upgrade all packages excluding {{ exclude | default('none') }}
     yum:
