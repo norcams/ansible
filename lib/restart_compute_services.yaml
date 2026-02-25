@@ -9,7 +9,7 @@
     compute_services_to_restart:
       - openstack-nova-compute
       - calico-felix
-      - openstack-nova-metadata-api
+      #- openstack-nova-metadata-api
 
   tasks:
 
