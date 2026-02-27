@@ -1,0 +1,12 @@
+#
+# This will use himlarcli to delete a host from foreman and also from disk if virtual
+# {{ myhosts }} should be a host with himlarcli installed
+# {{ install_host }} should be the host you're reinstalling.
+#
+# Last verified: 2026-02-27 (ansible version 2.16.3)
+#
+- name: "Delete node from foreman with himlarcli"
+  hosts: "{{ myhosts }}"
+  tasks:
+    - name: Deleting node
+      command: bin/python node.py delete -n {{ install_host.split('-')[1:] | join("-") }} -y chdir={{himlarcli_path}}
