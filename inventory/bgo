@@ -149,6 +149,7 @@ bgo-compute-40
 bgo-compute-58
 bgo-compute-59
 bgo-compute-60
+bgo-compute-060
 bgo-compute-81
 bgo-compute-82
 bgo-compute-83
@@ -220,6 +221,8 @@ bgo-compute-l40s-88
 bgo-compute-l40s-89
 bgo-compute-l40s-90
 bgo-compute-l40s-91
+bgo-compute-l40s-093
+bgo-compute-l40s-094
 bgo-compute-vgpu-35
 bgo-compute-vgpu-52
 bgo-compute-vgpu-53
@@ -242,6 +245,7 @@ bgo-compute-40
 bgo-compute-58
 bgo-compute-59
 bgo-compute-60
+bgo-compute-060
 bgo-compute-81
 bgo-compute-82
 bgo-compute-83
@@ -325,6 +329,8 @@ bgo-compute-l40s-88
 bgo-compute-l40s-89
 bgo-compute-l40s-90
 bgo-compute-l40s-91
+bgo-compute-l40s-093
+bgo-compute-l40s-094
 
 [bgo-compute-vgpu]
 bgo-compute-vgpu-35
