@@ -26,7 +26,7 @@ if [[ $host == *.* ]] ; then
   usage
 fi
 
-IFS='-' read -r -a hostname <<< "$host"
+IFS='-' read -r -a hostname <<< "$host_new"
 location=${hostname[0]}
 
 read -p "Are your sure you want to rebuild ${host}? " -n 1 -r
