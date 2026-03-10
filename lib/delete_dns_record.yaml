@@ -1,4 +1,8 @@
 ---
+# Example:
+# sudo ansible-playbook -e myhosts=bgo-admin-01 -e record=bgo-compute-l40s-093.mgmt.bgo.uhdc.no -e type=A lib/delete_dns_record.yaml
+#
+#
 - hosts: "{{ myhosts }}"
 
   tasks:
