@@ -13,7 +13,6 @@
       - 0x756ba70b1019ced6.asc
       - 0xca77951d23b66a9d.asc
       - 0x3CA66B4946770C59.asc
-      - 0x274E9C32857A9594.asc
       - 0x076B95DB2FFC7F4A.asc
       - 3022882DE02EE5CC.asc
     gpgsource: "https://iaas-repo.uio.no/nrec/nrec-resources/files/dell/keys/"
@@ -67,6 +66,13 @@
         state: latest
         update_cache: yes
       when: ansible_distribution_major_version == '8'
+
+    - name: "Install Dell system update package for el9"
+      dnf:
+        name: dell-system-update
+        state: latest
+        update_cache: yes
+      when: ansible_distribution_major_version == '9'
 
     - name: "Transfer Dell GPG keys import script"
       copy: src={{ playbook_dir }}/../files/scripts/cp_dell_gpg_keys.sh dest=/root/cp_dell_gpg_keys.sh mode=0777

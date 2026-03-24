@@ -155,6 +155,7 @@ bgo-compute-82
 bgo-compute-83
 bgo-compute-84
 bgo-compute-085
+bgo-compute-095
 bgo-compute-alice-11
 bgo-compute-alice-12
 bgo-compute-alice-13
@@ -221,6 +222,8 @@ bgo-compute-epyc-56
 bgo-compute-epyc-57
 bgo-compute-epyc-86
 bgo-compute-epyc-87
+bgo-compute-epyc-096
+bgo-compute-epyc-097
 bgo-compute-epyc-099
 bgo-compute-l40s-88
 bgo-compute-l40s-89
@@ -258,6 +261,7 @@ bgo-compute-82
 bgo-compute-83
 bgo-compute-84
 bgo-compute-085
+bgo-compute-095
 
 [bgo-compute-alice]
 bgo-compute-alice-11
@@ -334,6 +338,8 @@ bgo-compute-epyc-56
 bgo-compute-epyc-57
 bgo-compute-epyc-86
 bgo-compute-epyc-87
+bgo-compute-epyc-096
+bgo-compute-epyc-097
 bgo-compute-epyc-099
 
 [bgo-compute-l40s]
