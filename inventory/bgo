@@ -202,6 +202,9 @@ bgo-compute-alice-34
 bgo-compute-clarino-36
 bgo-compute-clarino-37
 bgo-compute-elixir1-92
+bgo-compute-elixir1-100
+bgo-compute-elixir1-101
+bgo-compute-elixir1-102
 bgo-compute-epyc-41
 bgo-compute-epyc-42
 bgo-compute-epyc-43
@@ -218,6 +221,7 @@ bgo-compute-epyc-56
 bgo-compute-epyc-57
 bgo-compute-epyc-86
 bgo-compute-epyc-87
+bgo-compute-epyc-099
 bgo-compute-l40s-88
 bgo-compute-l40s-89
 bgo-compute-l40s-90
@@ -309,6 +313,9 @@ bgo-compute-clarino-37
 
 [bgo-compute-elixir1]
 bgo-compute-elixir1-92
+bgo-compute-elixir1-100
+bgo-compute-elixir1-101
+bgo-compute-elixir1-102
 
 [bgo-compute-epyc]
 bgo-compute-epyc-41
@@ -327,6 +334,7 @@ bgo-compute-epyc-56
 bgo-compute-epyc-57
 bgo-compute-epyc-86
 bgo-compute-epyc-87
+bgo-compute-epyc-099
 
 [bgo-compute-l40s]
 bgo-compute-l40s-88
