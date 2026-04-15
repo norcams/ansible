@@ -127,6 +127,7 @@ osl-cephmon-object-03
 
 [osl-compute]
 osl-compute-04
+osl-compute-004
 osl-compute-05
 osl-compute-005
 osl-compute-06
@@ -197,6 +198,7 @@ osl-compute-l40s-68
 
 [osl-compute-central]
 osl-compute-04
+osl-compute-004
 osl-compute-05
 osl-compute-005
 osl-compute-06
