@@ -179,6 +179,7 @@ osl-compute-atlas-37
 osl-compute-atlas-38
 osl-compute-atlas-39
 osl-compute-atlas-40
+osl-compute-atlas3-069
 osl-compute-epyc-11
 osl-compute-epyc-12
 osl-compute-epyc-13
@@ -257,6 +258,9 @@ osl-compute-atlas-37
 osl-compute-atlas-38
 osl-compute-atlas-39
 osl-compute-atlas-40
+
+[osl-compute-atlas3]
+osl-compute-atlas3-069
 
 [osl-compute-epyc]
 osl-compute-epyc-11
