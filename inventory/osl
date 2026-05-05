@@ -207,6 +207,7 @@ osl-compute-vgpu-19
 osl-compute-vgpu-20
 osl-compute-l40s-67
 osl-compute-l40s-68
+osl-compute-l40s-068
 
 [osl-compute-central]
 osl-compute-04
@@ -304,6 +305,7 @@ osl-compute-vgpu-20
 [osl-compute-l40s]
 osl-compute-l40s-67
 osl-compute-l40s-68
+osl-compute-l40s-068
 
 [osl-console]
 osl-console-01
