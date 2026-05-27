@@ -37,7 +37,6 @@ bgo-compute-alice-16
 bgo-compute-alice-17
 bgo-compute-alice-18
 bgo-compute-alice-19
-bgo-compute-alice2
 bgo-compute-alice-20
 bgo-compute-alice-21
 bgo-compute-alice-22
@@ -75,7 +74,6 @@ bgo-compute-alice-33
 bgo-compute-alice-34
 bgo-compute-clarino-36
 bgo-compute-clarino-37
-bgo-compute-elixir1
 bgo-compute-elixir1-100
 bgo-compute-elixir1-101
 bgo-compute-elixir1-102
@@ -134,7 +132,6 @@ bgo-storage-dcache-16
 bgo-storage-dcache-17
 bgo-storage-dcache-18
 bgo-storage-dcache-19
-bgo-storage-dcache2
 bgo-storage-dcache-20
 bgo-storage-dcache-21
 bgo-storage-dcache-22
