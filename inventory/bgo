@@ -232,8 +232,11 @@ bgo-compute-epyc-096
 bgo-compute-epyc-097
 bgo-compute-epyc-099
 bgo-compute-l40s-88
+bgo-compute-l40s-088
 bgo-compute-l40s-89
+bgo-compute-l40s-089
 bgo-compute-l40s-90
+bgo-compute-l40s-090
 bgo-compute-l40s-091
 bgo-compute-l40s-93
 bgo-compute-l40s-093
@@ -356,8 +359,11 @@ bgo-compute-epyc-099
 
 [bgo-compute-l40s]
 bgo-compute-l40s-88
+bgo-compute-l40s-088
 bgo-compute-l40s-89
+bgo-compute-l40s-089
 bgo-compute-l40s-90
+bgo-compute-l40s-090
 bgo-compute-l40s-091
 bgo-compute-l40s-93
 bgo-compute-l40s-093
