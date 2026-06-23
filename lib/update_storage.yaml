@@ -28,7 +28,7 @@
 
     - name: Silence sensu before to many alarms are triggered
       ansible.builtin.command:
-        cmd: "bin/python manage_sensu.py silence -H {{ inventory_hostname }}"
+        cmd: "bin/python sensu.py silence -H {{ inventory_hostname }}"
         chdir: "{{ himlarcli_path }}"
       delegate_to: "{{ inventory_hostname.split('-') | first }}-proxy-02"    # <loc>-proxy-02
 
@@ -58,7 +58,7 @@
 
     - name: alma-gpg-key is imported, shell edition
       ansible.builtin.shell: rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
-        
+
     - name: Update all release packages to get new gpg keys first
       ansible.builtin.dnf:
         name: '*-release'
@@ -95,7 +95,7 @@
 
     - name: Silence sensu before reboot
       ansible.builtin.command:
-        cmd: "bin/python manage_sensu.py silence -H {{ inventory_hostname }}"
+        cmd: "bin/python sensu.py silence -H {{ inventory_hostname }}"
         chdir: "{{ himlarcli_path }}"
       delegate_to: "{{ inventory_hostname.split('-') | first }}-proxy-02"    # <loc>-proxy-02
 
