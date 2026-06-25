@@ -149,6 +149,7 @@ bgo-compute-083
 bgo-compute-084
 bgo-compute-085
 bgo-compute-095
+bgo-compute-098
 bgo-compute-103
 bgo-compute-104
 bgo-compute-alice-11
@@ -229,6 +230,15 @@ bgo-compute-l40s-094
 bgo-compute-vgpu-035
 bgo-compute-vgpu-52
 bgo-compute-vgpu-54
+bgo-compute-h200-111
+bgo-compute-rtx6k-110
+ 
+[bgo-compute-h200]
+bgo-compute-h200-111
+
+[bgo-compute-rtx6k]
+bgo-compute-rtx6k-110
+
 
 [bgo-compute-central]
 bgo-compute-007
@@ -247,6 +257,7 @@ bgo-compute-083
 bgo-compute-084
 bgo-compute-085
 bgo-compute-095
+bgo-compute-098
 bgo-compute-103
 bgo-compute-104
 
