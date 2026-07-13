@@ -1,0 +1,11 @@
+[test01-openstack:children]
+test01-console
+test01-dashboard
+test01-dns
+test01-identity
+test01-image
+test01-metric
+test01-network
+test01-novactrl
+test01-telemetry
+test01-volume
