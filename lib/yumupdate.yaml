@@ -30,11 +30,15 @@
       #      update_cache: yes
 
   - name: Upgrade all packages excluding {{ exclude | default('none') }}
-    yum:
+    ansible.builtin.dnf:
       name: '*'
       state: latest
       update_cache: yes
       exclude: "{{ exclude | default(omit) }}"
+
+  - name: Remove unused dependency packages
+    ansible.builtin.dnf:
+      autoremove: true
 
   - name: Restart iptables
     systemd:
@@ -42,7 +46,7 @@
       state: restarted
 
   - import_tasks: tasks/puppetrun.yaml
-    vars:
-      runmode: 'kickstart'
+#    vars:
+#      runmode: 'kickstart'
     when:
     - location != "uib"
