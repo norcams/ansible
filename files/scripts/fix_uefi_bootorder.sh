@@ -28,10 +28,12 @@ entries_to_delete=()
 for entry in $(efibootmgr | awk '/NIC in Slot / {print $1}' | sed 's/[^0-9]*//g'); do
     entries_to_delete+=( $entry )
 done
-unset entries_to_delete[-1]
-for entry in ${entries_to_delete[@]}; do
-    efibootmgr --bootnum $entry --delete-bootnum
-done
+if (( ${#entries_to_delete[@]} > 0 )); then
+    unset entries_to_delete[-1]
+    for entry in ${entries_to_delete[@]}; do
+        efibootmgr --bootnum $entry --delete-bootnum
+    done
+fi
 
 # Remove duplicate OS entries (from previous reinstalls)
 entries_to_delete=()
