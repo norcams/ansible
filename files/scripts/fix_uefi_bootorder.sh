@@ -45,7 +45,6 @@ done
 
 # Get efi boot numbers
 pxe_number=$(efibootmgr | awk '/(Integrated NIC|Embedded NIC|NIC in Slot) / {print $1}' | sed 's/[^0-9]*//g')
-pxe_number=$(efibootmgr | awk '/(Integrated|Embedded) NIC/ {print $1}' | sed 's/[^0-9]*//g')
 os_number=$(efibootmgr | awk '/AlmaLinux/ {print $1}' | sed 's/[^0-9]*//g')
 
 # Set correct boot order
