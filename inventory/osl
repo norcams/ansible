@@ -201,7 +201,7 @@ osl-compute-epyc-56
 osl-compute-hpc-25
 osl-compute-hpc-26
 osl-compute-hpc-27
-osl-compute-hpc-28
+osl-compute-ded-028
 osl-compute-robin-18
 osl-compute-vgpu-17
 osl-compute-vgpu-19
@@ -282,7 +282,9 @@ osl-compute-epyc-56
 osl-compute-hpc-25
 osl-compute-hpc-26
 osl-compute-hpc-27
-osl-compute-hpc-28
+
+[osl-compute-ded]
+osl-compute-ded-028
 
 [osl-compute-robin]
 osl-compute-robin-18
