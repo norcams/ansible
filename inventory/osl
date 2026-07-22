@@ -191,7 +191,6 @@ osl-compute-epyc-11
 osl-compute-epyc-12
 osl-compute-epyc-13
 osl-compute-epyc-14
-osl-compute-epyc-15
 osl-compute-epyc-16
 osl-compute-epyc-52
 osl-compute-epyc-53
@@ -208,6 +207,7 @@ osl-compute-vgpu-19
 osl-compute-vgpu-20
 osl-compute-l40s-067
 osl-compute-l40s-068
+osl-compute-shpc-015
 osl-compute-shpc-073
 osl-compute-shpc-074
 osl-compute-shpc-075
@@ -270,13 +270,19 @@ osl-compute-epyc-11
 osl-compute-epyc-12
 osl-compute-epyc-13
 osl-compute-epyc-14
-osl-compute-epyc-15
 osl-compute-epyc-16
 osl-compute-epyc-52
 osl-compute-epyc-53
 osl-compute-epyc-54
 osl-compute-epyc-55
 osl-compute-epyc-56
+
+[osl-compute-shpc]
+osl-compute-shpc-015
+osl-compute-shpc-073
+osl-compute-shpc-074
+osl-compute-shpc-075
+osl-compute-shpc-076
 
 [osl-compute-hpc]
 osl-compute-hpc-25
