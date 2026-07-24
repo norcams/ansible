@@ -10,7 +10,8 @@ osl-compute
 osl-compute-central
 osl-compute-atlas
 osl-compute-epyc
-osl-compute-hpc
+osl-compute-ded
+osl-compute-shpc
 osl-compute-robin
 osl-compute-vgpu
 osl-compute-l40s
