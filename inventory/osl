@@ -188,7 +188,6 @@ osl-compute-atlas3-069
 osl-compute-atlas3-070
 osl-compute-atlas3-071
 osl-compute-atlas3-072
-osl-compute-epyc-12
 osl-compute-epyc-52
 osl-compute-epyc-53
 osl-compute-epyc-54
@@ -205,6 +204,7 @@ osl-compute-vgpu-20
 osl-compute-l40s-067
 osl-compute-l40s-068
 osl-compute-shpc-011
+osl-compute-shpc-012
 osl-compute-shpc-013
 osl-compute-shpc-014
 osl-compute-shpc-015
@@ -267,7 +267,6 @@ osl-compute-atlas3-071
 osl-compute-atlas3-072
 
 [osl-compute-epyc]
-osl-compute-epyc-12
 osl-compute-epyc-52
 osl-compute-epyc-53
 osl-compute-epyc-54
@@ -276,6 +275,7 @@ osl-compute-epyc-56
 
 [osl-compute-shpc]
 osl-compute-shpc-011
+osl-compute-shpc-012
 osl-compute-shpc-013
 osl-compute-shpc-014
 osl-compute-shpc-015
