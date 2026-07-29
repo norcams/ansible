@@ -189,7 +189,6 @@ osl-compute-atlas3-070
 osl-compute-atlas3-071
 osl-compute-atlas3-072
 osl-compute-epyc-52
-osl-compute-epyc-53
 osl-compute-epyc-54
 osl-compute-epyc-55
 osl-compute-epyc-56
@@ -208,6 +207,7 @@ osl-compute-shpc-012
 osl-compute-shpc-013
 osl-compute-shpc-015
 osl-compute-shpc-016
+osl-compute-shpc-053
 osl-compute-shpc-073
 osl-compute-shpc-074
 osl-compute-shpc-075
@@ -267,7 +267,6 @@ osl-compute-atlas3-072
 
 [osl-compute-epyc]
 osl-compute-epyc-52
-osl-compute-epyc-53
 osl-compute-epyc-54
 osl-compute-epyc-55
 osl-compute-epyc-56
@@ -278,6 +277,7 @@ osl-compute-shpc-012
 osl-compute-shpc-013
 osl-compute-shpc-015
 osl-compute-shpc-016
+osl-compute-shpc-053
 osl-compute-shpc-073
 osl-compute-shpc-074
 osl-compute-shpc-075
