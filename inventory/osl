@@ -9,7 +9,6 @@ osl-cephmon-object
 osl-compute
 osl-compute-central
 osl-compute-atlas
-osl-compute-epyc
 osl-compute-ded
 osl-compute-shpc
 osl-compute-robin
@@ -188,7 +187,6 @@ osl-compute-atlas3-069
 osl-compute-atlas3-070
 osl-compute-atlas3-071
 osl-compute-atlas3-072
-osl-compute-epyc-55
 osl-compute-ded-025
 osl-compute-ded-026
 osl-compute-ded-027
@@ -207,6 +205,7 @@ osl-compute-shpc-016
 osl-compute-shpc-052
 osl-compute-shpc-053
 osl-compute-shpc-054
+osl-compute-shpc-055
 osl-compute-shpc-056
 osl-compute-shpc-073
 osl-compute-shpc-074
@@ -265,9 +264,6 @@ osl-compute-atlas3-070
 osl-compute-atlas3-071
 osl-compute-atlas3-072
 
-[osl-compute-epyc]
-osl-compute-epyc-55
-
 [osl-compute-shpc]
 osl-compute-shpc-011
 osl-compute-shpc-012
@@ -277,6 +273,7 @@ osl-compute-shpc-016
 osl-compute-shpc-052
 osl-compute-shpc-053
 osl-compute-shpc-054
+osl-compute-shpc-055
 osl-compute-shpc-056
 osl-compute-shpc-073
 osl-compute-shpc-074
