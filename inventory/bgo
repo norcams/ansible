@@ -229,7 +229,9 @@ bgo-compute-l40s-094
 bgo-compute-rtx6k-110
 bgo-compute-vgpu-035
 bgo-compute-vgpu-52
+bgo-compute-vgpu-052
 bgo-compute-vgpu-54
+bgo-compute-vgpu-054
 bgo-compute-h200-111
 bgo-compute-rtx6k-110
  
@@ -346,7 +348,9 @@ bgo-compute-rtx6k-110
 [bgo-compute-vgpu]
 bgo-compute-vgpu-035
 bgo-compute-vgpu-52
+bgo-compute-vgpu-052
 bgo-compute-vgpu-54
+bgo-compute-vgpu-054
 
 [bgo-console]
 bgo-console-01
