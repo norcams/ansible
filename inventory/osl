@@ -14,6 +14,7 @@ osl-compute-shpc
 osl-compute-robin
 osl-compute-vgpu
 osl-compute-l40s
+osl-compute-rtx6k
 osl-console
 osl-controller
 osl-dashboard
@@ -197,6 +198,7 @@ osl-compute-vgpu-19
 osl-compute-vgpu-20
 osl-compute-l40s-067
 osl-compute-l40s-068
+osl-compute-rtx6k-081
 osl-compute-shpc-011
 osl-compute-shpc-012
 osl-compute-shpc-013
@@ -299,6 +301,9 @@ osl-compute-vgpu-20
 [osl-compute-l40s]
 osl-compute-l40s-067
 osl-compute-l40s-068
+
+[osl-compute-rtx6k]
+osl-compute-rtx6k-081
 
 [osl-console]
 osl-console-01
