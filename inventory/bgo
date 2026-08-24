@@ -188,7 +188,9 @@ bgo-compute-alice2-079
 bgo-compute-alice2-080
 bgo-compute-alice3-114
 bgo-compute-clarino-36
+bgo-compute-clarino-036
 bgo-compute-clarino-37
+bgo-compute-clarino-037
 bgo-compute-elixir1-100
 bgo-compute-elixir1-101
 bgo-compute-elixir1-102
@@ -294,7 +296,9 @@ bgo-compute-alice3-114
 
 [bgo-compute-clarino]
 bgo-compute-clarino-36
+bgo-compute-clarino-036
 bgo-compute-clarino-37
+bgo-compute-clarino-037
 
 [bgo-compute-elixir1]
 bgo-compute-elixir1-100
