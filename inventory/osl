@@ -193,10 +193,10 @@ osl-compute-ded-026
 osl-compute-ded-027
 osl-compute-ded-028
 osl-compute-robin-18
-osl-compute-vgpu-17
 osl-compute-vgpu-20
 osl-compute-l40s-067
 osl-compute-l40s-068
+osl-compute-rtx6k-017
 osl-compute-rtx6k-019
 osl-compute-rtx6k-081
 osl-compute-shpc-011
@@ -294,7 +294,6 @@ osl-compute-ded-028
 osl-compute-robin-18
 
 [osl-compute-vgpu]
-osl-compute-vgpu-17
 osl-compute-vgpu-20
 
 [osl-compute-l40s]
@@ -302,6 +301,7 @@ osl-compute-l40s-067
 osl-compute-l40s-068
 
 [osl-compute-rtx6k]
+osl-compute-rtx6k-017
 osl-compute-rtx6k-019
 osl-compute-rtx6k-081
 
