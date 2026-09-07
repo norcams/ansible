@@ -49,6 +49,7 @@ osl-storage-v2d
 osl-telemetry
 osl-torack
 osl-volume
+osl-backup
 
 [osl-nodes:children]
 osl-access
@@ -81,6 +82,7 @@ osl-rgw
 osl-status
 osl-telemetry
 osl-volume
+osl-backup
 
 [osl-openstack:children]
 osl-console
@@ -424,6 +426,9 @@ osl-spine-02
 
 [osl-status]
 osl-status-01
+
+[osl-backup]
+osl-backup-01
 
 [osl-storage]
 osl-storage-06
