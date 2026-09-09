@@ -11,7 +11,6 @@ osl-compute-central
 osl-compute-atlas
 osl-compute-ded
 osl-compute-shpc
-osl-compute-robin
 osl-compute-l40s
 osl-compute-rtx6k
 osl-console
@@ -193,7 +192,6 @@ osl-compute-ded-025
 osl-compute-ded-026
 osl-compute-ded-027
 osl-compute-ded-028
-osl-compute-robin-18
 osl-compute-l40s-067
 osl-compute-l40s-068
 osl-compute-rtx6k-017
@@ -205,6 +203,7 @@ osl-compute-shpc-012
 osl-compute-shpc-013
 osl-compute-shpc-015
 osl-compute-shpc-016
+osl-compute-shpc-018
 osl-compute-shpc-052
 osl-compute-shpc-053
 osl-compute-shpc-054
@@ -274,6 +273,7 @@ osl-compute-shpc-012
 osl-compute-shpc-013
 osl-compute-shpc-015
 osl-compute-shpc-016
+osl-compute-shpc-018
 osl-compute-shpc-052
 osl-compute-shpc-053
 osl-compute-shpc-054
@@ -290,9 +290,6 @@ osl-compute-ded-025
 osl-compute-ded-026
 osl-compute-ded-027
 osl-compute-ded-028
-
-[osl-compute-robin]
-osl-compute-robin-18
 
 [osl-compute-l40s]
 osl-compute-l40s-067
