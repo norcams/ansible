@@ -1,0 +1,32 @@
+#
+# Deploy himlarcli to hosts under imagebuilder_path
+# Verified: This will run under ansible 2.16
+#
+# sudo ansible-playbook -e "myhosts=bgo-login:bgo-proxy" lib/deploy_imagebuilder.yaml
+#
+
+- hosts: "{{ myhosts }}"
+  gather_facts: True
+  tasks:
+    - name: "Update {{ imagebuilder_repo }} with version {{ imagebuilder_ref }}"
+      ansible.builtin.git:
+        repo:     "{{ imagebuilder_repo }}"
+        version:  "{{ imagebuilder_ref }}"
+        dest:     "{{ imagebuilder_path }}"
+        force:    "{{ imagebuilder_force_update }}"
+
+    - name: "Upgrade pip inside imagebuilder virtual environment"
+      ansible.builtin.pip:
+        name: pip
+        state: latest
+        virtualenv:               "{{ imagebuilder_path }}"
+        virtualenv_command:       "{{ imagebuilder_virtualenv_command | default('python3.9 -m venv') }}"
+        virtualenv_site_packages: "false"
+
+    - name: "Install requirements.txt python modules with pip"
+      ansible.builtin.pip:
+        virtualenv_command:       "{{ imagebuilder_virtualenv_command | default('python3.9 -m venv') }}"
+        virtualenv:               "{{ imagebuilder_path }}"
+        requirements:             "requirements.txt"
+        virtualenv_site_packages: "false"
+        chdir:                    "{{ imagebuilder_path }}"

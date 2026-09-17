@@ -24,6 +24,13 @@ himlarcli_packages:
   - openssl-devel
   - libffi-devel
 
+# imagebuilder
+imagebuilder_path: /opt/imagebuilder
+imagebuilder_repo: https://github.com/trondham/imagebuilder.git
+imagebuilder_ref: major_refactor
+imagebuilder_force_update: yes
+
+# puppet environments for puppetmaster
 puppet_environments:
   - admin
   - monitor
