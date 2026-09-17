@@ -237,6 +237,10 @@ bgo-compute-vgpu-54
 bgo-compute-vgpu-054
 bgo-compute-h200-111
 bgo-compute-rtx6k-110
+bgo-compute-geov1-115
+bgo-compute-geov1-116
+bgo-compute-geov1-117
+bgo-compute-geov1-118
  
 [bgo-compute-h200]
 bgo-compute-h200-111
@@ -335,6 +339,12 @@ bgo-compute-epyc-55
 bgo-compute-epyc-56
 bgo-compute-epyc-57
 bgo-compute-epyc-86
+
+[bgo-compute-geov1]
+bgo-compute-geov1-115
+bgo-compute-geov1-116
+bgo-compute-geov1-117
+bgo-compute-geov1-118
 
 [bgo-compute-h200]
 bgo-compute-h200-111
