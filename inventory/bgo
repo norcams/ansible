@@ -14,6 +14,7 @@ bgo-compute-clarino
 bgo-compute-elixir1
 bgo-compute-elixir2
 bgo-compute-epyc
+bgo-compute-shpc
 bgo-compute-h200
 bgo-compute-l40s
 bgo-compute-rtx6k
@@ -208,6 +209,7 @@ bgo-compute-epyc-096
 bgo-compute-epyc-097
 bgo-compute-epyc-099
 bgo-compute-epyc-41
+bgo-compute-shpc-041
 bgo-compute-epyc-42
 bgo-compute-epyc-43
 bgo-compute-epyc-44
