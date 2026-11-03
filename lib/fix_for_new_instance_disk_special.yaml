@@ -1,7 +1,0 @@
----
-- hosts: "{{ myhosts }}"
-  tasks:
-
-  - name: Wipe new instance disk (sdb) 
-    command: wipefs --all -f /dev/sdb
-

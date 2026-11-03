@@ -1,3 +1,4 @@
+
 #
 # This can be used to upgrade dashboard to new version of openstack
 #
@@ -6,8 +7,11 @@
 # Mandatory input variables:
 # * myhosts (str): ansible node(s)
 #
+# IMPORTANT: Remember to edit inventory/group_vars/<region>.yaml to set
+#            the upgrade_puppet_env.horizon variable
+#
 # Example:
-# sudo ansible-playbook -e "myhosts=test02-dashboard-01" lib/upgrade/dashboard.yaml
+# sudo ansible-playbook -e "myhosts=test01-dashboard" lib/upgrade/horizon.yaml
 #
 # Last verified: 2018-07-18 (ansible version 2.4.2.0)
 #
@@ -15,7 +19,20 @@
 - import_playbook: ../remove_epel_packages.yaml
 - hosts: "{{ myhosts }}"
   gather_facts: no
+
+  vars:
+    config_dir: '/etc/openstack-dashboard'
+
   tasks:
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.horizon }}"
+      when: check_config_backup.stat.exists == False
+
     - name: 'Stop crond to avoid puppet run'
       systemd:
         name: crond
@@ -29,7 +46,7 @@
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.horizon }}"
         # these are only used by vagrant
         himlar_deployment: 'redeploy'
     - name: 'Stop httpd'
@@ -40,14 +57,22 @@
       file: name=/usr/share/openstack-dashboard state=absent
     - name: 'Remove /etc/openstack-dashboard'
       file: name=/etc/openstack-dashboard state=absent
-    - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.horizon }}"
+    - name: Upgrade RDO packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
+        disablerepo: '*'
+        enablerepo: rdo-release
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.horizon }}"
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ upgrade_puppet_env.horizon }}"
     - import_tasks: ../tasks/patch.yaml
       vars:
         patchfile: ../../files/patches/dashboard/0002-custom-flavor-help.patch
@@ -55,7 +80,7 @@
     - import_tasks: ../tasks/patch.yaml
       vars:
         patchfile: ../../files/patches/dashboard/0003-openstack-auth-login-msg.diff
-        basedir: /usr/lib/python3.6/site-packages/openstack_auth
+        basedir: /usr/lib/python3.9/site-packages/openstack_auth
 #    - import_tasks: ../tasks/patch.yaml
 #      vars:
 #        patchfile: ../../files/patches/horizon-flavor-sort-fix-pike.diff
@@ -64,13 +89,17 @@
 #      vars:
 #        patchfile: ../../files/patches/horizon-tables-size.diff
 #        basedir: /usr/share/openstack-dashboard
+    - import_tasks: ../tasks/patch.yaml
+      vars:
+        patchfile: ../../files/patches/dashboard/0004-nrec-themes.diff
+        basedir: /usr/share/openstack-dashboard/openstack_dashboard/static/dashboard/scss
     - name: 'Restart memcache to avoid stale data'
       systemd:
         name: memcached
         state: restarted
     - name: 'Restart httpd'
       systemd: name=httpd state=restarted
-    - name: 'Stop crond to avoid puppet run'
+    - name: 'Start crond'
       systemd:
         name: crond
         state: started

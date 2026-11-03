@@ -1,0 +1,46 @@
+#
+#
+- hosts: "{{ myhosts }}"
+  gather_facts: False
+
+  tasks:
+    - name: Get running instances
+      ansible.builtin.command:
+        cmd: virsh list --uuid
+      register: running_instances
+
+    - name: Get OS info from QEMU guest agent
+      ansible.builtin.shell:
+        #cmd: virsh qemu-agent-command {{ item }} '{"execute":"guest-get-osinfo"}' --pretty
+        cmd: echo -n "{{ item }},"; virsh guestinfo --os {{ item }} | awk '/os.id|os.version-id/ {print $3}' | paste -d, -s
+      loop: "{{ running_instances.stdout_lines }}"
+      register: osinfo
+
+    - name: Get date
+      ansible.builtin.set_fact:
+        isodate: "{{ '%Y-%m-%d' | strftime }}"
+      
+    - name: Remove a specific file
+      ansible.builtin.file:
+        path: "/tmp/osinfo-{{ isodate }}.csv"
+        state: absent
+      delegate_to: localhost
+      run_once: true
+    
+    - name: Create an empty file if it does not exist
+      ansible.builtin.file:
+        path: "/tmp/osinfo-{{ isodate }}.csv"
+        state: touch
+        mode: '0644'
+      delegate_to: localhost
+      run_once: true
+      
+    - name: Append a value to the end of a single-line file
+      ansible.builtin.lineinfile:
+        path: "/tmp/osinfo-{{ isodate }}.csv"
+        line: "{{ item.stdout }}"
+        insertafter: EOF
+        state: present
+      loop: "{{ osinfo.results }}"
+      delegate_to: localhost
+

@@ -1,16 +1,28 @@
-# Restart all of the services when etcd-cluster is on netwerk
+# Restart all compute services on hypervisor
 - hosts: "{{ myhosts }}"
   gather_facts: False
-  tasks:
-    - systemd: name=etcd state=restarted
-    - pause: seconds=20
-    - systemd: name=etcd-grpc-proxy state=restarted
-    - pause: seconds=20
-    - systemd: name=openstack-nova-compute state=restarted
-    - pause: seconds=20
-    - systemd: name=calico-felix state=restarted
-    - pause: seconds=20
-    - systemd: name=openstack-nova-metadata-api state=restarted
-    - pause: seconds=40
-    - systemd: name=calico-dhcp-agent state=restarted
 
+  vars:
+    etcd_services_to_restart:
+      - etcd
+      - etcd-grpc-proxy
+    compute_services_to_restart:
+      - openstack-nova-compute
+      - calico-felix
+      #- openstack-nova-metadata-api
+
+  tasks:
+
+    - name: Restart compute services
+      ansible.builtin.import_tasks: tasks/restart_compute_services.yaml
+      vars:
+        myhosts:  "{{ myhosts }}"
+        services_to_restart: "{{ etcd_services_to_restart + compute_services_to_restart }}"
+      when: location != 'vagrant'
+
+    - name: Restart compute services (vagrant)
+      ansible.builtin.import_tasks: tasks/restart_compute_services.yaml
+      vars:
+        myhosts:  "{{ myhosts }}"
+        services_to_restart: "{{ compute_services_to_restart }}"
+      when: location == 'vagrant'

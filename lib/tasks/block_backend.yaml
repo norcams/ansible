@@ -7,7 +7,7 @@
 #       node: test01-identity-02
 #
 - name: Disable puppet
-  command: puppet agent --disable "disabled by ansible => block access to {{ node }} backend"
+  command: /opt/puppetlabs/bin/puppet agent --disable "disabled by ansible => block access to {{ node }} backend"
 - name: Get last octet from mgmt ip of {{ node }}
   local_action: shell getent hosts {{ node }} | awk '{ print $1 }' | cut -d'.' -f4
   register: node_last_octet

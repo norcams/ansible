@@ -1,16 +1,25 @@
 # This will try to upgrade nova without downtime
 #
 # Example:
-# sudo ansible-playbook -e "myhosts=test01-compute-01 himlar_puppet_env=victoria" lib/upgrade/compute.yaml
+# sudo ansible-playbook -e "myhosts=test01-compute-01 himlar_puppet_env=yoga" lib/upgrade/compute.yaml
 #
 # Variables:
 #   myhosts: name of host(s) to upgrade (mandatory)
 #
-# Last verified: 2020-08-18 (ansible version 2.9.10)
+# Last verified: 2025-04-11 (ansible core 2.16.3)
 #
 
+# Sanity check: himlar_puppet_env must be defined
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Check if himlar_puppet_env is defined
+      ansible.builtin.fail:
+        msg: "Variable himlar_puppet_env is not defined"
+      when: himlar_puppet_env is not defined
+
 # Stop puppet on all novactrl nodes
-- import_playbook: ../toggle_puppet.yaml
+- ansible.builtin.import_playbook: ../toggle_puppet.yaml
   vars:
     myhosts:  "{{ myhosts }}"
     action:   disable
@@ -18,42 +27,99 @@
 
 # Upgrade compute host(s)
 - hosts: "{{ myhosts }}"
-  gather_facts: false
+  serial: 1
+  gather_facts: true
+
+  vars:
+    config_dir: '/etc/nova'
+    etcd_services_to_restart:
+      - etcd
+      - etcd-grpc-proxy
+    compute_services_to_restart:
+      - openstack-nova-compute
+      - calico-felix
+      - openstack-nova-metadata-api
+
   tasks:
+
+    - name: Define auth_url variable (bgo)
+      ansible.builtin.set_fact:
+        auth_url: 'http://identity.bgo.uhdc.no:5000'
+      when: location == 'bgo'
+
+    - name: Define auth_url variable (osl)
+      ansible.builtin.set_fact:
+        auth_url: 'http://identity.osl.uhdc.no:5000'
+      when: location == 'osl'
+
+    - name: Define auth_url variable (test01)
+      ansible.builtin.set_fact:
+        auth_url: 'http://identity.test01.uhdc.no:5000'
+      when: location == 'test01'
+
+    - name: Define auth_url variable (vagrant)
+      ansible.builtin.set_fact:
+        auth_url: 'http://identity.trp.vagrant.iaas.intern:5000'
+      when: location == 'vagrant'
+
+    - name: Check if "{{ config_dir }}_pre_{{ himlar_puppet_env }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ himlar_puppet_env }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ himlar_puppet_env }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ himlar_puppet_env }}"
+      when: check_config_backup.stat.exists == False
+
     - name: 'Stop crond to avoid puppet run'
-      systemd:
+      ansible.builtin.systemd_service:
         name: crond
         state: stopped
 
+    - name: Get hypervisor status
+      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} hypervisor show {{ ansible_nodename }} -c status -f value"
+      register: initial_host_status
+
+    - name: Disable hypervisor
+      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} compute service set {{ ansible_nodename }} nova-compute --disable"
+      when: initial_host_status.stdout == "enabled"
+
     - name: Update release package to get new gpg keys first
-      yum:
+      ansible.builtin.dnf:
         name: 'almalinux-release'
         state: latest
         update_cache: yes
 
     - name: 'Repo files'
-      command: 'ls -1 /etc/yum.repos.d/'
+      ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
 
     - name: 'Remove all old yum repos'
-      file: name="/etc/yum.repos.d/{{item}}" state=absent
+      ansible.builtin.file:
+        name: "/etc/yum.repos.d/{{item}}"
+        state: absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
 
     - name: 'Stop openstack-nova-compute'
-      systemd: name=openstack-nova-compute state=stopped
+      ansible.builtin.systemd_service:
+        name: openstack-nova-compute
+        state: stopped
       ignore_errors: yes
 
     - name: 'Stop nova metadata-api service'
-      systemd: name=openstack-nova-metadata-api state=stopped
+      ansible.builtin.systemd_service:
+        name: openstack-nova-metadata-api
+        state: stopped
       ignore_errors: yes
 
-    - import_tasks: ../tasks/puppetrun.yaml
+    - name: Run Puppet (kickstart)
+      ansible.builtin.import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
         puppet_ignore_errors: no
 
     - name: 'Purge old package'
-      dnf:
+      ansible.builtin.dnf:
         name:
           - python3-nova
           - python3-novaclient
@@ -62,56 +128,60 @@
           - openstack-nova-compute
         state: absent
 
-# Trengs kanskje ikke?
-#    - name: 'Purge old package'
-#      dnf:
-#        name:
-#          - python3-placement
-#          - openstack-placement-common
-#          - openstack-placement-api
-#        state: absent
-
-#    - name: 'Clear problematic packages'
-#      dnf:
-#        name:
-#        - openvswitch
-#        - network-scripts-openvswitch
-#        - rdo-network-scripts-openvswitch
-#        state: absent
-
     - name: 'Autoremove unneeded packages installed as dependencies'
-      dnf:
+      ansible.builtin.dnf:
         autoremove: yes
 
-    - name: 'Remove /etc/nova/'
-      file: name=/etc/nova state=absent
+    - name: "Remove {{ config_dir }}"
+      ansible.builtin.file:
+        name: "{{ config_dir }}"
+        state: absent
 
-    - name: 'Remove /etc/placement/'
-      file: name=/etc/placement state=absent
-
-    - name: 'Updated the rest of RDO packages'
-      dnf:
+    - name: 'Update RDO packages'
+      ansible.builtin.dnf:
         name: "*"
         state: latest
         update_cache: true
         disablerepo: "*"
         enablerepo: "rdo-release"
 
-    - import_tasks: ../tasks/puppetrun.yaml
+    - name: Run Puppet
+      ansible.builtin.import_tasks: ../tasks/puppetrun.yaml
       vars:
         himlar_puppet_env: "{{ himlar_puppet_env }}"
         puppet_ignore_errors: no
 
-#    - import_tasks: ../tasks/puppetrun.yaml
-#      vars:
-#        himlar_puppet_env: "{{ himlar_puppet_env }}"
-#        puppet_ignore_errors: no
+    - name: Patch guest.py for NVRAM bug
+      ansible.builtin.import_tasks: ../tasks/patch.yaml
+      vars:
+        patchfile: ../../files/patches/nova-libvirt-rebuild.diff
+        dest: /usr/lib/python3.6/site-packages/nova/virt/libvirt/guest.py
 
-    - name: 'Restart metadata-api'
-      systemd: name=openstack-nova-metadata-api state=restarted
+    - name: Restart compute services
+      ansible.builtin.import_tasks: ../tasks/restart_compute_services.yaml
+      vars:
+        myhosts:  "{{ ansible_nodename }}"
+        services_to_restart: "{{ etcd_services_to_restart + compute_services_to_restart }}"
+      when: location != 'vagrant'
 
-    - name: 'Start crond again'
-      systemd:
+    - name: Restart compute services (vagrant)
+      ansible.builtin.import_tasks: ../tasks/restart_compute_services.yaml
+      vars:
+        myhosts:  "{{ ansible_nodename }}"
+        services_to_restart: "{{ compute_services_to_restart }}"
+      when: location == 'vagrant'
+
+    - name: 'Start crond'
+      ansible.builtin.systemd_service:
         name: crond
         state: started
 
+    - name: Enable hypervisor
+      ansible.builtin.shell: "source /root/openrc ; openstack --os-auth-url {{ auth_url }} compute service set {{ ansible_nodename }} nova-compute --enable"
+      when: initial_host_status.stdout == "enabled"
+
+
+# Display RDO repository name and Puppet environment
+- ansible.builtin.import_playbook: ../display_rdo_repo_and_puppet_env.yaml
+  vars:
+    myhosts:  "{{ myhosts }}"

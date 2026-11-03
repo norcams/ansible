@@ -14,7 +14,7 @@
       command: "{{kelda_path}}/repoadmin.sh -e prod setup test"
     - name: Update production repo pointers
       command: "{{kelda_path}}/repoadmin.sh -e prod setup prod"
-    - name: Update Apache httpd configuration if applicable
+    - name: Update Apache httpd configuration for nonfree if applicable
       copy:
         src:   "{{repoadmin_path}}/httpd/nonfree.conf"
         dest:  '/etc/httpd/conf.d/'
@@ -23,6 +23,15 @@
         group: root
         mode:  '644'
       register: nonfree
+    - name: Update Apache httpd configuration for snapshots if applicable
+      copy:
+        src:   "{{repoadmin_path}}/httpd/snapshots.conf"
+        dest:  '/etc/httpd/conf.d/'
+        remote_src: yes
+        owner: root
+        group: root
+        mode:  '644'
+      register: snapshots
     - name: Create new access lists for `nrec-resources`
       command: "{{repoadmin_path}}/httpd/generate-nrec-resources-acl.sh"
     - name: Copy new access list if changed
@@ -41,4 +50,4 @@
 
     - name: Reload httpd server when configuration changed
       command: systemctl reload httpd
-      when: nonfree.changed or nrecresources.changed
+      when: nonfree.changed or nrecresources.changed or snapshots.changed

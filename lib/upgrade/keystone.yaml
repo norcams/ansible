@@ -10,6 +10,9 @@
 # vagrant rsync identity
 # sudo -v (once evry sudo-timeout to avoid 'sudo: a password is required')
 #
+# IMPORTANT: Remember to edit inventory/group_vars/<region>.yaml to set
+#            the upgrade_puppet_env.keystone variable
+#
 # Variables:
 #   location: name of location (mandatory)
 #
@@ -51,16 +54,30 @@
   gather_facts: false
   vars:
     multi_region: 'none'
+    config_dir: '/etc/keystone'
   tasks:
+    - name: Puppet environment
+      ansible.builtin.debug:
+        msg: "Upgrading to: {{ upgrade_puppet_env.keystone }}"
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      register: check_config_backup
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      when: check_config_backup.stat.exists == False
     - systemd: name=crond state=stopped
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: "{{ upgrade_puppet_env.keystone }}"
         # these are only used by vagrant
         himlar_deployment: 'redeploy'
-    - name: 'Yum update'
-      yum: name=* state=latest update_cache=yes
+    - name: Upgrade ALL packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
     - name: 'Stop keystone webserver'
       systemd: name=httpd state=stopped
     - name: Run db_sync expand
@@ -71,11 +88,11 @@
       when: (multi_region == 'none') or (multi_region == 'first')
     - name: Purge old package
       yum: name=openstack-keystone state=absent
-    - name: 'Remove /etc/keystone/'
-      file: name=/etc/keystone state=absent
+    - name: "Remove {{ config_dir }}"
+      file: name="{{ config_dir }}" state=absent
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: "{{ upgrade_puppet_env.keystone }}"
         # this is only used by vagrant
         himlar_deployment: 'redeploy'
     - name: Pull fernet keys from db
@@ -108,12 +125,21 @@
 # Step 7: upgrade the rest of the identity nodes
 - hosts: "{{ location }}-identity,!{{ location }}-identity-01"
   gather_facts: false
+  vars:
+    config_dir: '/etc/keystone'
   tasks:
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      register: check_config_backup
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.keystone }}"
+      when: check_config_backup.stat.exists == False
     - systemd: name=crond state=stopped
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: "{{ upgrade_puppet_env.keystone }}"
         # this is only used by vagrant
         himlar_deployment: 'redeploy'
     - name: 'Yum update'
@@ -122,11 +148,11 @@
       systemd: name=httpd state=stopped
     - name: Purge old package
       yum: name=openstack-keystone state=absent
-    - name: 'Remove /etc/keystone/'
-      file: name=/etc/keystone state=absent
+    - name: "Remove {{ config_dir }}"
+      file: name="{{ config_dir }}" state=absent
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'victoria'
+        himlar_puppet_env: "{{ upgrade_puppet_env.keystone }}"
         # this is only used by vagrant
         himlar_deployment: 'redeploy'
     - name: Pull fernet keys from db

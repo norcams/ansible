@@ -24,11 +24,23 @@ himlarcli_packages:
   - openssl-devel
   - libffi-devel
 
+# imagebuilder
+imagebuilder_path: /opt/imagebuilder
+imagebuilder_repo: https://github.com/trondham/imagebuilder.git
+imagebuilder_ref: major_refactor
+imagebuilder_force_update: yes
+
+# puppet environments for puppetmaster
 puppet_environments:
   - admin
-  - ussuri
-  - victoria
+  - monitor
+  - controller
+  - el9
   - wallaby
+  - xena
+  - yoga
+  - yoga_el9
+  - zed
 
 # Secrets to sync
 secret_files: {}

@@ -4,7 +4,7 @@
 # ansible-playbook -e location=test01 lib/upgrade/nova.yaml
 #
 # Vagrant example:
-# ansible-playbook -K -e "location=vagrant himlar_puppet_env=victoria"  lib/upgrade/novactrl.yaml
+# ansible-playbook -K -e "location=vagrant himlar_puppet_env=xena"  lib/upgrade/novactrl.yaml
 #
 # In vagrant also run this first:
 # vagrant rsync novactrl
@@ -104,7 +104,7 @@
         himlar_puppet_env: "{{ himlar_puppet_env }}"
         puppet_ignore_errors: no
 
-# These two is done by the nova puppet module
+# These are done by the nova puppet module
 #    - name: "api db sync"
 #      when: '"novactrl" in inventory_hostname'
 #      command: "nova-manage api_db sync"
@@ -113,14 +113,14 @@
 #      when: '"novactrl" in inventory_hostname'
 #      command: "nova-manage db sync"
 
-    - name: "db cell_v2 simple_cell_setup"
-      when: '"novactrl" in inventory_hostname'
-      command: "nova-manage cell_v2 simple_cell_setup"
-      ignore_errors: yes
+#    - name: "db cell_v2 simple_cell_setup"
+#      when: '"novactrl" in inventory_hostname'
+#      command: "nova-manage cell_v2 simple_cell_setup"
+#      ignore_errors: yes
 
-    - name: "db online_data_migrations"
-      when: '"novactrl" in inventory_hostname'
-      command: "nova-manage db online_data_migrations"
+#    - name: "db online_data_migrations"
+#      when: '"novactrl" in inventory_hostname'
+#      command: "nova-manage db online_data_migrations"
 
     - import_tasks: ../tasks/puppetrun.yaml
       vars:

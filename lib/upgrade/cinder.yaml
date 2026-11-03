@@ -1,0 +1,118 @@
+#
+# This can be used to upgrade volume to new version of openstack
+#
+# Before you start you need to deploy latest version of himlar.
+#
+# Mandatory input variables:
+# * myhosts (str): ansible node(s)
+#
+# IMPORTANT: Remember to edit inventory/group_vars/<region>.yaml to set
+#            the upgrade_puppet_env.cinder variable
+#
+# Example:
+# sudo ansible-playbook -e "myhosts=test01-volume" lib/upgrade/cinder.yaml
+#
+# Last verified: never (ansible version 2.x)
+#
+# https://docs.openstack.org/cinder/wallaby/upgrade.html
+
+# Step 0: stop puppet
+- import_playbook: ../toggle_puppet.yaml
+  vars:
+    action: disable
+  when: location != 'vagrant'
+
+- hosts: "{{ myhosts }}"
+
+  vars:
+    config_dir: '/etc/cinder'
+
+  tasks:
+    - name: Puppet environment
+      ansible.builtin.debug:
+        msg: "Upgrading to: {{ upgrade_puppet_env.cinder }}"
+
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.cinder }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.cinder }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.cinder }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.cinder }}"
+      when: check_config_backup.stat.exists == False
+
+    - name: Register repo files
+      ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+
+    - name: Remove all old yum repo-files
+      ansible.builtin.file:
+        name: "/etc/yum.repos.d/{{item}}"
+        state: absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+
+    - name: Run kickstart
+      ansible.builtin.import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+        himlar_puppet_env: "{{ upgrade_puppet_env.cinder }}"
+        himlar_deployment: 'redeploy'
+        puppet_ignore_errors: no
+
+    - name: Stop httpd
+      ansible.builtin.systemd:
+        name: httpd
+        state: stopped
+
+    # Assumed service upgrade order is cinder-scheduler, cinder-volume, N/A:backup and finally cinder-api
+    - name: Stop cinder scheduler service
+      ansible.builtin.systemd:
+        name: openstack-cinder-scheduler
+        state: stopped
+      ignore_errors: yes
+
+    - name: Stop cinder volume service
+      ansible.builtin.systemd:
+        name: openstack-cinder-volume
+        state: stopped
+      ignore_errors: yes
+
+    - name: Purge old package
+      ansible.builtin.dnf:
+        name: openstack-cinder
+        state: absent
+
+    - name: "Remove {{ config_dir }}"
+      ansible.builtin.file:
+        name: "{{ config_dir }}"
+        state: absent
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+        himlar_puppet_env: "{{ upgrade_puppet_env.cinder }}"
+        puppet_ignore_errors: no
+
+    - name: Upgrade python3-cinder-common
+      ansible.builtin.dnf:
+        name: 'python3-cinder-common'
+        state: latest
+        update_cache: yes
+
+    - name: Upgrade RDO packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
+        disablerepo: '*'
+        enablerepo: rdo-release
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ upgrade_puppet_env.cinder }}"
+        puppet_ignore_errors: no
+
+    - name: 'Restart httpd'
+      systemd:
+        name: httpd
+        state: restarted

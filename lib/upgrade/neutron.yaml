@@ -6,8 +6,11 @@
 # Mandatory input variables:
 # * myhosts (str): ansible node(s)
 #
+# IMPORTANT: Remember to edit inventory/group_vars/<region>.yaml to set
+#            the upgrade_puppet_env.neutron variable
+#
 # Example:
-# sudo ansible-playbook -e "myhosts=test02-network-01" lib/upgrade/network.yaml
+# sudo ansible-playbook -e "myhosts=test01-network" lib/upgrade/neutron.yaml
 #
 # Last verified: 2024-06-28 (ansible version 2.16.6)
 #
@@ -15,25 +18,43 @@
 - hosts: "{{ myhosts }}"
   serial: 1
   gather_facts: no
+
+  vars:
+    config_dir: '/etc/neutron'
+
   tasks:
+    - name: Puppet environment
+      ansible.builtin.debug:
+        msg: "Upgrading to: {{ upgrade_puppet_env.neutron }}"
+
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.neutron }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.neutron }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.neutron }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.neutron }}"
+      when: check_config_backup.stat.exists == False
+
     - name: 'Repo files'
       command: 'ls -1 /etc/yum.repos.d/'
       register: repo_files
+
     - name: 'Remove all old yum repos'
       file: name="/etc/yum.repos.d/{{item}}" state=absent
       with_items: "{{repo_files.stdout_lines | default([])}}"
+
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
         runmode: 'kickstart'
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.neutron }}"
         # these are only used by vagrant
         himlar_deployment: 'redeploy'
+
     - name: 'Stop neutron server'
-      systemd: name=neutron-server state=stopped
+      systemd: name=neutron-server state=stopped enabled=false
       ignore_errors: yes
-    - name: 'disabled neutron server'
-      systemd: name=neutron-server state=disabled
-      ignore_errors: yes
+
     - name: 'Clear problematic packages'
       package:
         name:
@@ -41,22 +62,28 @@
         - network-scripts-openvswitch
         - rdo-network-scripts-openvswitch
         state: absent
+
     - name: Purge old packages
       yum: name=openstack-neutron-common state=absent
+
     - name: 'Remove /etc/neutron/'
       file: name=/etc/neutron state=absent
+
     - name: 'Yum update'
       yum: name=* state=latest update_cache=yes
+
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.neutron }}"
         # this is only used by vagrant
         himlar_deployment: 'redeploy'
+
     - import_tasks: ../tasks/puppetrun.yaml
       vars:
-        himlar_puppet_env: 'wallaby'
+        himlar_puppet_env: "{{ upgrade_puppet_env.neutron }}"
         # this is only used by vagrant
         himlar_deployment: 'redeploy'
+
     - name: Run db upgrade expand
       command: neutron-db-manage upgrade --expand
       run_once: true

@@ -1,0 +1,105 @@
+#
+# This can be used to upgrade telemetry to new version of openstack
+#
+# Before you start you need to stop puppet and deploy latest version of himlar.
+#
+# Mandatory input variables:
+# * myhosts (str): ansible node(s)
+#
+# IMPORTANT: Remember to edit inventory/group_vars/<region>.yaml to set
+#            the upgrade_puppet_env.ceilometer variable
+#
+# Example:
+# sudo ansible-playbook -e myhosts=test01-telemetry lib/upgrade/telemetry.yaml
+#
+# Last verified: 2018-07-18 (ansible version 2.4.2.0)
+#
+# Run this to purge epel packages
+#- import_playbook: ../remove_epel_packages.yaml
+
+- hosts: "{{ myhosts }}"
+  gather_facts: no
+
+  vars:
+    config_dir: '/etc/ceilometer'
+
+  tasks:
+    - name: Puppet environment
+      ansible.builtin.debug:
+        msg: "Upgrading to: {{ upgrade_puppet_env.ceilometer }}"
+
+    - name: Check if "{{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir }} to {{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
+      ansible.builtin.command: "cp -a {{ config_dir }} {{ config_dir }}_pre_{{ upgrade_puppet_env.ceilometer }}"
+      when: check_config_backup.stat.exists == False
+
+    - name: Repo files
+      ansible.builtin.command: 'ls -1 /etc/yum.repos.d/'
+      register: repo_files
+
+    - name: Remove all old yum repos
+      ansible.builtin.file:
+        name: "/etc/yum.repos.d/{{item}}"
+        state: absent
+      with_items: "{{repo_files.stdout_lines | default([])}}"
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+
+    - name: Stop ceilometer notification service
+      ansible.builtin.systemd_service:
+        name: openstack-ceilometer-notification.service
+        state: stopped
+
+    - name: Stop ceilometer polling service
+      ansible.builtin.systemd_service:
+        name: openstack-ceilometer-polling.service
+        state: stopped
+
+    - name: Purge old packages
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: absent
+      with_items:
+        - openstack-ceilometer-common
+        - openstack-ceilometer-polling
+        - openstack-ceilometer-notification
+        - python3-ceilometer
+
+    - name: "Remove {{ config_dir }}"
+      ansible.builtin.file:
+        name: "{{ config_dir }}"
+        state: absent
+
+    - name: Upgrade RDO packages
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        update_cache: yes
+        disablerepo: '*'
+        enablerepo: rdo-release
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ upgrade_puppet_env.ceilometer }}"
+        puppet_ignore_errors: no
+
+    - import_tasks: ../tasks/puppetrun.yaml
+      vars:
+        himlar_puppet_env: "{{ upgrade_puppet_env.ceilometer }}"
+        puppet_ignore_errors: no
+
+    - name: Restart ceilometer polling service
+      ansible.builtin.systemd_service:
+        name: openstack-ceilometer-polling.service
+        state: restarted
+
+    - name: Restart ceilometer notification service
+      ansible.builtin.systemd_service:
+        name: openstack-ceilometer-notification.service
+        state: restarted

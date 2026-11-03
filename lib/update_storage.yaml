@@ -28,7 +28,7 @@
 
     - name: Silence sensu before to many alarms are triggered
       ansible.builtin.command:
-        cmd: "bin/python manage_sensu.py silence -H {{ inventory_hostname }}"
+        cmd: "bin/python sensu.py silence -H {{ inventory_hostname }}"
         chdir: "{{ himlarcli_path }}"
       delegate_to: "{{ inventory_hostname.split('-') | first }}-proxy-02"    # <loc>-proxy-02
 
@@ -50,13 +50,6 @@
         enabled: false
         state: stopped
 
-    - name: Upgrade DELL-firmware
-      when: run_fw_upg | default(false) | bool
-      block:
-        - name: Run dsu in non-interactive mode
-          ansible.builtin.command: /sbin/dsu --non-interactive
-          ignore_errors: true
-
     - name: alma-gpg-key is imported
       ansible.builtin.rpm_key:
         key: https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
@@ -65,7 +58,7 @@
 
     - name: alma-gpg-key is imported, shell edition
       ansible.builtin.shell: rpm --import https://repo.almalinux.org/almalinux/RPM-GPG-KEY-AlmaLinux
-        
+
     - name: Update all release packages to get new gpg keys first
       ansible.builtin.dnf:
         name: '*-release'
@@ -78,9 +71,31 @@
         state: latest
         update_cache: yes
 
+    - name: Puppet-kickstart run, to ensure correct .repo-files
+      import_tasks: tasks/puppetrun.yaml
+      vars:
+        runmode: 'kickstart'
+      when:
+      - location != "uib"
+
+    - name: Disable puppet
+      ansible.builtin.command: "/opt/puppetlabs/bin/puppet agent --disable"
+
+    - name: Possibly Waiting for puppetrun to be finised
+      ansible.builtin.wait_for:
+        path: /opt/puppetlabs/puppet/cache/state/agent_catalog_run.lock
+        state: absent
+
+    - name: Upgrade DELL-firmware
+      when: run_fw_upg | default(false) | bool
+      block:
+        - name: Run dsu in non-interactive mode
+          ansible.builtin.command: /sbin/dsu --non-interactive
+          ignore_errors: true
+
     - name: Silence sensu before reboot
       ansible.builtin.command:
-        cmd: "bin/python manage_sensu.py silence -H {{ inventory_hostname }}"
+        cmd: "bin/python sensu.py silence -H {{ inventory_hostname }}"
         chdir: "{{ himlarcli_path }}"
       delegate_to: "{{ inventory_hostname.split('-') | first }}-proxy-02"    # <loc>-proxy-02
 
@@ -95,6 +110,6 @@
         timeout: 1800
         delay: 75
 
-    - name: Enable puppet
+    - name: Enable and run puppet
       when: enable_osds | default(true) | bool
-      ansible.builtin.command: "/opt/puppetlabs/bin/puppet agent --enable"
+      import_tasks: tasks/puppetrun.yaml

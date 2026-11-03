@@ -1,3 +1,8 @@
+# Example:
+# sudo ansible-playbook -e "myhosts=test01-compute-01 action=disable" lib/toggle_puppet.yaml
+#
+# action=enable is default
+
 - hosts: "{{ myhosts }}"
   gather_facts: yes
   user: iaas

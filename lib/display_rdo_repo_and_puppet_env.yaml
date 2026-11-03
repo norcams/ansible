@@ -1,0 +1,29 @@
+# Show Puppet environment and RDO repository name
+- hosts: "{{ myhosts }}"
+  gather_facts: False
+
+  tasks:
+
+    - name: Get RDO repo name
+      ansible.builtin.command: awk -F= '/^name/ {print $2}' /etc/yum.repos.d/rdo-release.repo
+      register: repo_result
+      failed_when: repo_result.rc != 0
+      check_mode: false
+      changed_when: false
+
+    - name: Get Puppet environment
+      ansible.builtin.shell: grep environment /etc/puppetlabs/puppet/puppet.conf | awk '{$1=$1};1'
+      register: puppet_result
+      failed_when: puppet_result.rc != 0
+      check_mode: false
+      changed_when: false
+
+    - name: Show RDO repository
+      ansible.builtin.debug:
+        msg: "RDO repository: {{ repo_result.stdout_lines }}"
+      when: repo_result.rc == 0
+
+    - name: Show Puppet environment
+      ansible.builtin.debug:
+        msg: "Puppet environment: {{ puppet_result.stdout_lines }}"
+      when: puppet_result.rc == 0

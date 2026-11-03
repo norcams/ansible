@@ -5,7 +5,31 @@
 # run puppet on db-regional
 - hosts: "{{ location }}-db-regional"
   gather_facts: false
+
+  vars:
+    config_dir_nova:      '/etc/nova'
+    config_dir_placement: '/etc/placement'
+
   tasks:
+
+    - name: Check if "{{ config_dir_nova }}_pre_{{ himlar_puppet_env }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir_nova }}_pre_{{ himlar_puppet_env }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir_nova }} to {{ config_dir_nova }}_pre_{{ himlar_puppet_env }}"
+      ansible.builtin.command: "cp -a {{ config_dir_nova }} {{ config_dir_nova }}_pre_{{ himlar_puppet_env }}"
+      when: check_config_backup.stat.exists == False
+
+    - name: Check if "{{ config_dir_placement }}_pre_{{ himlar_puppet_env }}" exists
+      ansible.builtin.stat:
+        path: "{{ config_dir_placement }}_pre_{{ himlar_puppet_env }}"
+      register: check_config_backup
+
+    - name: "Backup {{ config_dir_placement }} to {{ config_dir_placement }}_pre_{{ himlar_puppet_env }}"
+      ansible.builtin.command: "cp -a {{ config_dir_placement }} {{ config_dir_placement }}_pre_{{ himlar_puppet_env }}"
+      when: check_config_backup.stat.exists == False
+
     - import_tasks: ../tasks/puppetrun.yaml
 
 # block all novactrl backend

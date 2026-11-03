@@ -1,6 +1,5 @@
 ---
-himlarcli_ref: python2
 himlarcli_packages:
-  - python-virtualenv
-  - PyYAML
-
+  - python3.12
+  - python3.12-devel
+himlarcli_virutalenv_command: 'python3.12 -m venv'

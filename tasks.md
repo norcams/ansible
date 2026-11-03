@@ -14,7 +14,8 @@ sudo ansible-playbook -e "myhosts=bgo-admin" lib/git_access.yaml
 sudo ansible-playbook -e "myhosts=bgo-admin" lib/deploy_himlar.yaml
 
 # Toggle puppet run with action=[enable|disable]
-sudo ansible-playbook -e "myhosts=bgo action=enable" lib/toggle_puppet.yaml
+sudo ansible-playbook -e 'myhosts=bgo action=enable' lib/toggle_puppet.yaml
+sudo ansible-playbook -e 'myhosts=bgo action=disable reason="upgrading openstack to Xena"' lib/toggle_puppet.yaml
 
 # Shutdown all nodes on controller
 sudo ansible-playbook -e "myhosts=test01-controller-02 action=stop" lib/manage_nodes.yaml
