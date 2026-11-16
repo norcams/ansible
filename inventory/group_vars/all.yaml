@@ -26,8 +26,8 @@ himlarcli_packages:
 
 # imagebuilder
 imagebuilder_path: /opt/imagebuilder
-imagebuilder_repo: https://github.com/trondham/imagebuilder.git
-imagebuilder_ref: major_refactor
+imagebuilder_repo: https://github.com/norcams/imagebuilder.git
+imagebuilder_ref: master
 imagebuilder_force_update: yes
 
 # puppet environments for puppetmaster
